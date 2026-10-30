@@ -10,7 +10,7 @@
 <nav class="topbar"><div class="topbar-inner">
   <a class="logo" href="index.html"><span class="dot"></span>408 数据结构可视化课堂</a>
   <div class="nav-links">
-    <a href="index.html">总览</a><a href="ch01.html">线性表</a><a href="ch02.html">栈与队列</a><a href="ch03.html">树</a><a href="ch04.html">图</a><a href="ch05.html">查找</a><a href="ch06.html">排序</a><a href="ch07.html">串</a><a href="practice.html">练习场</a><a href="resources.html">资源导航</a>
+    <a href="index.html">总览</a><a href="ch01.html">线性表</a><a href="ch02.html">栈与队列</a><a href="ch03.html">树</a><a href="ch04.html">图</a><a href="ch05.html">查找</a><a href="ch06.html">排序</a><a href="ch07.html">串</a><a href="practice.html">练习场</a><a href="method.html">备考方法论</a><a href="resources.html">资源导航</a>
   </div>
   <button class="theme-btn" title="切换明暗主题">🌙</button>
 </div></nav>
@@ -19,7 +19,7 @@
   <div class="hero">
     <h1>第 6 章 · 排序</h1>
     <p>408 选择题的<b>送分与坑王</b>：算法思想都不难，但"快排第一趟结果""堆排序建堆后序列""哪些算法稳定"这些手工模拟题，不亲手画一遍必错。本章给你一个能逐步动画的排序实验室，模拟题不再靠脑补。</p>
-    <p class="tagline">预计学习 4~6 小时 · 动画课堂 1 集 · 练习 12 题 · 打卡 6 项</p>
+    <p class="tagline">预计学习 4~6 小时 · 动画课堂 1 集 · 练习 16 题 · 打卡 6 项</p>
   </div>
 
   <div class="toc"><span class="toc-label">本页导航</span><a href="#goal">学习目标</a><a href="#s1">稳定性</a><a href="#s2">插入排序</a><a href="#s3">交换排序</a><a href="#s4">选择排序</a><a href="#s5">归并与基数</a><a href="#s6">总表</a><a href="#deep">进阶深挖</a><a href="#lesson">动画课堂</a><a href="#pit">避坑清单</a><a href="#quiz">章内练习</a><a href="#ck">打卡</a></div>
@@ -110,6 +110,16 @@
   <div class="callout exam"><div class="co-title">📌 真题怎么考（本章规律）</div>
   2012"哪些排序每趟归位一个"、2012"折半插入比较次数与初态无关"、2015"移动次数与初态无关的只有基数"、2015"小根堆删顶最多比较 6 次"、2015"希尔组内用直接插入"、2022"直接插入与快排的适用场景（四种说法全对）"、2025"最坏移动次数最少的是简单选择 O(n)"。大题两型：手写某算法两趟结果；给场景选算法并说明理由。</div>
 
+  <div class="callout views"><div class="co-title">🌐 多源视角（不同书的讲法）</div>
+  <ul>
+    <li><b>【CLRS · 比较排序的下界】：</b>n 个互异元素有 n! 种排列 ⇒ 决策树至少 n! 个叶；高度 h 的二叉树最多 2^h 个叶 ⇒ h ≥ log₂(n!) = Ω(n log n)。归并与堆排序因此"渐进最优"；这条证明才解释了"为什么快排平均最快、最坏却退化"。</li>
+    <li><b>【Sedgewick · 精确常数】：</b>堆插入 ≤ 1+lg n 次比较，删除最大 ≤ 2lg n 次；<b>自底向下沉建堆是线性时间</b>（不是 O(nlog n)）；堆排序总比较少于 2n lg n。这支持"建堆 O(n)"的说法，也能出题区分"逐个插入建堆 O(nlog n)"。</li>
+    <li><b>【选择排序不稳定的具体反例】：</b>交换的是非相邻元素——序列 B₁、B₂（同键）时，最小元素与首位交换会把 B₁ 甩到 B₂ 右边。用 5 个元素的小例子看一遍，比背"不稳定"标签有效十倍。</li>
+    <li><b>【工程现实 · Sedgewick 2.5】：</b>Java 对基本类型用三路快排、对引用类型用归并——用速度/内存换"稳定性 + 性能保证"。这回答了"教材说快排最好，工业界为何还混用"。</li>
+    <li><b>【基数排序的前提】：</b>必须低位先排 + 每趟稳定收集——若先排高位或收集不稳定，前一趟建立的次序会被破坏，结果直接错。这是"稳定性为何是 LSD 的前提"的最短证明。</li>
+  </ul>
+  <div class="src">参考：CLRS 8.1；Sedgewick《算法（第4版）》2.4、2.5</div></div>
+
   <h2 class="sec" id="lesson">🎬 动画课堂 · 第 6 集《一副扑克牌的七种整理法》</h2>
   <p>整理扑克类比 → 插入排序 → 快排 partition → 冒泡 → 归并 → 成绩单总结。可用 ← → 切幕、R 重播。</p>
   <div id="lesson"></div>
@@ -127,7 +137,7 @@
     <div class="step">要"稳定 + O(nlogn)"：内排只有归并；选择题问"最优"时先看稳定性要求再看复杂度。</div>
   </div>
 
-  <h2 class="sec" id="quiz">📝 章内练习（12 题 · 基础 → 提高 → 真题）</h2>
+  <h2 class="sec" id="quiz">📝 章内练习（16 题 · 基础 → 提高 → 真题）</h2>
   <h3 class="sub" style="color:var(--green)">🟢 第一档 · 基础（4 题）</h3>
   <div class="quiz" data-answer="A" data-diff="mid">
     <div class="q-head"><div class="q-tag">练习 1 · 考点：快排一趟结果</div>
@@ -228,7 +238,7 @@
     <div class="q-exp"><b>解析：</b>选 B。正序序列让每次划分"一边全空"，递归深度 n；三者取中让枢轴尽量落在中位，划分均衡。C、D 是换算法不是救快排。</div>
   </div>
 
-  <h3 class="sub" style="color:var(--brand)">🔴 第三档 · 真题（4 题 · 原题核对版）</h3>
+  <h3 class="sub" style="color:var(--brand)">🔴 第三档 · 真题（8 题 · 原题核对版）</h3>
   <div class="quiz" data-answer="A" data-diff="real" data-year="2012">
     <div class="q-head"><div class="q-tag">练习 9 · 考点：每趟归位一个的名单</div>
     下列排序方法中，每一趟都能保证<b>至少一个元素到达其最终位置</b>的是：<br>
@@ -279,6 +289,54 @@
     <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
     <div class="q-exp"><b>解析：</b>选 D。四句全对：基本有序时快排退化 O(n²) 而直接插入 O(n)；小规模直接插入常数小；大规模随机时快排平均 O(nlogn) 最快；两者中只有直接插入稳定。2022 年原题的考点是"别把任何一句当绝对错误"。</div>
   </div>
+  <div class="quiz" data-answer="B" data-diff="real" data-year="2012">
+    <div class="q-head"><div class="q-tag">练习 13 · 考点：折半插入 vs 直接插入</div>
+    与直接插入排序相比，折半插入排序的改进在于：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 元素移动次数减少，时间复杂度降为 O(nlog₂n)</div>
+      <div class="opt" data-opt="B">B. 比较次数固定为 O(nlog₂n) 且与初始序列无关，但移动次数仍是 O(n²)</div>
+      <div class="opt" data-opt="C">C. 比较次数与移动次数都降为 O(nlog₂n)</div>
+      <div class="opt" data-opt="D">D. 使排序变成稳定算法</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 B。折半只替换"找插入位置"这一步——每个元素比较 ⌈log₂i⌉ 次，总 O(nlog₂n)，与初态无关；但找到位置后仍需整体后移，移动次数不变仍 O(n²)。A、C 都把移动也当成省了；D 张冠李戴（直接插入本来就是稳定的）。2012 年原题考的就是这条对比。</div>
+  </div>
+  <div class="quiz" data-answer="A" data-diff="real" data-year="2015">
+    <div class="q-head"><div class="q-tag">练习 14 · 考点：希尔排序的实现细节</div>
+    希尔排序在每一组内采用的排序方法是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 直接插入排序</div>
+      <div class="opt" data-opt="B">B. 冒泡排序</div>
+      <div class="opt" data-opt="C">C. 简单选择排序</div>
+      <div class="opt" data-opt="D">D. 快速排序</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 A。希尔排序本质是"分组 + 直接插入"，用增量 d 把序列分成若干子序列，对每个子序列做直接插入（此时元素是"跳跃"移动的，能一次挪很远）。这也是它比纯插入快的原因：早期就让元素大幅接近最终位置。</div>
+  </div>
+  <div class="quiz" data-answer="A" data-diff="real" data-year="2022">
+    <div class="q-head"><div class="q-tag">练习 15 · 考点：归并排序的概念</div>
+    下列关于归并排序的叙述中，正确的是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 归并是将两个或两个以上有序表合并成一个有序表的过程</div>
+      <div class="opt" data-opt="B">B. 归并排序的比较次数与初始序列无关</div>
+      <div class="opt" data-opt="C">C. 归并排序的辅助空间是 O(1)</div>
+      <div class="opt" data-opt="D">D. 归并排序是不稳定的</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 A。A 是定义本身。B 错——两段合并时的比较次数取决于元素分布（一段先耗尽可提前结束）；C 错——需要 O(n) 辅助数组；D 错——归并是稳定的（相等时先取左段）。2022 年这道题纯考概念，但四个选项各埋一个常见误解。</div>
+  </div>
+  <div class="quiz" data-answer="D" data-diff="real" data-year="2025">
+    <div class="q-head"><div class="q-tag">练习 16 · 考点：最坏情况移动次数最少</div>
+    在最坏情况下，下列排序方法中元素移动次数最少的是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 直接插入排序</div>
+      <div class="opt" data-opt="B">B. 冒泡排序</div>
+      <div class="opt" data-opt="C">C. 快速排序</div>
+      <div class="opt" data-opt="D">D. 简单选择排序</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 D。简单选择每趟只做 1 次交换（3 次移动），n−1 趟总计 O(n) 次移动——这是它在"移动代价极高（如大记录）"场景下的唯一优势。插入/冒泡最坏都是 O(n²) 次移动；快排的交换次数也远多于选择排序。2025 年真题（回忆版）：答案唯一指向简单选择。</div>
+  </div>
 
   <h2 class="sec" id="ck">✅ 打卡清单</h2>
   <div data-ck-scope>
@@ -289,7 +347,7 @@
       <label class="check-item" data-ck="ch6-3"><input type="checkbox"><span>默写八大排序复杂度+稳定性总表</span></label>
       <label class="check-item" data-ck="ch6-4"><input type="checkbox"><span>能根据序列特征选算法（有序→插入，要稳定→归并）</span></label>
       <label class="check-item" data-ck="ch6-5"><input type="checkbox"><span>看完动画课堂《一副扑克牌的七种整理法》</span></label>
-      <label class="check-item" data-ck="ch6-6"><input type="checkbox"><span>章内 12 题正确 ≥ 9 题（基础档必须全对）</span></label>
+      <label class="check-item" data-ck="ch6-6"><input type="checkbox"><span>章内 16 题正确 ≥ 12 题（基础档必须全对）</span></label>
     </div>
   </div>
 </div>

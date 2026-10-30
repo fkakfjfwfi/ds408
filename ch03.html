@@ -10,7 +10,7 @@
 <nav class="topbar"><div class="topbar-inner">
   <a class="logo" href="index.html"><span class="dot"></span>408 数据结构可视化课堂</a>
   <div class="nav-links">
-    <a href="index.html">总览</a><a href="ch01.html">线性表</a><a href="ch02.html">栈与队列</a><a href="ch03.html">树</a><a href="ch04.html">图</a><a href="ch05.html">查找</a><a href="ch06.html">排序</a><a href="ch07.html">串</a><a href="practice.html">练习场</a><a href="resources.html">资源导航</a>
+    <a href="index.html">总览</a><a href="ch01.html">线性表</a><a href="ch02.html">栈与队列</a><a href="ch03.html">树</a><a href="ch04.html">图</a><a href="ch05.html">查找</a><a href="ch06.html">排序</a><a href="ch07.html">串</a><a href="practice.html">练习场</a><a href="method.html">备考方法论</a><a href="resources.html">资源导航</a>
   </div>
   <button class="theme-btn" title="切换明暗主题">🌙</button>
 </div></nav>
@@ -19,7 +19,7 @@
   <div class="hero">
     <h1>第 3 章 · 树与二叉树</h1>
     <p>408 数据结构<b>分值最重的一章</b>：选择题考性质、遍历、线索二叉树，大题常考遍历的算法设计与哈夫曼。把它吃透，后面的图也会轻松一半。</p>
-    <p class="tagline">预计学习 5~7 小时 · 动画课堂 1 集 · 练习 12 题 · 打卡 6 项</p>
+    <p class="tagline">预计学习 5~7 小时 · 动画课堂 1 集 · 练习 16 题 · 打卡 6 项</p>
   </div>
 
   <div class="toc"><span class="toc-label">本页导航</span><a href="#goal">学习目标</a><a href="#s1">什么是树</a><a href="#s2">五大性质</a><a href="#s3">存储</a><a href="#s4">遍历</a><a href="#s5">线索二叉树</a><a href="#s6">哈夫曼</a><a href="#deep">进阶深挖</a><a href="#lesson">动画课堂</a><a href="#pit">避坑清单</a><a href="#quiz">章内练习</a><a href="#ck">打卡</a></div>
@@ -132,6 +132,16 @@
   <div class="callout exam"><div class="co-title">📌 真题怎么考（本章规律）</div>
   <b>选择题五巨头：</b>n₀=n₂+1 及推广、完全二叉树编号性质（⌊i/2⌋/2i/2i+1）、四种遍历互推与重建（中序必配）、线索二叉树"某指针指向谁"、哈夫曼 WPL 速算（= 各次合并值之和）。<b>2012~2022 十一年间本章每年 2~3 题</b>，2022 年新增"中序相邻结点关系"角度：中序序列里 p 的下一个是"右子树最左"或"作为左孩子的祖先"，<b>右兄弟永不相邻</b>。大题隔年考：遍历改造（计数/求深度/镜像）、哈夫曼编码设计。</div>
 
+  <div class="callout views"><div class="co-title">🌐 多源视角（不同书的讲法）</div>
+  <ul>
+    <li><b>【Hello 算法 · 三次相遇】DFS 像绕树外围走一圈：</b>每个结点会被经过三次，前序/中序/后序只是在第 1/2/3 次经过时记录它。本站用法：把"递归=系统栈""迭代=手动栈""线索化=把空指针存成下一次相遇的地址"三件事放进同一个画面，一次讲透。</li>
+    <li><b>【邓俊辉 · 3+4 重构】四种失衡是同一次手术：</b>按中序遍历取三个结点 a、b、c，把四棵子树 T0~T3 依序重挂即可恢复平衡。LL/RR/LR/RL 只是"b 恰好是 a 的左孩子还是右孩子"的命名差异，不必背四套动作。</li>
+    <li><b>【Hello 算法 · 层序空间】不是笼统的 O(n)：</b>满二叉树遍历到最底层之前，队列最多同时存 (n+1)/2 个结点——选择题常用 n/2、n 做干扰项。</li>
+    <li><b>【数组表示二叉树】空结点也要占位：</b>深度 h 的单支树需要 2^h 个槽位，空间从 O(n) 劣化为指数级，这才是"只有完全二叉树适合顺序存储"的真正理由。</li>
+    <li><b>【哈夫曼 · 前缀码的前提】字符只能挂在叶结点上：</b>若挂在内部结点，该字符的编码会成为后代字符编码的前缀，解码必然歧义。</li>
+  </ul>
+  <div class="src">参考：Hello 算法 chapter_tree；邓俊辉《数据结构（C++版）》第 7 章</div></div>
+
   <h2 class="sec" id="lesson">🎬 动画课堂 · 第 3 集《一棵树的四种走法》</h2>
   <p>家谱类比 → n₀=n₂+1 → 先序 → 中序 → 后序与层序 → 重建规则与口诀。点击播放，语音同步讲解。</p>
   <div id="lesson"></div>
@@ -150,7 +160,7 @@
     <div class="step">遍历的递归算法要能默写（大题常以遍历为骨架改造），非递归实现靠栈——又是第 2 章。</div>
   </div>
 
-  <h2 class="sec" id="quiz">📝 章内练习（12 题 · 基础 → 提高 → 真题）</h2>
+  <h2 class="sec" id="quiz">📝 章内练习（16 题 · 基础 → 提高 → 真题）</h2>
   <h3 class="sub" style="color:var(--green)">🟢 第一档 · 基础（4 题）</h3>
   <div class="quiz" data-answer="B" data-diff="basic">
     <div class="q-head"><div class="q-tag">练习 1 · 考点：n₀ = n₂ + 1</div>
@@ -251,7 +261,7 @@
     <div class="q-exp"><b>解析：</b>选 B。递推链：N(1)=1 → N(2)=2 → N(3)=4 → N(4)=7 → N(5)=12 → N(6)=20 → <b>N(7)=20+12+1=33</b>。这串数（1,2,4,7,12,20,33,54…）就是"斐波那契加一"，2012 年真题考的是 N(6)=20。A 是 N(6) 的干扰值，D 的 54 是 N(8)、也是满二叉树 2⁷−1=127 的近邻干扰。考前把递推链默到 N(8)。</div>
   </div>
 
-  <h3 class="sub" style="color:var(--brand)">🔴 第三档 · 真题（4 题 · 原题核对版）</h3>
+  <h3 class="sub" style="color:var(--brand)">🔴 第三档 · 真题（8 题 · 原题核对版）</h3>
   <div class="quiz" data-answer="A" data-diff="real" data-year="2012">
     <div class="q-head"><div class="q-tag">练习 9 · 考点：前序 + 后序定祖先</div>
     若一棵二叉树的前序遍历序列为 a, e, b, d, c，后序遍历序列为 b, c, d, e, a，则下列说法中<b>一定成立</b>的是：</div>
@@ -301,6 +311,55 @@
     <div class="q-exp"><b>解析：</b>选 B。满三叉树每层容量 1, 3, 9, 27, 81, 243，前 5 层累计 121 个 &lt; 244，前 6 层累计 364 个 ≥ 244 → 最小高度 6。公式化：找最小 h 使 (3^h − 1)/2 ≥ 244。这是 2022 年"二叉树最小高度"的三叉推广版，方法完全一样：<b>逐层累加容量，数到刚好装下为止</b>。C 的 7 是"从第 6 层起又多算一层"的典型失误。</div>
   </div>
 
+  <div class="quiz" data-answer="B" data-diff="real" data-year="2012">
+    <div class="q-head"><div class="q-tag">练习 13 · 考点：最矮 AVL 的结点数</div>
+    高度为 6 的 AVL 树中，若每个非叶结点的平衡因子都是 1（左高右低一格），则该树的结点总数是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 12</div>
+      <div class="opt" data-opt="B">B. 20</div>
+      <div class="opt" data-opt="C">C. 32</div>
+      <div class="opt" data-opt="D">D. 63</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 B。平衡因子全为 1 意味着每个结点都"左子树比右子树恰高一层"，这就是最省结点的 AVL。递推 N(h)=N(h−1)+N(h−2)+1：1,2,4,7,12,20 → N(6)=20。C 是 2⁵−1（满二叉树），D 是 2⁶−1，都是"把最矮当最满"的误判。</div>
+  </div>
+  <div class="quiz" data-answer="D" data-diff="real" data-year="2015">
+    <div class="q-head"><div class="q-tag">练习 14 · 考点：哈夫曼树的树形</div>
+    下列树形中，<b>不可能</b>是哈夫曼树的是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 所有叶结点的权值都小于等于其祖先结点的权值</div>
+      <div class="opt" data-opt="B">B. 树中不存在度为 1 的结点</div>
+      <div class="opt" data-opt="C">C. 权值最小的两个叶结点是兄弟</div>
+      <div class="opt" data-opt="D">D. 树中存在一个度为 1 的结点</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 D。哈夫曼树每次"取最小两个合并"，合并出来的新结点一定有两个孩子 ⇒ <b>绝不会有度为 1 的结点</b>，n 个叶子共 2n−1 个结点。A、B、C 都是构造过程必然带来的性质。</div>
+  </div>
+  <div class="quiz" data-answer="C" data-diff="real" data-year="2011">
+    <div class="q-head"><div class="q-tag">练习 15 · 考点：树转二叉树后的叶结点</div>
+    将一棵树 T 转换为二叉树 BT（左孩子右兄弟表示法）。若 BT 中仅有前 115 个叶结点有右孩子，其余叶结点无右孩子，则 T 中<b>有右兄弟的叶结点</b>个数是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 1</div>
+      <div class="opt" data-opt="B">B. 114</div>
+      <div class="opt" data-opt="C">C. 115</div>
+      <div class="opt" data-opt="D">D. 无法确定</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 C。特殊值法——叶结点转换后"有右孩子"等价于它在原树中"有右兄弟"。BT 中共有多少叶子不必算，题面直接告诉你"前 115 个叶结点有右孩子"，而这 115 个正对应 T 中有右兄弟的叶子。看到"前 k 个…"这种表述直接用特殊值反推，别真的去构造整棵树。</div>
+  </div>
+  <div class="quiz" data-answer="A" data-diff="real" data-year="2014">
+    <div class="q-head"><div class="q-tag">练习 16 · 考点：二叉树的 WPL（2014 年大题 · 选择化）</div>
+    计算一棵二叉树所有叶结点的带权路径长度之和（WPL）。若采用递归实现，最简洁的写法是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 在遍历参数中传"当前深度 d"，遇到叶子就累加 weight×d</div>
+      <div class="opt" data-opt="B">B. 先求树高，再统一乘以叶权</div>
+      <div class="opt" data-opt="C">C. 用层序遍历收集所有叶子后按序累加</div>
+      <div class="opt" data-opt="D">D. 只累加最左叶子的值再乘叶子总数</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 A。WPL 的定义就是"每个叶子的权 × 它到根的边数"。递归时把当前深度作为参数一路带下去，碰到叶子就 wpl += w * d——2014 年大题的满分写法就是这个 8 行左右的递归。B 把深度当成统一值，错在叶子深度各不相同；D 更是无稽。</div>
+  </div>
+
   <h2 class="sec" id="ck">✅ 打卡清单</h2>
   <div data-ck-scope>
     <p><span class="progress-pill">0 / 6 已打卡</span></p>
@@ -310,7 +369,7 @@
       <label class="check-item" data-ck="ch3-3"><input type="checkbox"><span>能用「中序+先序」切块法重建二叉树</span></label>
       <label class="check-item" data-ck="ch3-4"><input type="checkbox"><span>知道完全二叉树的编号性质（2i/2i+1/⌊i/2⌋）</span></label>
       <label class="check-item" data-ck="ch3-5"><input type="checkbox"><span>看完动画课堂《一棵树的四种走法》</span></label>
-      <label class="check-item" data-ck="ch3-6"><input type="checkbox"><span>章内练习 4 题正确 ≥ 3 题</span></label>
+      <label class="check-item" data-ck="ch3-6"><input type="checkbox"><span>章内 16 题正确 ≥ 12 题（基础档必须全对）</span></label>
     </div>
   </div>
 </div>

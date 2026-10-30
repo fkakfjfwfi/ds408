@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>备考方法论 · 408 数据结构可视化课堂</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<nav class="topbar"><div class="topbar-inner">
+  <a class="logo" href="index.html"><span class="dot"></span>408 数据结构可视化课堂</a>
+  <div class="nav-links">
+    <a href="index.html">总览</a><a href="ch01.html">线性表</a><a href="ch02.html">栈与队列</a><a href="ch03.html">树</a><a href="ch04.html">图</a><a href="ch05.html">查找</a><a href="ch06.html">排序</a><a href="ch07.html">串</a><a href="practice.html">练习场</a><a href="method.html">备考方法论</a><a href="resources.html">资源导航</a>
+  </div>
+  <button class="theme-btn" title="切换明暗主题">🌙</button>
+</div></nav>
+
+<div class="wrap">
+  <div class="hero">
+    <h1>🧭 备考方法论</h1>
+    <p>这一页不讲知识，只讲<b>怎么学</b>。内容来自历年上岸经验贴、教材前言与教研总结的交叉提炼，全部改写为可执行的动作，不写"要努力"这类空话。按顺序读一遍，然后把第 1~3 条立刻用在今天的学习上。</p>
+    <p class="tagline">三轮复习节奏 · 错题本三栏法 · 真题两遍法 · 大题采分点 · 15 条可操作动作</p>
+  </div>
+
+  <div class="toc"><span class="toc-label">本页导航</span><a href="#plan">三轮节奏</a><a href="#daily">每日执行</a><a href="#wrong">错题本</a><a href="#real">真题用法</a><a href="#write">大题书写</a><a href="#algo">算法题四步</a><a href="#mem">精确记忆清单</a><a href="#trap">常见弃疗点</a><a href="#map">主线织网</a></div>
+
+  <h2 class="sec" id="plan">一、三轮复习的时间与配额</h2>
+  <p>把备考切成三段，每段只干一件事。切分的依据不是"感觉学完了"，而是<b>日期和页数配额</b>——配额能防住"永远停在第一章"。</p>
+  <table class="tbl">
+    <tr><th>轮次</th><th>时间窗</th><th>唯一目标</th><th>数据结构日均配额</th></th></tr>
+    <tr><td><b>一轮</b>（建框架）</td><td>8 月 – 10 月中（约 70 天）</td><td>把教材+单科书过完一遍，每章做完课后选择题</td><td>10~20 页/天（按难度：组成原理 ≥ 数据结构 &gt; 操作系统 &gt; 网络）</td></tr>
+    <tr><td><b>二轮</b>（补漏洞）</td><td>10 月中 – 11 月 20 日</td><td><b>重做一轮错题</b>，而不是赶新进度</td><td>不设页数，按错题量定</td></tr>
+    <tr><td><b>三轮</b>（上考场）</td><td>最后一个月</td><td>一天一套整卷（真题+模拟约 20 套）</td><td>按套卷节奏</td></tr>
+  </table>
+  <div class="callout warn"><div class="co-title">⚠️ 二轮最容易崩的地方</div>
+  多数人二轮打开书会发现"像没学过"——这是正常现象，不是失败信号。<b>二轮的重点从来不是新进度，而是把一轮的错题重做一遍</b>：第一遍做错的题，第二遍仍然高概率做错。把二轮当"重刷一轮"会直接浪费掉最宝贵的查漏窗口。</div>
+  <div class="steps">
+    <div class="step"><b>一轮顺序固定为「教材对应章 → 单科书 → 课后选择题」</b>，严格按单科书目录推进，不跳章、不"先挑难的"。</div>
+    <div class="step"><b>课后题用铅笔作答或另写纸上</b>——为二轮原题重做留出空白，否则二轮只能看着答案"回忆"。</div>
+    <div class="step"><b>三轮的模拟分数不作为目标</b>，它唯一的用途是练"每种题型该花多久"，把节奏调进考场耐受区。</div>
+  </div>
+
+  <h2 class="sec" id="daily">二、每日执行清单</h2>
+  <p>一天只做四件事，顺序不要乱：</p>
+  <div class="steps">
+    <div class="step"><b>① 10 分钟回看昨天</b>：不重读，只看昨天标记的错题和便利贴。这叫间隔重复的第一层。</div>
+    <div class="step"><b>② 配额内的新内容</b>：看讲解 → 立刻做题（不做题的"看"是假学）。</div>
+    <div class="step"><b>③ 当日错题三栏入册</b>（见下一节），当天必须完成，隔夜就忘。</div>
+    <div class="step"><b>④ 睡前 5 分钟口述</b>：合上书，用自己的话说出今天学的结构"是什么、为什么存在、怎么操作"。说不出来的，就是明天的第一件事。</div>
+  </div>
+  <div class="callout ok"><div class="co-title">✅ 本站配合用法</div>
+  第 ④ 步的"口述"可以直接拿<a href="index.html">总览页</a>的动画片单当提词器：能对着片子把每章主线讲一遍，说明框架立住了。第 ③ 步用<a href="practice.html">练习场</a>的「只看错题」——它已经把错题自动收进去了。</div>
+
+  <h2 class="sec" id="wrong">三、错题本三栏法（可复制粘贴的模板）</h2>
+  <p>错题本不是"抄题"，是<b>建立错误与概念之间的索引</b>。每题占三栏，一栏都不能省：</p>
+  <table class="tbl">
+    <tr><th>第一栏</th><th>第二栏</th><th>第三栏</th></tr>
+    <tr><td>题干（可缩写成一句"考什么"）</td><td>答案解析（<b>用自己的话</b>写，不抄书）</td><td>对应教材概念（写出章节号 + 概念名，并抄一遍定义）</td></tr>
+  </table>
+  <div class="callout exam"><div class="co-title">📌 为什么第三栏最关键</div>
+  只抄题和答案，你记住的是"这道题的答案"；抄了概念，你记住的是"这类题的判据"。考场上不会出原题，但会出<b>同一个概念换个问法</b>。第三栏就是那次"换问法"的迁移点。<br>
+  考前 1~2 天不再刷新题，<b>只翻这一本</b>——它的信息密度远高于重读教材。</div>
+
+  <h2 class="sec" id="real">四、真题的正确用法（两遍法）</h2>
+  <p>真题是最贵的资源，但很多人用成了"提前消耗掉的模拟卷"。正确节奏是两遍：</p>
+  <div class="steps">
+    <div class="step"><b>第一遍：按年份从早到晚，不限时精做。</b>目的不是测分，是<b>理解考点分布</b>——每做一道就在题目旁标"考点名 + 章节号"。做完一轮，你会得到一张真实的考点热力图。</div>
+    <div class="step"><b>第二遍：整套计时。</b>目的才是练节奏。注意：除了最近一年，多数真题在单科书里已经做过，所以这一遍的分数没有参考价值，<b>只用来练时间分配</b>。</div>
+  </div>
+  <div class="callout warn"><div class="co-title">⚠️ 三种题必须全进错题本</div>
+  <b>做错的</b>、<b>蒙对的</b>、<b>做对但说不清为什么的</b>。第二种和第三种最危险——它们伪装成"我会了"，考场上换个数字就会崩。</div>
+  <p>另外，<b>把最近一年真题留到三轮最后</b>，做一次真正的全真计时（含涂卡、含连续 3 小时），这是唯一一次"干净"的模拟。</p>
+
+  <h2 class="sec" id="write">五、大题书写：按采分点写，不按"我懂了多少"写</h2>
+  <p>408 数据结构大题约 15~17 分，其中算法设计题的分值分布高度固定：</p>
+  <table class="tbl">
+    <tr><th>部分</th><th>约占分</th><th>写什么</th><th>常见扣分</th></tr>
+    <tr><td>算法思想/思路说明</td><td>≈4 分</td><td>用自然语言讲清"用什么方法、为什么可行、复杂度是多少"</td><td>只写"用双指针"不解释为什么能行</td></tr>
+    <tr><td>关键代码</td><td>≈7 分</td><td>C/C++，含变量定义、循环、边界判断，<b>带注释</b></td><td>漏边界（空表/单元素）、变量未定义、伪代码混 C</td></tr>
+    <tr><td>时空复杂度分析</td><td>≈2 分</td><td>明确写 O(?) 并给一句依据</td><td><b>漏写复杂度必扣分</b>——这是最冤的失分</td></tr>
+  </table>
+  <div class="steps">
+    <div class="step"><b>采分点换算</b>：1 分 ≈ 一个结论或一个关键词；2 分 ≈ 结论 + 一条决定性理由。计算题必须写"公式 + 代入 + 结果"，<b>只写数字最高得 1 分</b>。</div>
+    <div class="step"><b>不写无关背景、不穷举</b>。多写不但不得分，还可能暴露矛盾（比如顺手列了 IP 首部全部字段，与题干无关且占篇幅）。</div>
+    <div class="step"><b>"显然/易知/可以看出"不能代替判据</b>。凡是结论，后面必须跟一条理由。</div>
+    <div class="step"><b>先圈出题干里的复杂度要求</b>：`O(n)` 时间或 `O(1)` 空间是解法的一部分（链表靠双指针、数组靠原地交换/散列）。方向错了，代码再工整也拿不满分。</div>
+  </div>
+
+  <h2 class="sec" id="algo">六、算法题四步训练法（每题 30~40 分钟）</h2>
+  <div class="steps">
+    <div class="step"><b>限时审题（5 分钟）</b>：先写下"算法家族（链表/树/图/数组）+ 复杂度上限"。这一步决定方向，比写代码重要。</div>
+    <div class="step"><b>纸上手写完整代码（15 分钟）</b>：变量定义、循环、边界一个不落。<b>408 在纸上写，不练手写必吃亏</b>——IDE 会替你做的那部分，考场没人替。</div>
+    <div class="step"><b>上机验证（10 分钟）</b>：把纸上的代码敲进编译器，重点测<b>空表、单元素、全相同元素</b>三类边界。这三类能抓住 80% 的边界错误。</div>
+    <div class="step"><b>对照复盘（5 分钟）</b>：和标准答案比对，<b>数清楚自己漏了哪几步</b>，把它写进固定的答题模板（思想 → 代码 → 复杂度）。</div>
+  </div>
+
+  <h2 class="sec" id="mem">七、精确记忆清单（二轮逐项自查）</h2>
+  <p>以下内容<b>必须能独立算出/默写</b>，不能"大致记得"。二轮时逐项打钩，算不出的立刻回章补：</p>
+  <table class="tbl">
+    <tr><th>项目</th><th>自测标准</th><th>对应章节</th></tr>
+    <tr><td>顺序表插入/删除的移动次数</td><td>能写出 n−i+1 与 n−i，并能推平均移动量</td><td><a href="ch01.html">第 1 章</a></td></tr>
+    <tr><td>四种链表的判空条件</td><td>不看书默写四种</td><td><a href="ch01.html">第 1 章</a></td></tr>
+    <tr><td>循环队列三种判满方案与元素个数公式</td><td>能说出各自适用约定</td><td><a href="ch02.html">第 2 章</a></td></tr>
+    <tr><td>卡特兰数</td><td>n=3→5、n=4→14、n=5→42 脱口而出</td><td><a href="ch02.html">第 2 章</a></td></tr>
+    <tr><td>二叉树五大性质 + n₀=n₂+1 推导</td><td>现场推导一遍</td><td><a href="ch03.html">第 3 章</a></td></tr>
+    <tr><td>最矮 AVL 结点数递推</td><td>1,2,4,7,12,20,33 默写</td><td><a href="ch03.html">第 3 章</a></td></tr>
+    <tr><td>握手定理与保证连通的最少边数</td><td>C(n−1,2)+1 能解释为什么</td><td><a href="ch04.html">第 4 章</a></td></tr>
+    <tr><td>B 树/B+ 树的阶与关键字范围</td><td>m 阶的上下限与根的特殊性</td><td><a href="ch05.html">第 5 章</a></td></tr>
+    <tr><td>散列 ASL</td><td>成功按插入探测次数、失败分母是模数 p</td><td><a href="ch05.html">第 5 章</a></td></tr>
+    <tr><td>八大排序的复杂度与稳定性</td><td>闭卷默写整张表</td><td><a href="ch06.html">第 6 章</a></td></tr>
+    <tr><td>KMP 的 next 数组</td><td>任给模式串 30 秒算完一列</td><td><a href="ch07.html">第 7 章</a></td></tr>
+    <tr><td>外排败者树（进阶）</td><td>知道它是 k 路归并的选择加速器</td><td><a href="ch06.html">第 6 章深挖</a></td></tr>
+  </table>
+
+  <h2 class="sec" id="trap">八、常见"弃疗点"与对策</h2>
+  <table class="tbl">
+    <tr><th>症状</th><th>真实原因</th><th>对策</th></tr>
+    <tr><td>"讲了就忘，第二天全空"</td><td>只有输入没有输出，没形成检索路径</td><td>每天睡前 5 分钟口述（见第二节第 ④ 步）；用<a href="practice.html">练习场</a>的错题本做间隔重复</td></tr>
+    <tr><td>"看动画很爽，做题还是不会"</td><td>动画给的是"看懂"，做题要的是"想出来"</td><td>看动画后立刻做章内 4 道基础题；看完不做的下一章先别开</td></tr>
+    <tr><td>"平衡树旋转永远记不住"</td><td>在背四种名字，而不是理解一次手术</td><td>用"按中序取 a,b,c 重挂 T0~T3"（见第 3 章多源视角），四种失衡是同一次操作</td></tr>
+    <tr><td>"快排代码写得出，问复杂度就卡"</td><td>没记"基本有序会退化"这条反例</td><td>把"快排最怕什么"当成一个独立知识点背：最怕有序，退化 O(n²)</td></tr>
+    <tr><td>"越到后期越慌，一直刷题不看错题"</td><td>刷题带来的安全感是幻觉</td><td>三轮只做两件事：一天一套卷 + 每晚翻错题本；不许开新资料</td></tr>
+    <tr><td>"跨考零基础，C 语言都不会"</td><td>缺的不是算法，是指针和递归</td><td>先花 1~2 周只补三样：指针与数组、递归、参数传递（值传递 vs 地址传递），再进第 1 章</td></tr>
+  </table>
+
+  <h2 class="sec" id="map">九、按主线织网，而不是按章节推进</h2>
+  <p>最后一条，也是最能拉开差距的一条：复习到后期，脑子里应该有三张网，而不是七个孤岛。</p>
+  <div class="grid cols-3">
+    <div class="card"><h3>主线一 · 线性结构</h3><p>"存储 + 操作"的二维选择：顺序 vs 链式 × 查/插/删。栈和队列是"受限的线性表"，限制带来确定性。链表题三板斧：快慢指针、就地逆置、辅助数组换时间。</p></div>
+    <div class="card"><h3>主线二 · 树</h3><p>树的全部问题都能归到"遍历 + 递归"。BST 靠中序保序，AVL 靠旋转保形（中序序列是不变量），哈夫曼靠合并保最优。看到树题先问：这是不是某个遍历的变体？</p></div>
+    <div class="card"><h3>主线三 · 图与查找排序</h3><p>图是"遍历 + 权值"：BFS/DFS 是骨架，MST/最短路/拓扑都长在骨架上。查找与排序则是"循值 vs 循关键码"和"比较 vs 移动"两组权衡。</p></div>
+  </div>
+  <div class="callout ok"><div class="co-title">✅ 一句话总结</div>
+  一轮建框架（配额推进）→ 二轮重做错题（不是赶进度）→ 三轮一天一套（练节奏）。错题本写三栏，大题按采分点写，算法题四步练。剩下的，就是重复。</div>
+
+  <div class="callout exam"><div class="co-title">📌 下一步</div>
+  把这份方法论拆成今天的动作：打开<a href="ch01.html">第 1 章</a>，看完动画课堂，做 4 道基础题，错的写进三栏式错题本，睡前口述一遍。这就是一轮里最标准的一天。</div>
+</div>
+
+<footer>
+  408 数据结构可视化课堂 · 备考方法论<br>
+  <div class="pagers">
+    <a href="index.html">← 返回总览</a><a href="practice.html">去练习场</a><a href="resources.html">资源导航 →</a>
+  </div>
+</footer>
+<script src="assets/app.js"></script>
+</body>
+</html>

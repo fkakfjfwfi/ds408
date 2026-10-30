@@ -10,7 +10,7 @@
 <nav class="topbar"><div class="topbar-inner">
   <a class="logo" href="index.html"><span class="dot"></span>408 数据结构可视化课堂</a>
   <div class="nav-links">
-    <a href="index.html">总览</a><a href="ch01.html">线性表</a><a href="ch02.html">栈与队列</a><a href="ch03.html">树</a><a href="ch04.html">图</a><a href="ch05.html">查找</a><a href="ch06.html">排序</a><a href="ch07.html">串</a><a href="practice.html">练习场</a><a href="resources.html">资源导航</a>
+    <a href="index.html">总览</a><a href="ch01.html">线性表</a><a href="ch02.html">栈与队列</a><a href="ch03.html">树</a><a href="ch04.html">图</a><a href="ch05.html">查找</a><a href="ch06.html">排序</a><a href="ch07.html">串</a><a href="practice.html">练习场</a><a href="method.html">备考方法论</a><a href="resources.html">资源导航</a>
   </div>
   <button class="theme-btn" title="切换明暗主题">🌙</button>
 </div></nav>
@@ -19,7 +19,7 @@
   <div class="hero">
     <h1>第 1 章 · 线性表</h1>
     <p>数据结构的第一块地基。408 卷面上直接考线性表的题不少，更重要的是：后面栈、队列、树、图全都建立在它的思想之上。</p>
-    <p class="tagline">预计学习 3~4 小时 · 动画课堂 1 集 · 练习 12 题 · 打卡 6 项</p>
+    <p class="tagline">预计学习 3~4 小时 · 动画课堂 1 集 · 练习 16 题 · 打卡 6 项</p>
   </div>
 
   <div class="toc"><span class="toc-label">本页导航</span><a href="#goal">学习目标</a><a href="#s1">什么是线性表</a><a href="#s2">顺序表</a><a href="#s3">单链表</a><a href="#s4">双链/循环</a><a href="#s5">对比选型</a><a href="#deep">进阶深挖</a><a href="#lesson">动画课堂</a><a href="#pit">避坑清单</a><a href="#quiz">章内练习</a><a href="#ck">打卡</a></div>
@@ -149,6 +149,15 @@ LinkList ReverseList(LinkList L) {
     return L;
 }</pre>
 
+  <div class="callout views"><div class="co-title">🌐 多源视角（不同书的讲法）</div>
+  <ul>
+    <li><b>【邓俊辉《数据结构（C++版）》】四种访问方式谱系：</b>循秩访问（向量，地址 = 首地址 + 序号×sizeof，O(1)）、循位置访问（列表，靠 pred/succ 引用）、循值访问（散列）、循关键码访问（BST 靠比较缩小范围）。本站用法：先问"你要按什么方式访问"，再决定顺序表还是链表——比只背"插入删 O(n)"更贴设计动机。</li>
+    <li><b>【Hello 算法】栈 = 被屏蔽掉部分操作的数组或链表：</b>同一份单链表，插入删除都在头部就是栈，都在头部进尾部出就是队列。本站用法：给一个带头尾指针的单链表，改造成栈/队列只需改"在哪插在哪删"，结点结构一个字不用动。</li>
+    <li><b>【均摊分析】翻倍扩容才叫均摊 O(1)：</b>表满时申请 2 倍空间并整体搬移，装载因子始终 ≥ 1/2，n 次插入的搬移总量 ≤ 2n；若每次只加 1 格，n 次插入总搬移为 Θ(n²)——"均摊"这个词才立得住。</li>
+    <li><b>【静态链表】备用链不回收就"删了也插不进"：</b>0 号单元当备用链头，插入从备用链取格、删除把结点挂回备用链；删除时忘了回收，备用链很快耗尽，表现为"明明删了结点却插不进新结点"。</li>
+  </ul>
+  <div class="src">参考：邓俊辉《数据结构（C++版）》绪论；Hello 算法 hello-algo.com；严蔚敏《数据结构（C语言版）》2.3</div></div>
+
   <h2 class="sec" id="lesson">🎬 动画课堂 · 第 1 集《一节车厢的两种连法》</h2>
   <p>点击播放，语音会同步讲解每一幕（女声晓晓讲基础，男声云健讲考点）。空格键可暂停，进度条可拖动跳幕。</p>
   <div id="lesson"></div>
@@ -162,7 +171,7 @@ LinkList ReverseList(LinkList L) {
     <div class="step">求表长：顺序表 O(1) 读 length；单链表要遍历 O(n)——这也是考点。</div>
   </div>
 
-  <h2 class="sec" id="quiz">📝 章内练习（12 题 · 基础 → 提高 → 真题）</h2>
+  <h2 class="sec" id="quiz">📝 章内练习（16 题 · 基础 → 提高 → 真题）</h2>
   <h3 class="sub" style="color:var(--green)">🟢 第一档 · 基础（4 题）</h3>
   <div class="quiz" data-answer="C" data-diff="basic">
     <div class="q-head"><div class="q-tag">练习 1 · 考点：移动元素个数</div>
@@ -263,7 +272,7 @@ LinkList ReverseList(LinkList L) {
     <div class="q-exp"><b>解析：</b>选 D。尾插：在 rear 后插入再令 rear 后移，O(1)。但删尾元需要<b>它的前驱</b>——循环单链表只能从 rear->next（头结点）绕一整圈找，O(n)。教训：<b>尾指针只服务"尾部"，删除尾部恰恰要"尾部的前驱"</b>，这正是双链表/双循环链表存在的理由。</div>
   </div>
 
-  <h3 class="sub" style="color:var(--brand)">🔴 第三档 · 真题（4 题 · 原题核对版）</h3>
+  <h3 class="sub" style="color:var(--brand)">🔴 第三档 · 真题（8 题 · 原题核对版）</h3>
   <div class="quiz" data-answer="D" data-diff="real" data-year="2016">
     <div class="q-head"><div class="q-tag">练习 9 · 考点：双循环链表删除语句序</div>
     已知一个带有表头结点的双向循环链表 L，结点结构为 (prior, data, next)，p 指向链表中某一结点（p ≠ 头结点）。删除 p 所指结点的正确语句序列是：</div>
@@ -313,6 +322,55 @@ LinkList ReverseList(LinkList L) {
     <div class="q-exp"><b>解析：</b>选 B。快指针一次走两步、慢指针一步，快指针到尾时慢指针恰在中点；把后半段就地逆置（头插法 O(1) 空间）；再从前半段与逆置后的后半段轮流摘结点合并。C 能做对但空间 O(n) 不满足"尽可能高效"——真题评分标准里空间不达标直接扣分。三步分别对应本页深挖 4 的基本功。</div>
   </div>
 
+  <div class="quiz" data-answer="B" data-diff="real" data-year="2010">
+    <div class="q-head"><div class="q-tag">练习 13 · 考点：循环左移（2010 年数据结构大题 · 选择化）</div>
+    将含 n 个整数的顺序表循环左移 p 位（1 ≤ p ≤ n），要求时间和辅助空间都尽可能高效，最优解法的时空复杂度是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. O(n) / O(p)</div>
+      <div class="opt" data-opt="B">B. O(n) / O(1)</div>
+      <div class="opt" data-opt="C">C. O(p×n) / O(1)</div>
+      <div class="opt" data-opt="D">D. O(nlog₂n) / O(1)</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 B。三次逆置——前 p 个逆置、后 n−p 个逆置、整体逆置，每元素最多搬 2 次，空间只用常数个临时变量。C 是逐位搬移的朴素解，O(pn)。这是 2010 年大题的解法骨架，代码见本章深挖 4。</div>
+  </div>
+  <div class="quiz" data-answer="B" data-diff="real">
+    <div class="q-head"><div class="q-tag">练习 14 · 考点：两链表公共后缀（真题同型）</div>
+    两个带头结点的单链表 A、B 长度分别为 m、n，从某个结点起两表的后继结点完全相同（形成 Y 形）。在时间和空间都尽可能高效的条件下，找出首个公共结点的最优做法是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 双重循环逐对比较，O(mn)</div>
+      <div class="opt" data-opt="B">B. 先求两表长度 m、n，让较长者先走 |m−n| 步，再两表同步前进，首个指针相同的结点即答案，O(m+n) / O(1)</div>
+      <div class="opt" data-opt="C">C. 把 A 的所有结点地址存入散列表，再遍历 B，O(m+n) / O(m)</div>
+      <div class="opt" data-opt="D">D. 把两表整体逆置后从头比较</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 B。Y 形共用尾部意味着"末尾对齐后，公共段起点必然同步到达"——先让长表走完富余的 |m−n| 步，两指针就齐平了。C 也对但空间 O(m)，不满足"空间尽可能高效"。D 破坏链表结构不可取。</div>
+  </div>
+  <div class="quiz" data-answer="C" data-diff="real" data-year="2013">
+    <div class="q-head"><div class="q-tag">练习 15 · 考点：主元素（2013 年数据结构大题 · 选择化）</div>
+    长度为 n 的整数序列中，若某元素的出现次数超过 n/2，称其为主元素。在时间、空间都尽可能高效的前提下，判断主元素的最优做法是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 排序后取中间元素再计数，O(nlog₂n)</div>
+      <div class="opt" data-opt="B">B. 散列表计数，O(n) / O(n)</div>
+      <div class="opt" data-opt="C">C. 摩尔投票法：一次遍历"抵消"，再二次遍历验证，O(n) / O(1)</div>
+      <div class="opt" data-opt="D">D. 双重循环统计每个元素出现次数，O(n²)</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 C。摩尔投票的思路是"成对抵消"——不同则抵消、相同则计数，最后剩下的候选者再数一遍确认（<b>必须验证</b>，只投票不验证会漏判）。2013 年大题的满分点就在"O(n) 时间 + O(1) 空间 + 二次验证"。</div>
+  </div>
+  <div class="quiz" data-answer="C" data-diff="real" data-year="2016">
+    <div class="q-head"><div class="q-tag">练习 16 · 考点：静态链表插入</div>
+    静态链表用数组模拟，每个分量含 data 与 next（存后继的数组下标），0 号单元为头结点，备用结点串成备用链。设结点 a、e、f 的数组下标分别为 2、5、7，且 a 是 e 的前驱。现要把 f 插入 a 与 e 之间，正确的操作是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 只改 a 的 next 为 7，f 的 next 保持原值</div>
+      <div class="opt" data-opt="B">B. 先改 a 的 next 为 7，再把 f 的 next 改为 5</div>
+      <div class="opt" data-opt="C">C. 先把 f 从备用链摘下（改备用链头的 next），再令 f.next = 5、a.next = 7</div>
+      <div class="opt" data-opt="D">D. 直接把 e 的 next 改为 7</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 C。静态链表插入和动态链表一个道理——<b>先钩新，后接旧</b>，还要额外管一件事：从备用链摘结点（否则这个格子会被重复分配）。B 少了摘链这步；A、D 会让 e 之后断链。</div>
+  </div>
+
   <h2 class="sec" id="ck">✅ 打卡清单</h2>
   <div data-ck-scope>
     <p><span class="progress-pill">0 / 6 已打卡</span></p>
@@ -322,7 +380,7 @@ LinkList ReverseList(LinkList L) {
       <label class="check-item" data-ck="ch1-3"><input type="checkbox"><span>能默写单链表后插的两步指针操作并解释顺序原因</span></label>
       <label class="check-item" data-ck="ch1-4"><input type="checkbox"><span>能背出四种链表的判空条件</span></label>
       <label class="check-item" data-ck="ch1-5"><input type="checkbox"><span>看完动画课堂《一节车厢的两种连法》</span></label>
-      <label class="check-item" data-ck="ch1-6"><input type="checkbox"><span>章内 12 题正确 ≥ 9 题（基础档必须全对）</span></label>
+      <label class="check-item" data-ck="ch1-6"><input type="checkbox"><span>章内 16 题正确 ≥ 12 题（基础档必须全对）</span></label>
     </div>
   </div>
 </div>

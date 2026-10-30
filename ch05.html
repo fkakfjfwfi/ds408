@@ -10,7 +10,7 @@
 <nav class="topbar"><div class="topbar-inner">
   <a class="logo" href="index.html"><span class="dot"></span>408 数据结构可视化课堂</a>
   <div class="nav-links">
-    <a href="index.html">总览</a><a href="ch01.html">线性表</a><a href="ch02.html">栈与队列</a><a href="ch03.html">树</a><a href="ch04.html">图</a><a href="ch05.html">查找</a><a href="ch06.html">排序</a><a href="ch07.html">串</a><a href="practice.html">练习场</a><a href="resources.html">资源导航</a>
+    <a href="index.html">总览</a><a href="ch01.html">线性表</a><a href="ch02.html">栈与队列</a><a href="ch03.html">树</a><a href="ch04.html">图</a><a href="ch05.html">查找</a><a href="ch06.html">排序</a><a href="ch07.html">串</a><a href="practice.html">练习场</a><a href="method.html">备考方法论</a><a href="resources.html">资源导航</a>
   </div>
   <button class="theme-btn" title="切换明暗主题">🌙</button>
 </div></nav>
@@ -19,7 +19,7 @@
   <div class="hero">
     <h1>第 5 章 · 查找</h1>
     <p>查找是数据结构"学以致用"的一章：折半查找是分治思想的第一次落地，BST 是树结构的第一个应用，散列表则是"以空间换时间"的极致。408 选择题年年考 ASL 计算，大题爱考散列表和 BST。</p>
-    <p class="tagline">预计学习 4~6 小时 · 动画课堂 1 集 · 练习 12 题 · 打卡 6 项</p>
+    <p class="tagline">预计学习 4~6 小时 · 动画课堂 1 集 · 练习 16 题 · 打卡 6 项</p>
     <div class="toc"><span class="toc-label">本页导航</span><a href="#goal">学习目标</a><a href="#s1">概念与ASL</a><a href="#s2">折半查找</a><a href="#s3">BST</a><a href="#s4">AVL</a><a href="#s5">B树</a><a href="#s6">散列表</a><a href="#deep">进阶深挖</a><a href="#lesson">动画课堂</a><a href="#pit">避坑清单</a><a href="#quiz">章内练习</a><a href="#ck">打卡</a></div>
   </div>
 
@@ -119,6 +119,16 @@ return -1;  // low > high 说明没找到</pre>
   <div class="callout exam"><div class="co-title">📌 真题怎么考（本章规律）</div>
   BST 查找路径合法性（2011）、折半路径即判定树路径（2015）、B 树删除过程（2012/2022）、散列 ASL 计算（成功按插入时探测次数、失败分母为 p，2022）、分块最优块长 √n（2025）。大题固定戏码：给散列函数和关键字序列，画表 + 算成功/失败 ASL，两问共 10+ 分。</div>
 
+  <div class="callout views"><div class="co-title">🌐 多源视角（不同书的讲法）</div>
+  <ul>
+    <li><b>【邓俊辉 · 四种访问方式】：</b>散列是"循值访问"，BST 是"循关键码访问"——散列由值直接算出地址（不比较），BST 靠比较把范围砍半。这一句就能回答"为什么散列 O(1)、BST O(log n)"，比背复杂度表本质得多。</li>
+    <li><b>【Sedgewick · 散列的两个 α】：</b>分离链接的 α = N/M 是"平均链长"，可以大于 1；开放定址的 α 是"被占用的比例"，必须小于 1。线性探测的期望探测次数：命中 ≈ ½(1+1/(1−α))、失败 ≈ ½(1+1/(1−α)²)，α=0.5 代入得 1.5 与 2.5，本站练习 16 就是它。</li>
+    <li><b>【Hello 算法 · 冲突的必然性】：</b>输入空间（全体整数）远大于输出空间（M 个桶），鸽巢原理下冲突不可避免，所以 ASL 分析必须先假设"均匀散列"——这比"冲突是可能的"这种含糊说法有力。</li>
+    <li><b>【邓俊辉 · 二分查找三版本】：</b>A 版每轮最多 3 次比较；B 版每轮仅 1 次比较（整体更均衡）；Fibonacci 查找让代价低的左分支承担更多情况（向左只需 1 次比较、向右要 2 次）。这解释了 408 为什么爱考"比较次数序列"。</li>
+    <li><b>【B 树与 B+ 树的记忆锚点】：</b>B 树：子树数 = 关键字数 + 1；B+ 树：n 棵子树 ⇔ n 个关键字（每个关键字都对应一棵子树）。把 B 树的 ⌈m/2⌉−1 直接套到 B+ 树非叶结点必错。</li>
+  </ul>
+  <div class="src">参考：邓俊辉《数据结构（C++版）》；Sedgewick《算法（第4版）》3.4；Hello 算法 chapter_hashing</div></div>
+
   <h2 class="sec" id="lesson">🎬 动画课堂 · 第 5 集《翻字典的三种姿势》</h2>
   <p>翻字典类比 → 折半查找判定 → BST 生长 → AVL 旋转一瞥 → 散列拉链法 → ASL 总结。进度条上的圆点可以跳幕。</p>
   <div id="lesson"></div>
@@ -136,7 +146,7 @@ return -1;  // low > high 说明没找到</pre>
     <div class="step">线性探测容易"堆积"（非同义词抢同一个坑），拉链法没有堆积问题但需要额外指针空间——概念题常对比两者。</div>
   </div>
 
-  <h2 class="sec" id="quiz">📝 章内练习（12 题 · 基础 → 提高 → 真题）</h2>
+  <h2 class="sec" id="quiz">📝 章内练习（16 题 · 基础 → 提高 → 真题）</h2>
   <h3 class="sub" style="color:var(--green)">🟢 第一档 · 基础（4 题）</h3>
   <div class="quiz" data-answer="B" data-diff="basic">
     <div class="q-head"><div class="q-tag">练习 1 · 考点：折半查找比较次数</div>
@@ -236,7 +246,7 @@ return -1;  // low > high 说明没找到</pre>
     <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
     <div class="q-exp"><b>解析：</b>选 C。m 阶 B 树——最多 m 棵子树、非根非叶至少 ⌈m/2⌉ 棵；对应关键字数 = 子树数 − 1（最多 4 个、最少 2 个）。根最少 2 棵子树。口诀"顶天 m，立地 ⌈m/2⌉，根保底 2"。</div>
   </div>
-  <h3 class="sub" style="color:var(--brand)">🔴 第三档 · 真题（4 题 · 原题核对版）</h3>
+  <h3 class="sub" style="color:var(--brand)">🔴 第三档 · 真题（8 题 · 原题核对版）</h3>
   <div class="quiz" data-answer="D" data-diff="real" data-year="2022">
     <div class="q-head"><div class="q-tag">练习 9 · 考点：散列 ASL 的影响因素</div>
     下列因素中，影响散列表（拉链法或开放定址法）平均查找长度的是：Ⅰ．散列函数的设计 Ⅱ．冲突处理策略 Ⅲ．装填因子 α</div>
@@ -285,6 +295,54 @@ return -1;  // low > high 说明没找到</pre>
     <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
     <div class="q-exp"><b>解析：</b>选 B。3 阶 B 树结点最多 2 个关键字，插入第 3 个触发分裂：按序排好后取中位关键字上移父结点，左右各留一个；父结点若因此超限则连锁分裂，最坏分裂到根、树高 +1。插入分裂与删除合并（借/并）是 B 树两大过程题，2012、2022 都考过删除版。</div>
   </div>
+  <div class="quiz" data-answer="D" data-diff="real" data-year="2011">
+    <div class="q-head"><div class="q-tag">练习 13 · 考点：BST 查找路径的合法性</div>
+    下列序列中，<b>不可能</b>是某二叉排序树中一条查找路径（从根到某结点经过的结点序列）的是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 90, 70, 85, 80</div>
+      <div class="opt" data-opt="B">B. 90, 110, 100, 105</div>
+      <div class="opt" data-opt="C">C. 90, 70, 60, 65</div>
+      <div class="opt" data-opt="D">D. 90, 110, 120, 60</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 D。BST 查找路径有一条铁律——<b>一旦向左拐，之后所有值必须全部小于当前结点</b>（向右拐则全部大于）。D 中 90→110 是右拐、110→120 又是右拐，说明 60 落在 110 的右子树里，必须<b>大于 110</b>；可 120→60 是左拐，只要求 60 小于 120。60 小于 110 直接判非法。判法：沿路径维护"下界/上界"区间，区间一旦交叉即非法——90→110 后区间变为 (90, +∞)，到 120 后仍是 (110, +∞)，60 掉出这个区间。</div>
+  </div>
+  <div class="quiz" data-answer="B" data-diff="real" data-year="2012">
+    <div class="q-head"><div class="q-tag">练习 14 · 考点：B 树删除（兄弟够借）</div>
+    5 阶 B 树中，某终端结点含关键字 70、78（共 2 个，已达下限）。现要删除 78，其左兄弟结点含 3 个关键字，双亲结点含 1 个关键字。正确的调整方式是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 直接删除 78，结点剩 1 个关键字，无需调整</div>
+      <div class="opt" data-opt="B">B. 删除后结点下溢，向兄弟借：兄弟最大关键字上移到双亲、双亲关键字下移到本结点</div>
+      <div class="opt" data-opt="C">C. 删除后结点下溢，与兄弟合并成一个结点，双亲关键字随之合并</div>
+      <div class="opt" data-opt="D">D. 删除后整棵树重建</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 B。5 阶 B 树非根结点至少 ⌈5/2⌉−1 = 2 个关键字，删 78 后只剩 70，低于下限 ⇒ <b>下溢</b>。再看兄弟能否支援：兄弟有 3 个关键字，借出后仍有 2 个，不低于下限 ⇒ <b>够借</b>，走<b>旋转</b>——兄弟的最大关键字上移到双亲，双亲的原关键字下移到本结点。C 的合并在"兄弟不够借"时才用，且会连锁下溢直到根；A 忽略了"删除后必须恢复 B 树性质"这一前提。</div>
+  </div>
+  <div class="quiz" data-answer="C" data-diff="real">
+    <div class="q-head"><div class="q-tag">练习 15 · 真题同型 · 考点：AVL 的平衡因子分布</div>
+    依次将 1、2、3、4、5、6、7 插入初始为空的 AVL 树，最终树中平衡因子为 0 的分支结点个数是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 1</div>
+      <div class="opt" data-opt="B">B. 2</div>
+      <div class="opt" data-opt="C">C. 3</div>
+      <div class="opt" data-opt="D">D. 4</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 C。连续插入后经旋转得到一棵高度 3 的满二叉树形态：根 4，左 2（孩子 1、3），右 6（孩子 5、7）。分支结点是 4、2、6 三个，它们的左右子树高度都相等 ⇒ 平衡因子全为 0。故 3 个。方法：<b>先按"中间值转上去"画最终形态，再逐个标平衡因子</b>，不要一路模拟旋转。</div>
+  </div>
+  <div class="quiz" data-answer="B" data-diff="real">
+    <div class="q-head"><div class="q-tag">练习 16 · 真题同型 · 考点：线性探测的期望探测次数</div>
+    采用线性探测的散列表，装填因子 α=0.5。按 Sedgewick 给出的期望公式，查找<b>命中</b>与查找<b>失败</b>的期望探测次数分别约为：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 1.0 与 1.0</div>
+      <div class="opt" data-opt="B">B. 1.5 与 2.5</div>
+      <div class="opt" data-opt="C">C. 2.0 与 4.0</div>
+      <div class="opt" data-opt="D">D. 1.5 与 1.5</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 B。命中 ≈ ½(1+1/(1−α)) = ½(1+2) = 1.5；失败 ≈ ½(1+1/(1−α)²) = ½(1+4) = 2.5。两个公式的差别就在分母是不是平方——失败查找要一直探到空位，代价天然更高，这也是"装填因子越大 ASL 恶化越快"的定量表述。</div>
+  </div>
 
   <h2 class="sec" id="ck">✅ 打卡清单</h2>
   <div data-ck-scope>
@@ -295,7 +353,7 @@ return -1;  // low > high 说明没找到</pre>
       <label class="check-item" data-ck="ch5-3"><input type="checkbox"><span>能判断 AVL 失衡类型并画出旋转结果</span></label>
       <label class="check-item" data-ck="ch5-4"><input type="checkbox"><span>能算散列表成功/失败 ASL（记住分母规则）</span></label>
       <label class="check-item" data-ck="ch5-5"><input type="checkbox"><span>看完动画课堂《翻字典的三种姿势》</span></label>
-      <label class="check-item" data-ck="ch5-6"><input type="checkbox"><span>章内 12 题正确 ≥ 9 题（基础档必须全对）</span></label>
+      <label class="check-item" data-ck="ch5-6"><input type="checkbox"><span>章内 16 题正确 ≥ 12 题（基础档必须全对）</span></label>
     </div>
   </div>
 </div>

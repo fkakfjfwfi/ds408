@@ -90,7 +90,124 @@
       if (bits.length) tag.insertAdjacentHTML("afterbegin", bits.join(""));
     }
   });
-  document.querySelectorAll(".quiz").forEach(function (q) {
+
+  /* ── 题库 HUD：进度 / 正确率 / 错题本 / 收藏 / 随机抽题（全部 localStorage 持久化） ── */
+  var QS_KEY = "ds408_qstats", FAV_KEY = "ds408_fav";
+  function loadJSON(k, d) {
+    try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; }
+  }
+  function saveJSON(k, o) { try { localStorage.setItem(k, JSON.stringify(o)); } catch (e) {} }
+  function hashStr(s) {
+    var h = 5381;
+    for (var i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) & 0x7fffffff;
+    return h.toString(36);
+  }
+  /* 题干文本（去掉标签）作为稳定 ID：改写题干才会换 ID，加题/挪位置都不受影响 */
+  function stemOf(q) {
+    var head = q.querySelector(".q-head");
+    if (!head) return "";
+    var clone = head.cloneNode(true);
+    var t = clone.querySelector(".q-tag");
+    if (t) t.parentNode.removeChild(t);
+    return clone.textContent.replace(/\s+/g, " ").trim().slice(0, 160);
+  }
+
+  var PAGE = location.pathname.split("/").pop() || "index.html";
+  var quizzes = Array.prototype.slice.call(document.querySelectorAll(".quiz"));
+  var qStats = loadJSON(QS_KEY, {});
+  var qFavs = loadJSON(FAV_KEY, {});
+  quizzes.forEach(function (q) { q.__qid = PAGE + "-" + hashStr(stemOf(q)); });
+
+  var hudBar = null, hudMode = "all";
+  function refreshHud() {
+    if (!hudBar) return;
+    var answered = 0, correct = 0, wrong = 0, fav = 0;
+    quizzes.forEach(function (q) {
+      var s = qStats[q.__qid];
+      if (s === 1) { answered++; correct++; }
+      else if (s === 0) { answered++; wrong++; }
+      if (qFavs[q.__qid]) fav++;
+    });
+    hudBar.querySelector(".hud-n b").textContent = answered;
+    hudBar.querySelector(".hud-acc b").textContent = answered ? Math.round(correct / answered * 100) + "%" : "—";
+    hudBar.querySelector(".hud-wrong b").textContent = wrong;
+    hudBar.querySelector(".hud-fav b").textContent = fav;
+    hudBar.querySelectorAll("[data-hud]").forEach(function (b) {
+      var m = b.getAttribute("data-hud");
+      if (m === "all" || m === "reset") { b.classList.add("ghost"); return; }
+      b.classList.toggle("on", m === hudMode);
+    });
+  }
+  function announce(msg) {
+    if (!hudBar) return;
+    var el = hudBar.querySelector(".hud-msg");
+    if (!el) return;
+    el.textContent = msg;
+    el.classList.add("show");
+    clearTimeout(el.__t);
+    el.__t = setTimeout(function () { el.classList.remove("show"); }, 2600);
+  }
+  function applyMode(mode) {
+    hudMode = mode;
+    var show = quizzes;
+    if (mode === "wrong") show = quizzes.filter(function (q) { return qStats[q.__qid] === 0; });
+    else if (mode === "fav") show = quizzes.filter(function (q) { return qFavs[q.__qid]; });
+    else if (mode === "random") {
+      var arr = quizzes.slice();
+      for (var i = arr.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+      }
+      show = arr.slice(0, Math.min(10, arr.length));
+    }
+    quizzes.forEach(function (q) { q.style.display = show.indexOf(q) >= 0 ? "" : "none"; });
+    if (mode === "wrong" && !show.length) announce("错题本是空的 —— 继续保持！");
+    if (mode === "fav" && !show.length) announce("还没有收藏题 —— 点题卡右上角的 ☆");
+    if (mode === "random") announce("已随机抽取 " + show.length + " 题");
+    if (mode === "all") announce("已显示全部 " + quizzes.length + " 题");
+    refreshHud();
+  }
+  function buildHud() {
+    if (!quizzes.length) return;
+    var bar = document.createElement("div");
+    bar.className = "quiz-hud";
+    bar.innerHTML =
+      '<div class="hud-stats">' +
+        '<span class="hud-n">已答 <b>0</b> / ' + quizzes.length + "</span>" +
+        '<span class="hud-acc">正确率 <b>—</b></span>' +
+        '<span class="hud-wrong">错题 <b>0</b></span>' +
+        '<span class="hud-fav">收藏 <b>0</b></span>' +
+      "</div>" +
+      '<div class="hud-actions">' +
+        '<button data-hud="wrong">只看错题</button>' +
+        '<button data-hud="fav">只看收藏</button>' +
+        '<button data-hud="random">随机 10 题</button>' +
+        '<button data-hud="all" class="ghost">显示全部</button>' +
+        '<button data-hud="reset" class="ghost">重置进度</button>' +
+      "</div>" +
+      '<div class="hud-msg"></div>';
+    var wrap = document.querySelector(".wrap");
+    if (wrap) {
+      var toc = wrap.querySelector(".toc");
+      wrap.insertBefore(bar, toc ? toc : wrap.firstChild);
+    }
+    bar.addEventListener("click", function (ev) {
+      var b = ev.target.closest("[data-hud]");
+      if (!b) return;
+      var m = b.getAttribute("data-hud");
+      if (m === "reset") {
+        quizzes.forEach(function (q) { delete qStats[q.__qid]; });
+        saveJSON(QS_KEY, qStats);
+        location.reload();
+        return;
+      }
+      applyMode(m === hudMode && m !== "all" ? "all" : m);
+    });
+    hudBar = bar;
+    refreshHud();
+  }
+
+  quizzes.forEach(function (q) {
     var opts = q.querySelectorAll(".opt");
     var answer = q.getAttribute("data-answer"); // 如 "B"
     var picked = null;
@@ -105,6 +222,41 @@
     var btn = q.querySelector(".btn-ans");
     var res = q.querySelector(".q-res");
     var exp = q.querySelector(".q-exp");
+
+    // 收藏星标
+    var head = q.querySelector(".q-head");
+    if (head) {
+      var star = document.createElement("button");
+      star.className = "q-fav";
+      star.type = "button";
+      star.title = "收藏这道题";
+      star.textContent = qFavs[q.__qid] ? "★" : "☆";
+      if (qFavs[q.__qid]) star.classList.add("on");
+      star.addEventListener("click", function (ev) {
+        ev.stopPropagation();
+        if (qFavs[q.__qid]) { delete qFavs[q.__qid]; star.textContent = "☆"; star.classList.remove("on"); }
+        else { qFavs[q.__qid] = 1; star.textContent = "★"; star.classList.add("on"); }
+        saveJSON(FAV_KEY, qFavs);
+        refreshHud();
+      });
+      head.style.position = "relative";
+      head.appendChild(star);
+    }
+
+    // 恢复上次作答状态
+    if (qStats[q.__qid] !== undefined) {
+      q.setAttribute("data-done", "1");
+      var wasOk = qStats[q.__qid] === 1;
+      opts.forEach(function (x) {
+        if (x.getAttribute("data-opt") === answer) x.classList.add("right");
+      });
+      if (res) {
+        res.textContent = wasOk ? "✅ 上次答对" : "❌ 上次答错（正确答案是 " + answer + "）";
+        res.className = "q-res " + (wasOk ? "good" : "bad");
+      }
+      if (btn) btn.textContent = "查看解析";
+    }
+
     if (btn) btn.addEventListener("click", function () {
       if (q.getAttribute("data-done") === "1") {
         exp.classList.toggle("show");
@@ -123,6 +275,11 @@
       });
       btn.textContent = "查看解析";
       exp.classList.add("show");
+      qStats[q.__qid] = ok ? 1 : 0;
+      saveJSON(QS_KEY, qStats);
+      refreshHud();
+      if (!ok) announce("已收入错题本，可点「只看错题」重做");
     });
   });
+  buildHud();
 })();

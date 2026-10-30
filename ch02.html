@@ -10,7 +10,7 @@
 <nav class="topbar"><div class="topbar-inner">
   <a class="logo" href="index.html"><span class="dot"></span>408 数据结构可视化课堂</a>
   <div class="nav-links">
-    <a href="index.html">总览</a><a href="ch01.html">线性表</a><a href="ch02.html">栈与队列</a><a href="ch03.html">树</a><a href="ch04.html">图</a><a href="ch05.html">查找</a><a href="ch06.html">排序</a><a href="ch07.html">串</a><a href="practice.html">练习场</a><a href="resources.html">资源导航</a>
+    <a href="index.html">总览</a><a href="ch01.html">线性表</a><a href="ch02.html">栈与队列</a><a href="ch03.html">树</a><a href="ch04.html">图</a><a href="ch05.html">查找</a><a href="ch06.html">排序</a><a href="ch07.html">串</a><a href="practice.html">练习场</a><a href="method.html">备考方法论</a><a href="resources.html">资源导航</a>
   </div>
   <button class="theme-btn" title="切换明暗主题">🌙</button>
 </div></nav>
@@ -19,7 +19,7 @@
   <div class="hero">
     <h1>第 2 章 · 栈、队列和数组</h1>
     <p>两种「被限制」的线性表：栈只准从一头进出，队列一头进一头出。限制反而造就了它们各自的杀手级应用。408 对本章的循环队列判满判空几乎年年必考。</p>
-    <p class="tagline">预计学习 3~4 小时 · 动画课堂 1 集 · 练习 12 题 · 打卡 6 项</p>
+    <p class="tagline">预计学习 3~4 小时 · 动画课堂 1 集 · 练习 16 题 · 打卡 6 项</p>
   </div>
 
   <div class="toc"><span class="toc-label">本页导航</span><a href="#goal">学习目标</a><a href="#s1">栈</a><a href="#s2">括号与表达式</a><a href="#s3">队列</a><a href="#s4">循环队列</a><a href="#s5">矩阵压缩</a><a href="#deep">进阶深挖</a><a href="#lesson">动画课堂</a><a href="#pit">避坑清单</a><a href="#quiz">章内练习</a><a href="#ck">打卡</a></div>
@@ -126,6 +126,15 @@ int calc(int a, int b, char op) {           // 注意操作数顺序
   <div class="callout exam"><div class="co-title">📌 真题怎么考（本章规律）</div>
   <b>出栈序列</b>是超高频考点：2009 考栈容量反推（进栈出栈交错进队列）、2010 考带约束的不可能序列、2011 考指定开头序列计数、2013 考位置元素取值个数——一套"模拟法"通吃：开一个栈老老实实模拟。<b>循环队列</b>年年变体：个数公式、判满判空、牺牲格方案；2015 年还考过"队列用数组实现时的假溢出"。卡特兰数 2010~2014 隔年一考，记 n=3→5、n=4→14 即可现场用。</div>
 
+  <div class="callout views"><div class="co-title">🌐 多源视角（不同书的讲法）</div>
+  <ul>
+    <li><b>【邓俊辉】栈混洗 ↔ 合法括号串：</b>n 个元素的合法出栈序列数 = 卡特兰数 C(2n,n)/(n+1)，且每个出栈序列一一对应一个合法括号串。本站用法：判"哪个出栈序列不可能"时，不必枚举——3,1,2 非法，因为 3 出栈时 1 在栈底、2 压在其上，1 不可能越过 2 先出。</li>
+    <li><b>【OI Wiki · 单调队列】两句话最值钱：</b>①新元素比队尾大时，队尾"比它先出队且永不可能成为最大值"，弹出是唯一且正当的删除理由；②必须<b>另存下标</b>才能弹出越过窗口的队头——只存值的话窗口滑过后无法判断谁是过期元素。每元素进出各一次 ⇒ 总 O(n)，这才是"为什么不是 O(nk)"的解释。</li>
+    <li><b>【约定混用是真正的失分点】</b>(rear+1)%M == front 判满只在"rear 指向队尾下一格"的约定下成立；元素个数 (rear−front+M)%M 只在"front 指向队头元素"的约定下成立。一套约定用到底，别跨约定抄公式。</li>
+    <li><b>【Hello 算法】限制带来确定性：</b>栈被砍掉一头，于是"下一个取谁"唯一确定；队列砍成"一头进一头出"，于是"谁先到谁先服务"唯一确定。所有"顺序确定"的需求都往这两种结构上靠。</li>
+  </ul>
+  <div class="src">参考：邓俊辉《数据结构（C++版）》；OI Wiki oi-wiki.org/ds/monotonous-queue/；Hello 算法</div></div>
+
   <h2 class="sec" id="lesson">🎬 动画课堂 · 第 2 集《盘子、队伍与传送带》</h2>
   <p>羽毛球筒的进出 → 括号匹配 → 卡特兰数 → 排队买奶茶 → 循环队列的取模魔法。点击播放，语音同步讲解。</p>
   <div id="lesson"></div>
@@ -139,7 +148,7 @@ int calc(int a, int b, char op) {           // 注意操作数顺序
     <div class="step">队列的应用场景背三个：缓冲区（生产者消费者）、BFS、页面置换 FIFO——后面章节还会反复遇到。</div>
   </div>
 
-  <h2 class="sec" id="quiz">📝 章内练习（12 题 · 基础 → 提高 → 真题）</h2>
+  <h2 class="sec" id="quiz">📝 章内练习（16 题 · 基础 → 提高 → 真题）</h2>
   <h3 class="sub" style="color:var(--green)">🟢 第一档 · 基础（4 题）</h3>
   <div class="quiz" data-answer="B" data-diff="basic">
     <div class="q-head"><div class="q-tag">练习 1 · 考点：出栈序列合法性</div>
@@ -240,7 +249,7 @@ int calc(int a, int b, char op) {           // 注意操作数顺序
     <div class="q-exp"><b>解析：</b>选 B。考场现推：a₈₅ 之前有 7 个完整行，共 1+2+…+7 = 28 个；本行 a₈₁~a₈₄ 在它前面，又 4 个；合计 32 个，下标 = 32（下标从 0 起）。公式 k = i(i−1)/2 + j − 1 = 28 + 4 = 32。A 忘加本行前面的元素、C 多加一格——"数前面有几行"永远比背公式稳。</div>
   </div>
 
-  <h3 class="sub" style="color:var(--brand)">🔴 第三档 · 真题（4 题 · 原题核对版）</h3>
+  <h3 class="sub" style="color:var(--brand)">🔴 第三档 · 真题（8 题 · 原题核对版）</h3>
   <div class="quiz" data-answer="C" data-diff="real" data-year="2009">
     <div class="q-head"><div class="q-tag">练习 9 · 考点：栈容量反推</div>
     为解决计算机主机与打印机之间速度不匹配问题，通常设置一个打印数据缓冲区，主机把要打印输出的数据依次写入该缓冲区，打印机依次从该缓冲区取出数据。该缓冲区的逻辑结构应该是：（2009 年原题为缓冲区 + 栈队列辨析）下列说法正确的是：</div>
@@ -290,6 +299,55 @@ int calc(int a, int b, char op) {           // 注意操作数顺序
     <div class="q-exp"><b>解析：</b>选 B。d 出栈时，a、b、c 必已压在栈中（栈内从底到顶 a,b,c），e 尚未进栈。d 出栈后，剩下 {a,b,c,e} 交替进出栈：e 随时可以插入到 a、b、c 的出栈序列的任何"间隙"中，a、b、c 的合法出栈顺序只有 c,b,a 一种（栈内已定）。e 可出现在 4 个位置（c 前 / c 后 / b 后 / a 后）→ 共 4 种：d e c b a、d c e b a、d c b e a、d c b a e。规律：<b>固定某元素先出 = 栈内已堆成定序 + 未进栈元素插空</b>。</div>
   </div>
 
+  <div class="quiz" data-answer="C" data-diff="real" data-year="2013">
+    <div class="q-head"><div class="q-tag">练习 13 · 考点：出栈序列的第三个元素</div>
+    n 个元素 1,2,…,n 依次进栈（进出可交错），若第 2 个出栈的元素是 3，则第 3 个出栈元素可能取值的个数是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. n−3</div>
+      <div class="opt" data-opt="B">B. n−2</div>
+      <div class="opt" data-opt="C">C. n−1</div>
+      <div class="opt" data-opt="D">D. 不确定</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 C。3 第二个出栈时，栈内剩 1、2（2 在栈顶），4~n 尚未进栈。第 3 个出栈者可以是 2（直接弹栈顶），也可以是 4~n 中的任意一个（先入后出），共 1+(n−3) = n−1 个。注意<b>不含 3 本身、也不含 1</b>（1 压在 2 底下）。2013 年原题就是这个数法。</div>
+  </div>
+  <div class="quiz" data-answer="B" data-diff="real">
+    <div class="q-head"><div class="q-tag">练习 14 · 考点：后缀表达式求值的栈深度（真题同型）</div>
+    求后缀表达式 <code class="inline">3 4 * 2 + 7 8 - /</code> 的值时，求值栈曾达到的最大深度是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 2</div>
+      <div class="opt" data-opt="B">B. 3</div>
+      <div class="opt" data-opt="C">C. 4</div>
+      <div class="opt" data-opt="D">D. 5</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 B。逐 token 模拟：3 入（1）、4 入（2）、* 弹二压一（1）、2 入（2）、+（1）、7 入（2）、8 入（3）、-（2）、/（1）。峰值 3。这类题的唯一做法是<b>逐 token 记账，别脑算</b>。</div>
+  </div>
+  <div class="quiz" data-answer="A" data-diff="real">
+    <div class="q-head"><div class="q-tag">练习 15 · 考点：循环队列的操作追踪（真题同型）</div>
+    循环队列容量 MaxSize=8，采用"牺牲一格"方案，初始 front=rear=0。依次执行：入队 5 次、出队 3 次、再入队 2 次。此时 front、rear 分别是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. front=3、rear=7</div>
+      <div class="opt" data-opt="B">B. front=3、rear=0</div>
+      <div class="opt" data-opt="C">C. front=2、rear=7</div>
+      <div class="opt" data-opt="D">D. front=3、rear=1</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 A。入 5 次 rear=5；出 3 次 front=3；再入 2 次 rear=(5+1)%8=6，再 (6+1)%8=7。故 front=3、rear=7。D 是把 rear 当"队尾元素下标"算错的答案——先确认题目约定再动笔。</div>
+  </div>
+  <div class="quiz" data-answer="B" data-diff="real">
+    <div class="q-head"><div class="q-tag">练习 16 · 考点：BFS 中队列的最大长度（真题同型 · 跨章综合）</div>
+    对含 n 个顶点的完全二叉树（用邻接表存储）从根开始做广度优先遍历，遍历过程中队列中最多同时存放的顶点数是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 1</div>
+      <div class="opt" data-opt="B">B. ⌈n/2⌉</div>
+      <div class="opt" data-opt="C">C. n</div>
+      <div class="opt" data-opt="D">D. n+1</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 B。BFS 队列里装的是"下一层的待访问顶点"，满二叉树最底层之上的那一层有 ⌈n/2⌉ 个顶点，出队一个入队两个孩子时队列最长约为 ⌈n/2⌉。这道题把第 3 章的完全二叉树性质和第 2 章的队列空间分析缝在一起，是 408 喜欢的跨章考法。</div>
+  </div>
+
   <h2 class="sec" id="ck">✅ 打卡清单</h2>
   <div data-ck-scope>
     <p><span class="progress-pill">0 / 6 已打卡</span></p>
@@ -299,7 +357,7 @@ int calc(int a, int b, char op) {           // 注意操作数顺序
       <label class="check-item" data-ck="ch2-3"><input type="checkbox"><span>能手工把中缀表达式转成后缀表达式</span></label>
       <label class="check-item" data-ck="ch2-4"><input type="checkbox"><span>默写循环队列三种判满判空方案</span></label>
       <label class="check-item" data-ck="ch2-5"><input type="checkbox"><span>看完动画课堂《盘子、队伍与传送带》</span></label>
-      <label class="check-item" data-ck="ch2-6"><input type="checkbox"><span>章内 12 题正确 ≥ 9 题（基础档必须全对）</span></label>
+      <label class="check-item" data-ck="ch2-6"><input type="checkbox"><span>章内 16 题正确 ≥ 12 题（基础档必须全对）</span></label>
     </div>
   </div>
 </div>

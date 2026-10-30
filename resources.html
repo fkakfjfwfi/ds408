@@ -10,7 +10,7 @@
 <nav class="topbar"><div class="topbar-inner">
   <a class="logo" href="index.html"><span class="dot"></span>408 数据结构可视化课堂</a>
   <div class="nav-links">
-    <a href="index.html">总览</a><a href="ch01.html">线性表</a><a href="ch02.html">栈与队列</a><a href="ch03.html">树</a><a href="ch04.html">图</a><a href="ch05.html">查找</a><a href="ch06.html">排序</a><a href="ch07.html">串</a><a href="practice.html">练习场</a><a href="resources.html">资源导航</a>
+    <a href="index.html">总览</a><a href="ch01.html">线性表</a><a href="ch02.html">栈与队列</a><a href="ch03.html">树</a><a href="ch04.html">图</a><a href="ch05.html">查找</a><a href="ch06.html">排序</a><a href="ch07.html">串</a><a href="practice.html">练习场</a><a href="method.html">备考方法论</a><a href="resources.html">资源导航</a>
   </div>
   <button class="theme-btn" title="切换明暗主题">🌙</button>
 </div></nav>
@@ -79,26 +79,88 @@
     </div></div>
   </div>
 
-  <h2 class="sec">🧭 备考方法与经验（从全网经验贴提炼）</h2>
+  <h2 class="sec" id="books">📚 书籍精读导航（按定位分层选读）</h2>
+  <p>书不在多，在于<b>每本解决一个特定问题</b>。下表按"定位"分组：入门书建画面感、应试书对齐真题、严谨书补证明、视角书串体系。加 ⭐ 的是本站章节里直接引用过讲法的书。</p>
+  <div class="card">
+    <div class="res-item"><div class="res-icon">📗</div><div class="res-body">
+      <h4>严蔚敏《数据结构（C语言版）》 <span class="star">⭐ 官方基准</span></h4>
+      <p>408 大纲的事实基准，定义与算法描述都是"考试语言"。特点：静态链表、十字链表、败者树等独有结构，别处看不到。用法：当<b>定义与术语的裁判</b>，说法有分歧时以它为准。</p>
+      <div class="res-meta">定位：严谨 / 官方参考 · 本站第 1、2、6 章深挖引用</div>
+    </div></div>
+    <div class="res-item"><div class="res-icon">📘</div><div class="res-body">
+      <h4>王道《数据结构考研复习指导》 <span class="star">⭐ 应试主力</span></h4>
+      <p>与真题一一对应，考点星级标注 + "温馨提示/易错点"栏目，课后题质量高。用法：一轮主干教材，每题做完标记年份，直接形成考点热力图。</p>
+      <div class="res-meta">定位：应试 · 一轮主力 · 本站"真题怎么考"框的规律来源</div>
+    </div></div>
+    <div class="res-item"><div class="res-icon">🐍</div><div class="res-body">
+      <h4><a href="https://www.hello-algo.com/" target="_blank" rel="noopener">《Hello 算法》（krahets，开源免费）</a> <span class="star">⭐ 本站引用最多</span></h4>
+      <p>动画图解 + 多语言可运行代码。独有讲法：<b>栈是"被屏蔽掉部分操作的数组/链表"</b>、<b>DFS 像绕树外围走一圈（每个结点经过三次，前中后序是第 1/2/3 次记录）</b>、层序队列最长为 (n+1)/2、冲突不可避免的鸽巢论证。GitHub 仓库 krahets/hello-algo 提供 PDF/EPUB。</p>
+      <div class="res-meta">定位：图解 / 入门 · 合法免费（官网 + GitHub Release）</div>
+    </div></div>
+    <div class="res-item"><div class="res-icon">🧭</div><div class="res-body">
+      <h4><a href="https://dsa.cs.tsinghua.edu.cn/" target="_blank" rel="noopener">邓俊辉《数据结构（C++版）》（清华）</a> <span class="star">⭐ 视角最佳</span></h4>
+      <p>把数据结构按<b>访问方式</b>分成四类：循秩（向量）、循位置（列表）、循值（散列）、循关键码（BST）。还有"3+4 重构"（四种失衡是一次手术）、二分查找三版本、Fibonacci 查找的代价不对称。用法：<b>二轮串体系</b>时读绪论与对应章。</p>
+      <div class="res-meta">定位：视角 / 进阶 · 作者官网有课程与讲义资源</div>
+    </div></div>
+    <div class="res-item"><div class="res-icon">⚙️</div><div class="res-body">
+      <h4><a href="https://algs4.cs.princeton.edu/" target="_blank" rel="noopener">Sedgewick《算法（第 4 版）》</a> <span class="star">⭐ 设计动机</span></h4>
+      <p>讲"为什么这样设计"：2-3 树→红黑树的编码关系、散列探测的期望公式（命中 ½(1+1/(1−α))、失败 ½(1+1/(1−α)²)）、堆的精确比较次数常数、自底向下沉建堆是线性时间。官网提供全书讲义与代码。</p>
+      <div class="res-meta">定位：进阶 · 合法免费在线讲义 algs4.cs.princeton.edu</div>
+    </div></div>
+    <div class="res-item"><div class="res-icon">🧮</div><div class="res-body">
+      <h4>CLRS《算法导论》 <span class="star">⭐ 证明标准</span></h4>
+      <p>决策树下界（n! 种排列 ⇒ Ω(n log n)）、摊还分析的三种方法（聚合/核算/势能）的唯一标准表述。用法：<b>不要通读</b>，只查这三处，够写三年真题的复杂度论证。</p>
+      <div class="res-meta">定位：严谨 · 查证用，非通读材料</div>
+    </div></div>
+    <div class="res-item"><div class="res-icon">🏕️</div><div class="res-body">
+      <h4><a href="https://oi-wiki.org/" target="_blank" rel="noopener">OI Wiki（信息学竞赛知识库）</a> <span class="star">⭐ 边界与证明</span></h4>
+      <p>并查集的 α(n) 均摊分析、单调队列"弹出是唯一删除理由"、前缀函数 π 与 next 的对应、border 与最小周期。中文、免费、开源。用法：<b>408 冲高分</b>与"想知其所以然"时查。</p>
+      <div class="res-meta">定位：严谨 / 竞赛级 · 合法免费 oi-wiki.org</div>
+    </div></div>
+    <div class="res-item"><div class="res-icon">🎈</div><div class="res-body">
+      <h4>程杰《大话数据结构》</h4>
+      <p>生活类比密度最高的一本，适合零基础先建立"画面感"（本站的生活类比框与它同一路数，但讲法已重写）。缺点：严谨度不足，<b>不能当唯一教材</b>。</p>
+      <div class="res-meta">定位：通俗 / 入门 · 只作入门过渡，不作复习主线</div>
+    </div></div>
+    <div class="res-item"><div class="res-icon">🖊️</div><div class="res-body">
+      <h4>胡凡《算法笔记》</h4>
+      <p>按题型专题讲模板套路，代码逐行注释，主打上机编码能力。零基础过渡到 C 实现的最佳跳板（本站备考页推荐的第一站）。</p>
+      <div class="res-meta">定位：入门 / 上机 · 跨考补 C 语言与代码手感</div>
+    </div></div>
+    <div class="res-item"><div class="res-icon">🔧</div><div class="res-body">
+      <h4>Weiss《数据结构与算法分析（C 语言版）》</h4>
+      <p>对摊还、优先队列、散列的工程化分析比考研书细，适合想搞懂"为什么 O(1) 均摊"这类问题的同学。</p>
+      <div class="res-meta">定位：进阶 · 补摊还分析的工程视角</div>
+    </div></div>
+    <div class="res-item"><div class="res-icon">🗂️</div><div class="res-body">
+      <h4><a href="https://github.com/CyC2018/CS-Notes" target="_blank" rel="noopener">CS-Notes（GitHub 开源）</a> / <a href="https://github.com/TheAlgorithms" target="_blank" rel="noopener">TheAlgorithms</a></h4>
+      <p>前者适合刷题期速查算法模板，后者可按 DIRECTORY.md 查同一结构的多种写法。两者都<b>不是 408 系统教材</b>，只作代码参考。</p>
+      <div class="res-meta">定位：速查 / 代码参考 · GitHub 开源</div>
+    </div></div>
+    <div class="res-item"><div class="res-icon">🎬</div><div class="res-body">
+      <h4><a href="https://algorithm-visualizer.org/" target="_blank" rel="noopener">algorithm-visualizer</a></h4>
+      <p>把你写的代码喂进去，实时可视化它怎么跑。适合"写完算法想看看每一步在干什么"的时候，与本站实验室互补。</p>
+      <div class="res-meta">定位：工具 · 在线，配合自己写的代码使用</div>
+    </div></div>
+  </div>
+
+  <h2 class="sec">🧭 备考方法与经验</h2>
+  <div class="callout exam"><div class="co-title">📌 已升级为独立页面</div>
+  三轮时间线与页数配额、错题本三栏法、真题两遍法、大题采分点换算、算法题四步、精确记忆清单、常见弃疗点对策——全部整理成可执行动作，见 <a href="method.html"><b>备考方法论</b></a>。</div>
   <div class="card">
     <div class="res-item"><div class="res-icon">🛤️</div><div class="res-body">
       <h4>零基础入门路线：胡凡《算法笔记》→ 王道数据结构</h4>
-      <p>经验贴共识：零基础直接啃王道容易劝退。先以《算法笔记》（胡凡曾磊）入门——语言平实、图示丰富、案例典型；跳过超纲的动态规划等，专注栈、队列、树、图的主干，再无缝衔接王道精做课后题。</p>
-      <div class="res-meta">来自 408 上岸经验贴 · 零基础专属弯道</div>
-    </div></div>
-    <div class="res-item"><div class="res-icon">4️⃣</div><div class="res-body">
-      <h4>算法大题四步训练法</h4>
-      <p>① 读题写思路 → ② 纸上<b>手写完整代码</b>（变量、循环、边界）→ ③ 上机验证（重点测空表、单元素、全相同等边界）→ ④ 对照答案复盘漏步。408 大题在纸上写，不练手写必吃亏。</p>
-      <div class="res-meta">新东方教研总结 · 大题专项方法</div>
+      <p>经验贴共识：零基础直接啃王道容易劝退。先以《算法笔记》入门——语言平实、图示丰富；跳过超纲的动态规划，专注栈、队列、树、图的主干，再无缝衔接王道精做课后题。</p>
+      <div class="res-meta">来自 408 上岸经验贴 · 详见 <a href="method.html">备考方法论</a></div>
     </div></div>
     <div class="res-item"><div class="res-icon">🔁</div><div class="res-body">
       <h4>重复复习法</h4>
-      <p>上岸经验贴高频结论："408 最重要的就是重复"——对同一知识点，间隔一天、三天、七天各复习一次，把重复投资放在早期远比后期焦虑划算。本站的打卡清单就是按这个思路设计的。</p>
+      <p>上岸经验贴高频结论："408 最重要的就是重复"——同一知识点间隔一天、三天、七天各复习一次，把重复投资放在早期远比后期焦虑划算。本站打卡清单与错题本都按这个思路设计。</p>
       <div class="res-meta">26 考研经验贴 · 与打卡清单配套</div>
     </div></div>
     <div class="res-item"><div class="res-icon">📚</div><div class="res-body">
       <h4>教材与题库组合</h4>
-      <p>主教材：严蔚敏《数据结构（C语言版）》（408 官方参考）+ 王道《数据结构考研复习指导》。题库：王道课后选择题（一轮）→ 408 历年真题（二轮起）→ 王道代码大题（强化）。</p>
+      <p>主教材：严蔚敏《数据结构（C语言版）》+ 王道《复习指导》。题库：王道课后选择题（一轮）→ 408 历年真题（二轮起）→ 王道代码大题（强化）。</p>
       <div class="res-meta">主流三件套 · 按轮次推进</div>
     </div></div>
   </div>

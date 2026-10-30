@@ -10,7 +10,7 @@
 <nav class="topbar"><div class="topbar-inner">
   <a class="logo" href="index.html"><span class="dot"></span>408 数据结构可视化课堂</a>
   <div class="nav-links">
-    <a href="index.html">总览</a><a href="ch01.html">线性表</a><a href="ch02.html">栈与队列</a><a href="ch03.html">树</a><a href="ch04.html">图</a><a href="ch05.html">查找</a><a href="ch06.html">排序</a><a href="ch07.html">串</a><a href="practice.html">练习场</a><a href="resources.html">资源导航</a>
+    <a href="index.html">总览</a><a href="ch01.html">线性表</a><a href="ch02.html">栈与队列</a><a href="ch03.html">树</a><a href="ch04.html">图</a><a href="ch05.html">查找</a><a href="ch06.html">排序</a><a href="ch07.html">串</a><a href="practice.html">练习场</a><a href="method.html">备考方法论</a><a href="resources.html">资源导航</a>
   </div>
   <button class="theme-btn" title="切换明暗主题">🌙</button>
 </div></nav>
@@ -19,7 +19,7 @@
   <div class="hero">
     <h1>第 7 章 · 串</h1>
     <p>408 里占比最小的一章，但 KMP 是常客：考纲里明晃晃写着"字符串模式匹配"。好消息是只需吃透两件事——<b>朴素匹配为什么慢</b>、<b>next 数组怎么手算</b>。本章实验室可以输入任意模式串自动算 next，作业题直接对答案。</p>
-    <p class="tagline">预计学习 2~3 小时 · 动画课堂 1 集 · 练习 12 题 · 打卡 6 项</p>
+    <p class="tagline">预计学习 2~3 小时 · 动画课堂 1 集 · 练习 16 题 · 打卡 6 项</p>
   </div>
 
   <div class="toc"><span class="toc-label">本页导航</span><a href="#goal">学习目标</a><a href="#s1">什么是串</a><a href="#s2">朴素匹配</a><a href="#s3">KMP</a><a href="#s4">nextval</a><a href="#deep">进阶深挖</a><a href="#lesson">动画课堂</a><a href="#pit">避坑清单</a><a href="#quiz">章内练习</a><a href="#ck">打卡</a></div>
@@ -99,6 +99,16 @@ else                     nextval[j] = next[j];</pre>
   <div class="callout exam"><div class="co-title">📌 真题怎么考（本章规律）</div>
   408 对串的选择题集中在三个动作：<b>算 next</b>、<b>算 nextval</b>、<b>数比较次数/分析复杂度</b>（BF 最好 n−m+1 次、最坏 (n−m+1)×m；KMP 严格 O(n+m)）。主串指针不回溯是 KMP 的一切：i 单调前进最多 n 次，j 的上滑（匹配成功 +1）最多 m 次，下滑总量被上滑总量封顶——摊销出 O(m)。2015 年前后多次以"变体模式串"重考同一套路。</div>
 
+  <div class="callout views"><div class="co-title">🌐 多源视角（不同书的讲法）</div>
+  <ul>
+    <li><b>【OI Wiki · 前缀函数】：</b>π[i] = 子串 s[0..i] 的最长相等真前缀/真后缀长度，π[0]=0。408 的 next[j] 只是它的<b>错位版</b>（整体右移一位后 +1）。读懂这句，就不必在"π 数组 / next / nextval"之间来回换算。</li>
+    <li><b>【势能与复杂度】：</b>失配时 j ← π[j−1] 反复回退，但相邻 π 值至多 +1，故总回退次数与总前进次数同阶 ⇒ 求 next 是 O(m)、匹配是 O(n+m)。这解决了"看着像 O(nm) 却说是 O(n+m)"的困惑。</li>
+    <li><b>【border 与周期】：</b>存在长为 r 的 border（相等真前后缀）⇔ |s|−r 是周期；π[n−1] 是最长 border ⇒ n−π[n−1] 是<b>最小周期</b>。可用于"循环节 / 最小重复单元"类判断题，本站练习 16 就是它。</li>
+    <li><b>【前缀函数是在线算法】：</b>可边读字符边算，只需保留前 M+1 个字符；顺带说明"next 只依赖模式串自身，预处理与主串无关"——这是 KMP 能离线预处理的根本。</li>
+    <li><b>【BF 最坏的真实构造】：</b>主串 aaa…a、模式 aaa…b——每趟都比到最后一个字符才失配，这才是 O(nm) 的实证，而不是一句"最坏 O(nm)"。</li>
+  </ul>
+  <div class="src">参考：OI Wiki oi-wiki.org/string/kmp/；严蔚敏《数据结构（C语言版）》4.3</div></div>
+
   <h2 class="sec" id="lesson">🎬 动画课堂 · 第 7 集《不回头的侦探》</h2>
   <p>BF 的笨 → 前后缀的秘密 → 手算 next → KMP 匹配 → 考点总结。i 是侦探，看过一眼的线索绝不重看。</p>
   <div id="lesson"></div>
@@ -116,7 +126,7 @@ else                     nextval[j] = next[j];</pre>
     <div class="step">复杂度：BF 最坏 O(n×m)，KMP 严格 O(n+m)——"KMP 提高的是最坏性能，很多实际文本中 BF 也不慢"是概念题的正解说法。</div>
   </div>
 
-  <h2 class="sec" id="quiz">📝 章内练习（12 题 · 基础 → 提高 → 真题）</h2>
+  <h2 class="sec" id="quiz">📝 章内练习（16 题 · 基础 → 提高 → 真题）</h2>
   <h3 class="sub" style="color:var(--green)">🟢 第一档 · 基础（4 题）</h3>
   <div class="quiz" data-answer="C" data-diff="mid">
     <div class="q-head"><div class="q-tag">练习 1 · 考点：next 数组手算</div>
@@ -217,7 +227,7 @@ else                     nextval[j] = next[j];</pre>
     <div class="q-exp"><b>解析：</b>选 D。跳到 next[j] 后要比较的字符与 T[j] 相同 → 这次比较必然再失败 → 直接继承跳板的答案。这就是"把明知会失败的比较也跳过"的规则本体。</div>
   </div>
 
-  <h3 class="sub" style="color:var(--brand)">🔴 第三档 · 真题（4 题 · 原题核对版）</h3>
+  <h3 class="sub" style="color:var(--brand)">🔴 第三档 · 真题（8 题 · 原题核对版）</h3>
   <div class="quiz" data-answer="A" data-diff="real">
     <div class="q-head"><div class="q-tag">练习 9 · 真题同型·高频 · 考点：'aabbaab' 的 next</div>
     模式串 'aabbaab' 的 next 数组是：</div>
@@ -266,6 +276,54 @@ else                     nextval[j] = next[j];</pre>
     <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
     <div class="q-exp"><b>解析：</b>选 B。j 每匹配成功一次 +1，全程最多 +m；每次失配下滑若干，但 j 永不为负 → 下滑总量 ≤ 上滑总量 ≤ m。这就是 O(n+m) 中 O(m) 的摊销来源，也是"KMP 为什么快"的标准答案。</div>
   </div>
+  <div class="quiz" data-answer="A" data-diff="real">
+    <div class="q-head"><div class="q-tag">练习 13 · 真题同型 · 考点：next 数组（交替串）</div>
+    模式串 'ababa' 的 next 数组（位序从 1 起，next[1]=0）是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 0 1 1 2 3</div>
+      <div class="opt" data-opt="B">B. 0 1 2 3 4</div>
+      <div class="opt" data-opt="C">C. 0 1 1 2 2</div>
+      <div class="opt" data-opt="D">D. 0 1 1 2 4</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 A。j=3 看 'ab' 无相等真前后缀 → 1；j=4 看 'aba'，'a'='a' 长 1 → 2；j=5 看 'abab'，'ab'='ab' 长 2 → 3。故 0 1 1 2 3。交替串是命题人最爱——注意它不像全同串那样逐位递增（那是 'aaaa' 才有）。</div>
+  </div>
+  <div class="quiz" data-answer="C" data-diff="real">
+    <div class="q-head"><div class="q-tag">练习 14 · 真题同型 · 考点：nextval 的继承规则</div>
+    模式串中 T[j] 与 T[next[j]] 相同，则 nextval[j] 应等于：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. next[j]</div>
+      <div class="opt" data-opt="B">B. j−1</div>
+      <div class="opt" data-opt="C">C. nextval[next[j]]</div>
+      <div class="opt" data-opt="D">D. 0</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 C。跳到 next[j] 后要比较的字符与 T[j] 相同，这次比较必然再次失败，所以直接继承"跳板的跳板"的答案。注意是<b>继承 nextval</b>而不是 next——一路继承下去才是"跳过所有明知必败的比较"。</div>
+  </div>
+  <div class="quiz" data-answer="B" data-diff="real">
+    <div class="q-head"><div class="q-tag">练习 15 · 真题同型 · 考点：BF 最坏情况的构造</div>
+    设主串为 'aaaa…a'（n 个 a）、模式串为 'aaa…ab'（m−1 个 a 后跟一个 b）。朴素模式匹配在该情形下需要比较的次数约为：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. n−m+1</div>
+      <div class="opt" data-opt="B">B. (n−m+1)×m</div>
+      <div class="opt" data-opt="C">C. n+m</div>
+      <div class="opt" data-opt="D">D. n×log m</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 B。每个起点都要一路比到模式串最后一个字符才失配，正是 (n−m+1)×m 的最坏量级。这个构造是"BF 为什么是 O(nm)"的实证，也是 KMP 存在的理由。</div>
+  </div>
+  <div class="quiz" data-answer="C" data-diff="real">
+    <div class="q-head"><div class="q-tag">练习 16 · 真题同型 · 考点：最小周期（border 的应用）</div>
+    某字符串 s 的长度为 10，其最长相等真前后缀长度为 4，则 s 的最小周期是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 4</div>
+      <div class="opt" data-opt="B">B. 5</div>
+      <div class="opt" data-opt="C">C. 6</div>
+      <div class="opt" data-opt="D">D. 10</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 C。length − 最长 border = 10 − 4 = 6。直觉：若前 4 个字符与后 4 个字符相同，把串往前"推"6 格就能自我重合，所以 6 是周期；最小周期的定义就是"能自我重合的最小位移"。</div>
+  </div>
 
   <h2 class="sec" id="ck">✅ 打卡清单</h2>
   <div data-ck-scope>
@@ -276,7 +334,7 @@ else                     nextval[j] = next[j];</pre>
       <label class="check-item" data-ck="ch7-3"><input type="checkbox"><span>能说出 KMP 主串指针不回溯的原因</span></label>
       <label class="check-item" data-ck="ch7-4"><input type="checkbox"><span>记住 408 的 next[1]=0 / next[2]=1 约定</span></label>
       <label class="check-item" data-ck="ch7-5"><input type="checkbox"><span>看完动画课堂《不回头的侦探》</span></label>
-      <label class="check-item" data-ck="ch7-6"><input type="checkbox"><span>章内 12 题正确 ≥ 9 题（基础档必须全对）</span></label>
+      <label class="check-item" data-ck="ch7-6"><input type="checkbox"><span>章内 16 题正确 ≥ 12 题（基础档必须全对）</span></label>
     </div>
   </div>
 </div>
