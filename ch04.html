@@ -19,8 +19,10 @@
   <div class="hero">
     <h1>第 4 章 · 图</h1>
     <p>线性表是一对一，树是一对多，图是<b>多对多</b>——最自由的结构，也是 408 大题最爱出算法题的地方（遍历、最短路、拓扑）。学这章的秘诀：把第 2 章的队列和第 3 章的递归直接搬过来用。</p>
-    <p class="tagline">预计学习 4~6 小时 · 动画课堂 1 集 · 图遍历实验室 1 个 · 练习 4 题 · 打卡 6 项</p>
+    <p class="tagline">预计学习 5~7 小时 · 动画课堂 1 集 · 练习 12 题 · 打卡 6 项</p>
   </div>
+
+  <div class="toc"><span class="toc-label">本页导航</span><a href="#goal">学习目标</a><a href="#s1">什么是图</a><a href="#s2">存储</a><a href="#s3">遍历</a><a href="#s4">最小生成树</a><a href="#s5">最短路径</a><a href="#s6">拓扑排序</a><a href="#deep">进阶深挖</a><a href="#lesson">动画课堂</a><a href="#pit">避坑清单</a><a href="#quiz">章内练习</a><a href="#ck">打卡</a></div>
 
   <div class="callout exam"><div class="co-title">🎯 学习目标（学完你应该能）</div>
   ① 给定图，手工写出邻接矩阵和邻接表，并分别给出唯一的/不唯一的 BFS、DFS 序列；<br>
@@ -96,6 +98,33 @@ for (k = 0; k < n; k++)
   <div class="callout exam"><div class="co-title">📌 考点三连</div>
   ① 拓扑序列<b>不唯一</b>（同时有多个入度 0 的点时）；② 用 DFS 求的<b>逆后序</b>也是拓扑序；③ 拓扑排序失败 ⟺ 图有环——AOE 网求关键路径前必须先保证无环。</div>
 
+  <h2 class="sec" id="deep">🚀 进阶深挖（教材级）</h2>
+  <p class="muted">对齐严蔚敏教材与王道复习指导的深度，含 2009~2017 真题秒杀结论。</p>
+
+  <h3 class="sub">深挖 1 · 两个"秒杀结论"（王道反复强调）</h3>
+  <div class="callout exam"><div class="co-title">📌 背下来直接做题</div>
+  <b>① 非连通无向图最多有 C(n−1, 2) 条边</b>（把一个点抠掉，剩下 n−1 个点挤成完全图）→ 反过来"任何情况下都连通"的最少边数 = C(n−1,2) + 1。2010 年真题 7 顶点答案 16 就是这么来的：C(6,2)+1 = 15+1。<br>
+  <b>② 度之和 = 2×边数</b>（握手定理）：2017 年真题"16 条边、3 个 4 度 + 4 个 3 度顶点，顶点数至少"——度和 = 2×16 = 32，已用 3×4+4×3 = 24，剩 8 度给其余顶点，每人至少 1 度 → 再加 8 个顶点 = 11。</div>
+
+  <h3 class="sub">深挖 2 · 邻接矩阵的行与列（2013 真题核心）</h3>
+  <p>有向图的邻接矩阵：<b>第 i 行元素之和 = i 的出度，第 i 列之和 = i 的入度，行列总和 = i 的度</b>。2013 年真题给一个非对称矩阵让算各顶点度，就是把这句话反过来用。无向图对称矩阵同理（行和即度）。顺带：邻接矩阵乘法 A² 的 (i,j) 元 = i 到 j 长度为 2 的路径条数——王道拓展题从这里出。</p>
+
+  <h3 class="sub">深挖 3 · MST 三大易错（2012 真题全覆盖）</h3>
+  <div class="callout warn"><div class="co-title">⚠️ 逐条自查</div>
+  ① MST 的<b>权值和唯一</b>，但树形可能不唯一（有等权边时）；<br>
+  ② <b>权值最小的边不一定在 MST 里</b>——当最小边有多条且互斥时（两条平行位置的最小边，选了其一就成环排他）；<br>
+  ③ <b>Prim 从不同顶点出发，结果可能不同</b>（同为 MST 但树形不同）；<br>
+  ④ MST 边数恒为 n−1，但 n−1 条边的连通图不一定是 MST（还必须权和最小）。</div>
+
+  <h3 class="sub">深挖 4 · Dijkstra 表格法 + 关键路径的"多条"陷阱</h3>
+  <pre class="code">// Dijkstra 单轮：① dist[] 中挑未确定的最小者 u 收编 ② 用 u 松弛其邻接点
+// 大题手算 = 一行一行的表格：每轮圈出本轮确定的 u，更新 dist/path
+// 考点：某轮"圈错人"后所有后续结果全错——表格法逐轮检查是唯一的稳</pre>
+  <p><b>AOE 网关键路径</b>：事件最早时间 ve 从源点正推取 max，最迟 vl 从汇点逆推取 min；活动 &lt;aᵢ&gt; 的最早开始 e = ve(尾)，最迟开始 l = vl(头) − 权。2013 年真题陷阱：<b>关键路径可以有多条</b>，想缩短工期必须同时压缩<b>所有</b>关键路径上的公共活动——只加速一条关键路径上的活动，工期纹丝不动。</p>
+
+  <div class="callout exam"><div class="co-title">📌 真题怎么考（本章规律）</div>
+  王道统计图章节 2009~2022 <b>每年 2~3 题、覆盖全章</b>：基本术语与连通性（2009/2010/2011/2017）、邻接矩阵行列意义（2013）、拓扑排序（2010/2011/2012）、MST 叙述判断（2012）、Dijkstra 过程（2012）、DFS/BFS 序列个数（2015/2016，给邻接表问"有几种遍历序列"——答案是各邻接点排列数的连乘，再用"序列首元素固定"约分）。判断题套路：看到"一定""唯一""必"先找反例。</div>
+
   <h2 class="sec" id="lesson">🎬 动画课堂 · 第 4 集《一张地图的两种走法》</h2>
   <p>城市地图类比 → 邻接矩阵/邻接表 → BFS 波纹扩散 → DFS 走迷宫 → 最小生成树 → 拓扑排序。播放后可用 ← → 切幕。</p>
   <div id="lesson"></div>
@@ -104,7 +133,7 @@ for (k = 0; k < n; k++)
   逐帧渲染 + 神经网络配音的传统 MP4 视频，可全屏播放，看完再回动画课堂复习。</div>
   <video controls preload="metadata" src="mp4/ep02-bfs.mp4" style="width:100%;border-radius:16px;border:1px solid var(--line);background:#000"></video>
 
-  <h2 class="sec">⚠️ 本章避坑清单</h2>
+  <h2 class="sec" id="pit">⚠️ 本章避坑清单</h2>
   <div class="steps">
     <div class="step">"遍历序列唯一吗"先看存储：邻接矩阵唯一，邻接表不唯一——题面给邻接表时注意边表顺序。</div>
     <div class="step">BFS 配队列、DFS 配栈，别背反。BFS 能求无权最短路，DFS 不能。</div>
@@ -113,8 +142,9 @@ for (k = 0; k < n; k++)
     <div class="step">拓扑排序输出到一半卡住 = 有环。判断有向图有无环的三种方法：拓扑排序、DFS 找回边、Kosaraju（超纲了解）。</div>
   </div>
 
-  <h2 class="sec">📝 章内练习</h2>
-  <div class="quiz" data-answer="C">
+  <h2 class="sec" id="quiz">📝 章内练习（12 题 · 基础 → 提高 → 真题）</h2>
+  <h3 class="sub" style="color:var(--green)">🟢 第一档 · 基础（4 题）</h3>
+  <div class="quiz" data-answer="C" data-diff="basic">
     <div class="q-head"><div class="q-tag">练习 1 · 考点：完全图边数</div>
     具有 6 个顶点的无向完全图，边数是：</div>
     <div class="opts">
@@ -126,7 +156,7 @@ for (k = 0; k < n; k++)
     <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
     <div class="q-exp"><b>解析：</b>选 C。n(n−1)/2 = 6×5/2 = 15。A 的 30 是有向完全图的弧数 n(n−1)=30；D 的 36 忘了减 1（自己不跟自己连边）。</div>
   </div>
-  <div class="quiz" data-answer="B">
+  <div class="quiz" data-answer="B" data-diff="basic">
     <div class="q-head"><div class="q-tag">练习 2 · 考点：遍历与辅助结构</div>
     对图进行广度优先遍历和深度优先遍历，分别借助的辅助结构是：</div>
     <div class="opts">
@@ -138,7 +168,7 @@ for (k = 0; k < n; k++)
     <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
     <div class="q-exp"><b>解析：</b>选 B。BFS 一层层扫 → 先到的点先扩展 → 队列；DFS 一条路走到黑 → 最后到达的点先回头 → 栈。记忆：B=宽度=排队横着走，D=深度=竖着钻。</div>
   </div>
-  <div class="quiz" data-answer="D">
+  <div class="quiz" data-answer="D" data-diff="mid">
     <div class="q-head"><div class="q-tag">练习 3 · 考点：Dijkstra 适用性</div>
     关于 Dijkstra 算法，下列说法正确的是：</div>
     <div class="opts">
@@ -150,7 +180,7 @@ for (k = 0; k < n; k++)
     <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
     <div class="q-exp"><b>解析：</b>选 D。Dijkstra 把"dist 最小的点"标记为已确定，靠的是"绕路只会更远"这一前提，负权边打破它。B 描述的是 Floyd；A 缺了"无负权边"的限制条件——这正是选择题最爱挖的坑。</div>
   </div>
-  <div class="quiz" data-answer="A">
+  <div class="quiz" data-answer="A" data-diff="mid">
     <div class="q-head"><div class="q-tag">练习 4 · 考点：拓扑排序</div>
     对 AOV 网进行拓扑排序时，每一步应选取的顶点是：</div>
     <div class="opts">
@@ -163,7 +193,109 @@ for (k = 0; k < n; k++)
     <div class="q-exp"><b>解析：</b>选 A。入度为 0 = 没有任何先修课程未修，当前就可以"毕业"。删点减邻接点入度后产生新的入度 0 顶点；若中途找不到入度 0 的点，说明剩下的点互相等待成环——拓扑排序失败 ⟺ 有向图有环。注意 AOV 网顶点无权值，D 是张冠李戴。</div>
   </div>
 
-  <h2 class="sec">✅ 打卡清单</h2>
+  <h3 class="sub" style="color:var(--accent)">🟡 第二档 · 提高（4 题）</h3>
+  <div class="quiz" data-answer="C" data-diff="basic">
+    <div class="q-head"><div class="q-tag">练习 5 · 考点：生成树边数</div>
+    具有 n 个顶点的无向连通图，其生成树含有的边数是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. n</div>
+      <div class="opt" data-opt="B">B. n + 1</div>
+      <div class="opt" data-opt="C">C. n − 1</div>
+      <div class="opt" data-opt="D">D. 取决于图的结构</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 C。生成树 = 包含全部顶点的极小连通子图：保持连通的最少边数就是 n−1（多一条必有环，少一条必不连通）。这也是 MST 算法"收满 n−1 条边就停"的依据。</div>
+  </div>
+  <div class="quiz" data-answer="C" data-diff="basic">
+    <div class="q-head"><div class="q-tag">练习 6 · 考点：存储结构选型</div>
+    下列关于图的存储结构，说法<b>正确</b>的是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 邻接矩阵适合稀疏图，省空间</div>
+      <div class="opt" data-opt="B">B. 邻接表适合稠密图，查询快</div>
+      <div class="opt" data-opt="C">C. 邻接矩阵适合稠密图，邻接表适合稀疏图</div>
+      <div class="opt" data-opt="D">D. 两种结构的空间复杂度都是 O(n+e)</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 C。邻接矩阵 O(n²) 与边数无关，稠密图才不浪费；邻接表 O(n+e) 稀疏图省到实处。反过来"BFS/DFS 时间复杂度"也跟存储挂钩：邻接矩阵 O(n²)、邻接表 O(n+e)——两个考点共用同一张选型逻辑。</div>
+  </div>
+  <div class="quiz" data-answer="B" data-diff="mid">
+    <div class="q-head"><div class="q-tag">练习 7 · 考点：MST 算法选型</div>
+    用 Prim 和 Kruskal 求最小生成树，Prim 的时间复杂度 O(n²) 与边数无关，这意味着它更适合：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 稀疏图——边少所以快</div>
+      <div class="opt" data-opt="B">B. 稠密图——边多时 O(n²) 反而占优</div>
+      <div class="opt" data-opt="C">C. 有向图——Prim 原生支持有向</div>
+      <div class="opt" data-opt="D">D. 非连通图——Prim 能求生成森林</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 B。O(n²) 只看顶点数 → 边再多也这个价 → 稠密图划算；Kruskal O(eloge) 只看边数 → 稀疏图划算。C 错：Prim/Kruskal 都面向无向带权图；D 错：非连通图根本没有生成树（只有生成森林），两者都需对每个分量分别处理。口诀"稠密 Prim，稀疏 Kruskal"。</div>
+  </div>
+  <div class="quiz" data-answer="A" data-diff="mid">
+    <div class="q-head"><div class="q-tag">练习 8 · 考点：邻接矩阵的行列意义</div>
+    有向图的邻接矩阵 A（不含自环），第 i 行元素之和为 a，第 i 列元素之和为 b，则顶点 vᵢ 的度（入度+出度）是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. a + b</div>
+      <div class="opt" data-opt="B">B. a</div>
+      <div class="opt" data-opt="C">C. b</div>
+      <div class="opt" data-opt="D">D. a × b</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 A。行和 = 出度（vᵢ 指出去的边），列和 = 入度（指进来的边），度 = 入度 + 出度 = a + b。2013 年真题给一个具体矩阵考的就是这一句话；无向图的对称矩阵行列和相等，直接就是度。</div>
+  </div>
+
+  <h3 class="sub" style="color:var(--brand)">🔴 第三档 · 真题（4 题 · 原题核对版）</h3>
+  <div class="quiz" data-answer="A" data-diff="real" data-year="2009">
+    <div class="q-head"><div class="q-tag">练习 9 · 考点：无向连通图的性质</div>
+    下列关于<b>无向连通图</b>特性的叙述中，正确的是：<br>
+    Ⅰ．所有顶点的度之和为偶数　Ⅱ．边数大于顶点个数减 1　Ⅲ．至少存在一个度为 1 的顶点</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 仅 Ⅰ</div>
+      <div class="opt" data-opt="B">B. 仅 Ⅱ</div>
+      <div class="opt" data-opt="C">C. 仅 Ⅰ、Ⅱ</div>
+      <div class="opt" data-opt="D">D. 仅 Ⅰ、Ⅲ</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 A。Ⅰ 恒真：度之和 = 2×边数，必为偶数。Ⅱ 错：树形连通图边数恰好 = 顶点数 − 1，"大于"不成立。Ⅲ 错：环状连通图（如三角形）所有顶点度都是 2，没有度 1 的顶点。做"叙述 Ⅰ Ⅱ Ⅲ"题的方法论：<b>逐条找反例</b>，能构造反例的立即排除。</div>
+  </div>
+  <div class="quiz" data-answer="C" data-diff="real" data-year="2010">
+    <div class="q-head"><div class="q-tag">练习 10 · 考点：保证连通的最少边数</div>
+    具有 7 个顶点的无向图，要使它在<b>任何情况下都是连通的</b>，至少需要的边数是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 6</div>
+      <div class="opt" data-opt="B">B. 15</div>
+      <div class="opt" data-opt="C">C. 16</div>
+      <div class="opt" data-opt="D">D. 21</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 C。"任何情况下都连通"= 边再多也不能被"故意摆坏"到不连通。最恶劣的情形是：某 6 个顶点挤成完全图（C(6,2)=15 条边），剩下 1 个顶点孤零零——此时 15 条边仍不连通。再加 1 条边把这个孤儿连上来，无论怎么摆都必然连通。公式：C(n−1, 2) + 1 = 15 + 1 = 16。A 的 6 是"存在一种连通方案"的最少边数（生成树），差的就是"任何情况"四个字。</div>
+  </div>
+  <div class="quiz" data-answer="B" data-diff="real" data-year="2017">
+    <div class="q-head"><div class="q-tag">练习 11 · 考点：握手定理反推</div>
+    已知无向图 G 有 16 条边，其中 3 个顶点的度为 4、4 个顶点的度为 3，其余顶点的度均小于 3。则 G 至少含有的顶点个数是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 10</div>
+      <div class="opt" data-opt="B">B. 11</div>
+      <div class="opt" data-opt="C">C. 13</div>
+      <div class="opt" data-opt="D">D. 15</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 B。握手定理：度之和 = 2 × 16 = 32。已知顶点已吃掉 3×4 + 4×3 = 24 度，剩 8 度分给"度均小于 3"的其余顶点：每人至少 1 度、至多 2 度。要顶点数最少，就让每人多吃——每人 2 度 → 其余只需 8÷2 = 4 个顶点。总数 = 3 + 4 + 4 = <b>11</b>。验证：3×4 + 4×3 + 4×2 = 32 ✓。考点就是把握手定理倒过来用："已知边数与部分度，反推最少顶点数"。</div>
+  </div>
+  <div class="quiz" data-answer="A" data-diff="real" data-year="2012">
+    <div class="q-head"><div class="q-tag">练习 12 · 考点：MST 叙述判断</div>
+    下列关于<b>最小生成树</b>的叙述中，正确的是：<br>
+    Ⅰ．最小生成树的代价（权值之和）是唯一的　Ⅱ．权值最小的边一定会出现在某个最小生成树中　Ⅲ．用 Prim 算法从不同顶点出发得到的最小生成树一定相同</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 仅 Ⅰ</div>
+      <div class="opt" data-opt="B">B. 仅 Ⅰ、Ⅱ</div>
+      <div class="opt" data-opt="C">C. 仅 Ⅱ、Ⅲ</div>
+      <div class="opt" data-opt="D">D. 仅 Ⅰ、Ⅲ</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 A。Ⅰ 对：MST 树形可能不唯一，但权值和唯一。Ⅱ 错：当最小权边有多条且互相"成环互斥"时，选了其中一条另一条就进不来——反例：三角形三条边权都是 1，任取两条成树，剩下那条最小边不在树中。Ⅲ 错：Prim 起点不同，遇到等权边时树形可能不同（代价仍相同）。2012 年原题三项几乎原样出现，深挖 3 的四大易错就是它的完整答案。</div>
+  </div>
+
+  <h2 class="sec" id="ck">✅ 打卡清单</h2>
   <div data-ck-scope>
     <p><span class="progress-pill">0 / 6 已打卡</span></p>
     <div class="checklist">
@@ -172,7 +304,7 @@ for (k = 0; k < n; k++)
       <label class="check-item" data-ck="ch4-3"><input type="checkbox"><span>能手工模拟 Prim 和 Kruskal 全过程</span></label>
       <label class="check-item" data-ck="ch4-4"><input type="checkbox"><span>能解释 Dijkstra 为什么怕负权边</span></label>
       <label class="check-item" data-ck="ch4-5"><input type="checkbox"><span>看完动画课堂《一张地图的两种走法》</span></label>
-      <label class="check-item" data-ck="ch4-6"><input type="checkbox"><span>章内练习 4 题正确 ≥ 3 题</span></label>
+      <label class="check-item" data-ck="ch4-6"><input type="checkbox"><span>章内 12 题正确 ≥ 9 题（基础档必须全对）</span></label>
     </div>
   </div>
 </div>

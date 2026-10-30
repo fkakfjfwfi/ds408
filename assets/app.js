@@ -74,7 +74,22 @@
   });
   refreshCounters();
 
-  /* ── 练习题（选择题判题 + 可展开解析） ── */
+  /* ── 练习题（选择题判题 + 可展开解析 + 难度/年份标签自动渲染） ── */
+  document.querySelectorAll(".quiz").forEach(function (q) {
+    // 从 data-diff / data-year 自动渲染标签，避免每题手写 HTML
+    var tag = q.querySelector(".q-tag");
+    if (tag) {
+      var diff = q.getAttribute("data-diff");
+      var year = q.getAttribute("data-year");
+      var bits = [];
+      if (diff) {
+        var map = { basic: ["基础", "lvl basic"], mid: ["提高", "lvl mid"], real: ["真题", "lvl real"] };
+        if (map[diff]) bits.push('<span class="' + map[diff][1] + '">' + map[diff][0] + "</span>");
+      }
+      if (year) bits.push('<span class="q-year">' + year + "年 408 真题</span>");
+      if (bits.length) tag.insertAdjacentHTML("afterbegin", bits.join(""));
+    }
+  });
   document.querySelectorAll(".quiz").forEach(function (q) {
     var opts = q.querySelectorAll(".opt");
     var answer = q.getAttribute("data-answer"); // 如 "B"

@@ -19,16 +19,18 @@
   <div class="hero">
     <h1>第 1 章 · 线性表</h1>
     <p>数据结构的第一块地基。408 卷面上直接考线性表的题不少，更重要的是：后面栈、队列、树、图全都建立在它的思想之上。</p>
-    <p class="tagline">预计学习 2~3 小时 · 动画课堂 1 集 · 练习 4 题 · 打卡 6 项</p>
+    <p class="tagline">预计学习 3~4 小时 · 动画课堂 1 集 · 练习 12 题 · 打卡 6 项</p>
   </div>
 
-  <div class="callout exam"><div class="co-title">🎯 学习目标（学完你应该能）</div>
+  <div class="toc"><span class="toc-label">本页导航</span><a href="#goal">学习目标</a><a href="#s1">什么是线性表</a><a href="#s2">顺序表</a><a href="#s3">单链表</a><a href="#s4">双链/循环</a><a href="#s5">对比选型</a><a href="#deep">进阶深挖</a><a href="#lesson">动画课堂</a><a href="#pit">避坑清单</a><a href="#quiz">章内练习</a><a href="#ck">打卡</a></div>
+
+  <div class="callout exam" id="goal"><div class="co-title">🎯 学习目标（学完你应该能）</div>
   ① 说出线性表的逻辑特性：除表头表尾外，每个元素有且仅有一个直接前驱和直接后继；<br>
   ② 手画顺序表插入/删除时元素的移动过程，说出对应时间复杂度；<br>
   ③ 默写单链表"后插"的两步指针操作，并解释为什么顺序不能反；<br>
   ④ 给定使用场景，判断选顺序存储还是链式存储更合适。</div>
 
-  <h2 class="sec">1.1 先说人话：什么是线性表</h2>
+  <h2 class="sec" id="s1">1.1 先说人话：什么是线性表</h2>
   <div class="callout life"><div class="co-title">🚂 生活类比</div>
   线性表就是<b>一列火车</b>：车厢一节接一节，排成一条线。除了车头（第一个元素）和车尾（最后一个元素），每节车厢前面只有一节、后面也只挂一节——这就是"线性"关系的全部含义。</div>
   <p>线性表是 <b>n（n≥0）个数据元素的有限序列</b>，记作 (a₁, a₂, …, aᵢ, aᵢ₊₁, …, aₙ)。注意两点：</p>
@@ -37,7 +39,7 @@
     <div class="step"><b>有限且可为空。</b>元素个数 n 是有限的，n=0 时叫空表；每个元素类型相同、位序从 1 开始数。</div>
   </div>
 
-  <h2 class="sec">1.2 顺序表：连排座位</h2>
+  <h2 class="sec" id="s2">1.2 顺序表：连排座位</h2>
   <div class="callout life"><div class="co-title">🪑 生活类比</div>
   顺序表像<b>电影院的一排连座</b>：座位号连续，知道你的票号（下标）就能一步走到你的座位——这就是"随机访问 O(1)"。但中间来一个新朋友要插队，从他后面所有人全都得往后挪一位。</div>
   <p>顺序表用<b>一段地址连续的存储单元</b>依次存放元素，逻辑相邻 ⟺ 物理相邻。设首地址为 LOC(A)，每个元素占 d 字节，则第 i 个元素的地址：</p>
@@ -59,7 +61,7 @@
     <div class="demo-note" id="seq-note">当前表长 L = 5，容量 MaxSize = 7。等你的操作。</div>
   </div>
 
-  <h2 class="sec">1.3 单链表：寻宝游戏</h2>
+  <h2 class="sec" id="s3">1.3 单链表：寻宝游戏</h2>
   <div class="callout life"><div class="co-title">🗺️ 生活类比</div>
   单链表像<b>寻宝游戏</b>：你手里只有第一张线索卡（头指针），每张卡片上写着宝藏位置（数据域）和下一张卡片在哪儿（指针域）。想找第 5 张卡？必须从第 1 张一路顺藤摸瓜——这就是"不能随机访问"。</div>
   <p>每个<b>结点</b> = 数据域 + 指针域。插入和删除只需要改指针，不用搬元素，但查找必须从头遍历。带头结点的单链表是 408 默认画法——头结点<b>不存数据</b>，它存在的意义是让"在表头插入"和"在中间插入"逻辑统一。</p>
@@ -86,12 +88,12 @@ p->next = s;                // ② 再让 p 拉住新结点</pre>
     <div class="demo-note" id="lnk-note">head → 头结点 → 12 → 25 → 33 → 46 → ∞(NULL)</div>
   </div>
 
-  <h2 class="sec">1.4 双链表与循环链表（进阶速览）</h2>
+  <h2 class="sec" id="s4">1.4 双链表与循环链表（进阶速览）</h2>
   <p><b>双链表</b>：每个结点加一根 <code class="inline">prior</code> 前驱指针，代价是多占空间，收益是 O(1) 找前驱、删除给定结点不用再从头找。<b>循环单链表</b>：尾结点的 next 指回头结点，从任意结点出发都能遍历全表；判空条件变成 <code class="inline">head->next == head</code>。<b>循环双链表</b>再加头结点的 prior 指向尾结点，形成双向环。</p>
   <div class="callout exam"><div class="co-title">📌 408 考点：判空条件大乱斗</div>
   带头结点单链表：head→next == NULL；不带头结点单链表：head == NULL；循环单链表：head→next == head；循环双链表：head→next == head 且 head→prior == head。选择题几乎每年都换着花样考。</div>
 
-  <h2 class="sec">1.5 顺序 vs 链式：一张表决策</h2>
+  <h2 class="sec" id="s5">1.5 顺序 vs 链式：一张表决策</h2>
   <table class="tbl">
     <tr><th>维度</th><th>顺序表</th><th>单链表</th></tr>
     <tr><td>存储空间</td><td>连续、要求整块，可静态分配或动态扩展</td><td>散落各处，按需申请</td></tr>
@@ -103,11 +105,55 @@ p->next = s;                // ② 再让 p 拉住新结点</pre>
   <div class="callout ok"><div class="co-title">✅ 决策口诀</div>
   "<b>查多插少用顺序，插多查少用链表</b>"。真题常给场景让你选存储结构，先问两个问题：按位序访问多不多？插删发生在哪里？</div>
 
+  <h2 class="sec" id="deep">🚀 进阶深挖（教材级）</h2>
+  <p class="muted">以下内容对齐严蔚敏《数据结构（C语言版）》与王道《数据结构考研复习指导》的处理深度，零基础可先跳过，二轮复习必看。</p>
+
+  <h3 class="sub">深挖 1 · 静态链表：用游标模拟指针</h3>
+  <p>不使用指针，而是用<b>数组下标（游标 cursor）</b>充当"下一个结点在哪"的线索——这是严蔚敏教材的独门结构，也为"没有指针的语言怎么实现链表"给出答案。数组每个分量含 <code class="inline">data</code> 和 <code class="inline">next</code>（存后继的数组下标），下标 0 作头结点，<b>备用空间</b>串成一条备用链表，插入时从备用链摘一格、删除时归还一格。</p>
+  <pre class="code">#define MaxSize 100
+typedef struct {
+    int data;
+    int next;      // 游标：后继在数组中的下标（-1 表结束）
+} SLinkList[MaxSize];
+// 优点：插入删除仍不需移动元素；缺点：容量预先固定、不能随机访问
+// 408 考法：给游标状态表求插入/删除后的 next 值（2022 年曾以变体考过操作过程）</pre>
+
+  <h3 class="sub">深挖 2 · 动态分配顺序表与均摊分析</h3>
+  <p>静态分配 <code class="inline">int data[MaxSize]</code> 满了就死；动态分配 <code class="inline">ElemType *data</code> 配合 <code class="inline">malloc/realloc</code> 可以扩容。扩容要整体搬 n 个元素，看似很贵，但若<b>每次容量翻倍</b>，把扩容代价摊到之前的 n 次插入上，平均每次 <b>O(1)</b>——这就是"均摊分析"。注意：扩容后地址变了，<b>指向旧元素的指针全部失效</b>，这是 C 代码题的暗坑。</p>
+
+  <h3 class="sub">深挖 3 · 指针操作语句选序：真题最爱</h3>
+  <p>2016 与 2021 两年连续考"删除结点的语句序列排序"，方法万能：<b>① 画 before 图 ② 按依赖排序 ③ 画 after 图验证</b>。两条铁律：先接新再断旧（防孤儿）；循环链表删除<b>首元结点</b>时要检查"被删的是不是尾指针所指"（尾指针要回退到头），单链表删除<b>尾元</b>时要找前驱（否则 next 域悬空）。</p>
+
+  <h3 class="sub">深挖 4 · 线性表大题三板斧（真题怎么考）</h3>
+  <div class="callout exam"><div class="co-title">📌 历年大题规律（2009~2022 反复出现）</div>
+  <b>① 逆置是万金油（2010 年真题）：</b>n 个整数循环左移 p 位，要求时间空间都尽可能高效 → 三次逆置法：逆置前 p 个、逆置后 n−p 个、整体逆置，时间 O(n)、空间 O(1)。<br>
+  <b>② 快慢指针找中点（2019 年真题）：</b>把 (a₁…aₙ) 重排成 (a₁,aₙ,a₂,aₙ₋₁,…) → 快指针一次走两步找中点，后半段就地逆置，再两两交替合并。三步全是链表基本功的组合。<br>
+  <b>③ 辅助数组换时间（2015 年真题）：</b>删除链表中 |data| 重复的结点（保留首次出现）→ 开长度 m+1 的标记数组，一趟扫过，时间 O(n)、空间 O(m)。<br>
+  共同套路：<b>能就地（O(1) 空间）绝不另开数组；要开数组先声明大小与数据域范围的关系。</b></div>
+
+  <pre class="code">// 三次逆置法核心代码（2010 大题解法骨架）
+void Reverse(int a[], int l, int r) {
+    for (; l < r; l++, r--) { int t = a[l]; a[l] = a[r]; a[r] = t; }
+}
+void LeftShift(int a[], int n, int p) {
+    Reverse(a, 0, p - 1);      // 逆置前 p 个
+    Reverse(a, p, n - 1);      // 逆置后 n-p 个
+    Reverse(a, 0, n - 1);      // 整体逆置 → 循环左移完成
+}
+
+// 单链表就地逆置（头插法重建，高频手写题）
+LinkList ReverseList(LinkList L) {
+    LNode *p = L->next, *q;
+    L->next = NULL;
+    while (p) { q = p->next; p->next = L->next; L->next = p; p = q; }
+    return L;
+}</pre>
+
   <h2 class="sec" id="lesson">🎬 动画课堂 · 第 1 集《一节车厢的两种连法》</h2>
   <p>点击播放，语音会同步讲解每一幕（女声晓晓讲基础，男声云健讲考点）。空格键可暂停，进度条可拖动跳幕。</p>
   <div id="lesson"></div>
 
-  <h2 class="sec">⚠️ 本章避坑清单</h2>
+  <h2 class="sec" id="pit">⚠️ 本章避坑清单</h2>
   <div class="steps">
     <div class="step">位序从 1 数起，下标从 0 数起：a₃ 的下标是 2。算法题里先问自己"这是第几个还是数组第几格"。</div>
     <div class="step">单链表插入两步顺序不能反（先钩新，后接旧）；删除时先 <code class="inline">q = p->next</code> 存住再改链。</div>
@@ -116,8 +162,9 @@ p->next = s;                // ② 再让 p 拉住新结点</pre>
     <div class="step">求表长：顺序表 O(1) 读 length；单链表要遍历 O(n)——这也是考点。</div>
   </div>
 
-  <h2 class="sec">📝 章内练习</h2>
-  <div class="quiz" data-answer="C">
+  <h2 class="sec" id="quiz">📝 章内练习（12 题 · 基础 → 提高 → 真题）</h2>
+  <h3 class="sub" style="color:var(--green)">🟢 第一档 · 基础（4 题）</h3>
+  <div class="quiz" data-answer="C" data-diff="basic">
     <div class="q-head"><div class="q-tag">练习 1 · 考点：移动元素个数</div>
     长度为 n 的顺序表，在第 i 个位置（1 ≤ i ≤ n+1）插入一个新元素，需要向后移动的元素个数是：</div>
     <div class="opts">
@@ -129,7 +176,7 @@ p->next = s;                // ② 再让 p 拉住新结点</pre>
     <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
     <div class="q-exp"><b>解析：</b>选 C（即 n−i+1 个）。插入在第 i 位，第 i 个到第 n 个元素（共 n−i+1 个）都要后移。记忆锚点：插得越靠前挪得越多，插到表尾（i=n+1）一个都不用挪。注意 B 和 C 本题数值相同是干扰排版，严谨写法就是 n−i+1。</div>
   </div>
-  <div class="quiz" data-answer="B">
+  <div class="quiz" data-answer="B" data-diff="basic">
     <div class="q-head"><div class="q-tag">练习 2 · 考点：判空条件</div>
     带头结点的单链表 L 为空的判定条件是：</div>
     <div class="opts">
@@ -141,7 +188,7 @@ p->next = s;                // ② 再让 p 拉住新结点</pre>
     <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
     <div class="q-exp"><b>解析：</b>选 B。带头结点时头指针永远非空（指向头结点），空表的特征是"头结点后面没人"。A 是不带头结点的判空，C 是循环单链表的判空。三个选项放一起正好是本页考点框的复习。</div>
   </div>
-  <div class="quiz" data-answer="A">
+  <div class="quiz" data-answer="A" data-diff="mid">
     <div class="q-head"><div class="q-tag">练习 3 · 考点：指针操作顺序</div>
     在单链表中，p 指向某结点，s 指向待插入的新结点，要把 s 插到 p 之后，正确的操作序列是：</div>
     <div class="opts">
@@ -153,7 +200,7 @@ p->next = s;                // ② 再让 p 拉住新结点</pre>
     <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
     <div class="q-exp"><b>解析：</b>选 A。口诀"先钩新，后接旧"。B 选项第二句执行时 p->next 已经是 s 自己了，s->next = s 成环且原后继丢失。这是算法大题手写代码的必对细节。</div>
   </div>
-  <div class="quiz" data-answer="D">
+  <div class="quiz" data-answer="D" data-diff="basic">
     <div class="q-head"><div class="q-tag">练习 4 · 考点：存储结构选型</div>
     某线性表最常用的操作是「按序号存取元素」和「在表尾插入删除」，最省时间的存储结构是：</div>
     <div class="opts">
@@ -166,7 +213,107 @@ p->next = s;                // ② 再让 p 拉住新结点</pre>
     <div class="q-exp"><b>解析：</b>选 D。"按序号存取"直接锁定顺序表的随机访问 O(1)；表尾插删顺序表也都是 O(1)。口诀"查多插少用顺序"完整版是"按位序访问 + 尾部增删"场景。链表虽然尾部插删（带尾指针）也快，但按序号访问必须 O(n) 遍历，直接出局。</div>
   </div>
 
-  <h2 class="sec">✅ 打卡清单</h2>
+  <h3 class="sub" style="color:var(--accent)">🟡 第二档 · 提高（4 题）</h3>
+  <div class="quiz" data-answer="C" data-diff="basic">
+    <div class="q-head"><div class="q-tag">练习 5 · 考点：链表本质特性</div>
+    下列关于单链表的说法，<b>正确</b>的是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 可以随机访问任意元素，时间 O(1)</div>
+      <div class="opt" data-opt="B">B. 结点的存储密度大于 1</div>
+      <div class="opt" data-opt="C">C. 插入与删除无需移动元素，只需修改指针</div>
+      <div class="opt" data-opt="D">D. 逻辑相邻的结点物理位置必须相邻</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 C。链表的立身之本就是"改指针不搬数据"。A 是顺序表的能力；B 存储密度 = 数据域占比，恒小于 1（指针域占了空间）；D 逻辑相邻物理可以散落——这正是链表与顺序表的本质区别。</div>
+  </div>
+  <div class="quiz" data-answer="B" data-diff="mid">
+    <div class="q-head"><div class="q-tag">练习 6 · 考点：双链表插入语句序</div>
+    在双链表中 p 所指结点<b>之前</b>插入 s 所指新结点，正确的语句序列是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. p->prior = s; s->next = p; s->prior = p->prior; p->prior->next = s;</div>
+      <div class="opt" data-opt="B">B. s->prior = p->prior; p->prior->next = s; s->next = p; p->prior = s;</div>
+      <div class="opt" data-opt="C">C. s->next = p; p->prior = s; s->prior = p->prior; p->prior->next = s;</div>
+      <div class="opt" data-opt="D">D. p->prior = s; s->next = p; s->prior = p->prior; p->prior->next = s;</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 B。A、C、D 都把 <code class="inline">p->prior = s</code> 放在了 <code class="inline">s->prior = p->prior</code> 之前——p 的原前驱线索被覆盖后，<code class="inline">s->prior</code> 取到的是 s 自己，形成自环，且原前驱的 next 也没接上。B 先安顿新结点的两根指针（prior 记住旧前驱、next 指向 p），再改邻居，信息零丢失。口诀：<b>双链表插入"先安顿新，再改邻居"</b>，做题时逐句检查"这句用到的信息是否已被覆盖"。</div>
+  </div>
+  <div class="quiz" data-answer="A" data-diff="mid">
+    <div class="q-head"><div class="q-tag">练习 7 · 考点：顺序表就地删除</div>
+    在顺序表中删除所有值等于 x 的元素，要求时间空间均尽可能高效，最优算法的时间/空间复杂度是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. O(n) / O(1)</div>
+      <div class="opt" data-opt="B">B. O(n) / O(n)</div>
+      <div class="opt" data-opt="C">C. O(n²) / O(1)</div>
+      <div class="opt" data-opt="D">D. O(nlogn) / O(1)</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 A。双指针一遍扫描：k 记录"不等于 x 的元素应放的位置"，遍历一遍把保留元素前移覆盖，最后 length = k。C 是"每删一个整体前移一次"的朴素写法——408 大题评分点就在能否想到 O(n) 一遍法。</div>
+  </div>
+  <div class="quiz" data-answer="D" data-diff="mid">
+    <div class="q-head"><div class="q-tag">练习 8 · 考点：尾指针循环单链表</div>
+    设循环单链表带尾指针 rear（rear 指向尾元结点，首元结点为 rear->next），则「在表尾插入新结点」「删除表尾结点（不含头结点）」的时间复杂度分别是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. O(1) / O(1)</div>
+      <div class="opt" data-opt="B">B. O(n) / O(1)</div>
+      <div class="opt" data-opt="C">C. O(1) / O(1)（尾指针万能）</div>
+      <div class="opt" data-opt="D">D. O(1) / O(n)</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 D。尾插：在 rear 后插入再令 rear 后移，O(1)。但删尾元需要<b>它的前驱</b>——循环单链表只能从 rear->next（头结点）绕一整圈找，O(n)。教训：<b>尾指针只服务"尾部"，删除尾部恰恰要"尾部的前驱"</b>，这正是双链表/双循环链表存在的理由。</div>
+  </div>
+
+  <h3 class="sub" style="color:var(--brand)">🔴 第三档 · 真题（4 题 · 原题核对版）</h3>
+  <div class="quiz" data-answer="D" data-diff="real" data-year="2016">
+    <div class="q-head"><div class="q-tag">练习 9 · 考点：双循环链表删除语句序</div>
+    已知一个带有表头结点的双向循环链表 L，结点结构为 (prior, data, next)，p 指向链表中某一结点（p ≠ 头结点）。删除 p 所指结点的正确语句序列是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. free(p); p->prior->next = p->next; p->next->prior = p->prior;</div>
+      <div class="opt" data-opt="B">B. p->next->prior = p->next; p->prior->next = p->prior; free(p);</div>
+      <div class="opt" data-opt="C">C. p->prior->next = p->next; free(p); p->next->prior = p->prior;</div>
+      <div class="opt" data-opt="D">D. p->next->prior = p->prior; p->prior->next = p->next; free(p);</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 D。A 先释放再用 p->prior/p->next，属于"释放后访问"；B 两句抄错方向，把邻居的指针全指向 p 自己，链彻底断掉；C 中 free 后再访问 p->prior 同样违规。方法：画三个结点的 before 图，逐句画 after 图，凡 free 提前或指针被覆盖的选项直接排除。</div>
+  </div>
+  <div class="quiz" data-answer="D" data-diff="real" data-year="2021">
+    <div class="q-head"><div class="q-tag">练习 10 · 考点：循环链表删首元 + 边界</div>
+    设带有头结点的非空单循环链表 L，头指针为 h，尾指针 p 指向表中最后一个结点，q 指向第一个数据结点。删除 L 的第一个数据结点的正确语句序列是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. h->next = q->next; free(q);（不总是对）</div>
+      <div class="opt" data-opt="B">B. free(q); h->next = q->next;</div>
+      <div class="opt" data-opt="C">C. q->next = h; free(q); p = h;</div>
+      <div class="opt" data-opt="D">D. h->next = q->next; if (q == p) p = h; free(q);</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 D。这题的杀招是<b>边界</b>：若链表只有一个数据结点，q == p，删除后尾指针 p 必须回退到头结点 h，否则 p 悬空。A 忽略了这个特例——表长为 1 时循环链断成"野环"；B 先释放后访问；C 先把 q->next 指向 h 再释放，但 h->next 还指着已释放的 q。真题连续两年考"语句选序 + 边界修正"，考前务必亲手画一遍表长为 1 的情形。</div>
+  </div>
+  <div class="quiz" data-answer="D" data-diff="real" data-year="2013">
+    <div class="q-head"><div class="q-tag">练习 11 · 考点：链表合并的复杂度</div>
+    已知两个长度分别为 m 和 n 的升序链表（m、n 均大于 0），若将它们合并为长度为 m+n 的<b>降序</b>链表，最坏情况下的时间复杂度是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. O(min{m, n})</div>
+      <div class="opt" data-opt="B">B. O(m + n)</div>
+      <div class="opt" data-opt="C">C. O(m · n)</div>
+      <div class="opt" data-opt="D">D. O(max{m, n})</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 D。降序输出 → 用<b>头插法</b>建结果链表：每次比较两条链的队首，小者摘下头插进结果；一条链耗尽后，另一条剩余结点直接逐个头插（无需再比较）。最坏比较次数 = max{m, n}。B 的 O(m+n) 是移动结点总数——比较次数与移动次数分开数，这是本题的命题点。</div>
+  </div>
+  <div class="quiz" data-answer="B" data-diff="real" data-year="2019">
+    <div class="q-head"><div class="q-tag">练习 12 · 考点：链表重排大题思路（2019 年大题 · 选择化）</div>
+    2019 年真题大题：将线性表 (a₁, a₂, …, aₙ) 改为 (a₁, aₙ, a₂, aₙ₋₁, …)，采用带头结点单链表存储，要求时间空间尽可能高效。最优解法的三个步骤依次是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 整体逆置 → 快慢指针找中点 → 交替合并</div>
+      <div class="opt" data-opt="B">B. 快慢指针找中点 → 后半段就地逆置 → 两段交替合并</div>
+      <div class="opt" data-opt="C">C. 复制到辅助数组 → 奇偶交替取数 → 回写链表</div>
+      <div class="opt" data-opt="D">D. 对链表排序 → 从两端取数 → 重新建表</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 B。快指针一次走两步、慢指针一步，快指针到尾时慢指针恰在中点；把后半段就地逆置（头插法 O(1) 空间）；再从前半段与逆置后的后半段轮流摘结点合并。C 能做对但空间 O(n) 不满足"尽可能高效"——真题评分标准里空间不达标直接扣分。三步分别对应本页深挖 4 的基本功。</div>
+  </div>
+
+  <h2 class="sec" id="ck">✅ 打卡清单</h2>
   <div data-ck-scope>
     <p><span class="progress-pill">0 / 6 已打卡</span></p>
     <div class="checklist">
@@ -175,7 +322,7 @@ p->next = s;                // ② 再让 p 拉住新结点</pre>
       <label class="check-item" data-ck="ch1-3"><input type="checkbox"><span>能默写单链表后插的两步指针操作并解释顺序原因</span></label>
       <label class="check-item" data-ck="ch1-4"><input type="checkbox"><span>能背出四种链表的判空条件</span></label>
       <label class="check-item" data-ck="ch1-5"><input type="checkbox"><span>看完动画课堂《一节车厢的两种连法》</span></label>
-      <label class="check-item" data-ck="ch1-6"><input type="checkbox"><span>章内练习 4 题正确 ≥ 3 题</span></label>
+      <label class="check-item" data-ck="ch1-6"><input type="checkbox"><span>章内 12 题正确 ≥ 9 题（基础档必须全对）</span></label>
     </div>
   </div>
 </div>

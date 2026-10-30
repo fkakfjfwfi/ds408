@@ -19,8 +19,10 @@
   <div class="hero">
     <h1>第 3 章 · 树与二叉树</h1>
     <p>408 数据结构<b>分值最重的一章</b>：选择题考性质、遍历、线索二叉树，大题常考遍历的算法设计与哈夫曼。把它吃透，后面的图也会轻松一半。</p>
-    <p class="tagline">预计学习 4~6 小时 · 动画课堂 1 集 · 遍历实验室 1 个 · 练习 4 题 · 打卡 6 项</p>
+    <p class="tagline">预计学习 5~7 小时 · 动画课堂 1 集 · 练习 12 题 · 打卡 6 项</p>
   </div>
+
+  <div class="toc"><span class="toc-label">本页导航</span><a href="#goal">学习目标</a><a href="#s1">什么是树</a><a href="#s2">五大性质</a><a href="#s3">存储</a><a href="#s4">遍历</a><a href="#s5">线索二叉树</a><a href="#s6">哈夫曼</a><a href="#deep">进阶深挖</a><a href="#lesson">动画课堂</a><a href="#pit">避坑清单</a><a href="#quiz">章内练习</a><a href="#ck">打卡</a></div>
 
   <div class="callout exam"><div class="co-title">🎯 学习目标（学完你应该能）</div>
   ① 默写二叉树五大性质，尤其 n₀ = n₂ + 1 及其推导；<br>
@@ -99,6 +101,37 @@
   <div class="callout exam"><div class="co-title">📌 哈夫曼编码：压缩的灵魂</div>
   左分支记 0、右分支记 1，从根到叶子的路径就是该字符的编码。因为字符只出现在叶子（不会走到半路撞上别人），所以编码<b>互不为前缀</b>，解码不会歧义。真题：给权值集合构造哈夫曼树 → 求 WPL / 某字符码长 / 总编码长度。</div>
 
+  <h2 class="sec" id="deep">🚀 进阶深挖（教材级）</h2>
+  <p class="muted">对齐严蔚敏教材与王道复习指导的深度，含 2011~2022 连续真题的官方解法。</p>
+
+  <h3 class="sub">深挖 1 · 前序 + 后序虽不能重建，但能定祖先（2012 真题官方解法）</h3>
+  <p>命题人常在"先序+后序不能唯一确定二叉树"之后追问一个反直觉结论：<b>若结点 x 在先序中先于 y 出现、在后序中后于 y 出现（前序 X…Y、后序 Y…X），则 x 必是 y 的祖先</b>。原因：先序"根在前"、后序"根在后"，只有祖先关系能让同一个结点一前一后被夹住。2012 年真题四个选项全靠这一句话秒杀。</p>
+
+  <h3 class="sub">深挖 2 · 遍历递归 = 出入栈（2015 真题）</h3>
+  <p>前序遍历的递归调用序列 = <b>入栈次序</b>，中序遍历输出序列 = <b>出栈次序</b>。于是"n 个结点的二叉树有多少种形态"就等价于"n 个元素依次进栈有多少种出栈序列"——卡特兰数。2015 年真题：a,b,c,d 四结点的二叉树形态数 = 14，与栈出栈序列数完全同源。这一等价还能反向用：给你出栈序列问是否合法，等于问"能否构造出这样一棵二叉树"。</p>
+
+  <h3 class="sub">深挖 3 · AVL 最少结点递推：高度的上限（2012 真题）</h3>
+  <p>高度为 h 的 AVL 最少结点数 N(h) = N(h−1) + N(h−2) + 1（两侧各挂一棵"最矮 AVL"再加根）：N(1)=1, N(2)=2, N(3)=4, N(4)=7, N(5)=12, <b>N(6)=20</b>。2012 年真题"所有非叶结点平衡因子均为 1、高度 6"问结点数，就是把这串数倒着推——每个非叶结点都"左高右低一格"时最省结点。反过来它给出 AVL 高度上界 <b>h ≤ 1.44·log₂(n+2)</b>，解释了 AVL 查找为什么稳定 O(log n)。</p>
+
+  <h3 class="sub">深挖 4 · 中序非递归遍历：递归转迭代的样板（严书经典）</h3>
+  <pre class="code">void InOrder(BiTree T) {              // 中序非递归：沿左下钻 + 出栈访问
+    BiTree p = T; SqStack S; InitStack(S);
+    while (p || !StackEmpty(S)) {
+        if (p) { Push(S, p); p = p->lchild; }   // 左边走到底，路上全入栈
+        else {
+            Pop(S, p); visit(p);                // 走到底了，弹出访问
+            p = p->rchild;                      // 转向右子树
+        }
+    }
+}</pre>
+  <p>把 visit 的位置挪到 Push 之前就是先序非递归；后序非递归要再记"上次访问的是不是右孩子"（加一个 prev 指针）。2014、2016、2020 三年选择题反复在"出入栈时机"上做文章。</p>
+
+  <h3 class="sub">深挖 5 · 树 ↔ 二叉树转换的特殊值法（2011 真题）</h3>
+  <p>左孩子右兄弟转换后：<b>叶结点的"有无右孩子"取决于它在兄弟中的位置</b>——有右兄弟的叶结点，转换后右指针指向右兄弟。2011 年真题"树转换后仅有前 115 个叶结点有右孩子"用特殊值法构造一棵"115 个叶子都有右兄弟、其余没有"的树即可秒杀，不必真画整棵树。</p>
+
+  <div class="callout exam"><div class="co-title">📌 真题怎么考（本章规律）</div>
+  <b>选择题五巨头：</b>n₀=n₂+1 及推广、完全二叉树编号性质（⌊i/2⌋/2i/2i+1）、四种遍历互推与重建（中序必配）、线索二叉树"某指针指向谁"、哈夫曼 WPL 速算（= 各次合并值之和）。<b>2012~2022 十一年间本章每年 2~3 题</b>，2022 年新增"中序相邻结点关系"角度：中序序列里 p 的下一个是"右子树最左"或"作为左孩子的祖先"，<b>右兄弟永不相邻</b>。大题隔年考：遍历改造（计数/求深度/镜像）、哈夫曼编码设计。</div>
+
   <h2 class="sec" id="lesson">🎬 动画课堂 · 第 3 集《一棵树的四种走法》</h2>
   <p>家谱类比 → n₀=n₂+1 → 先序 → 中序 → 后序与层序 → 重建规则与口诀。点击播放，语音同步讲解。</p>
   <div id="lesson"></div>
@@ -107,7 +140,7 @@
   除了网页动画，本站还在试验传统 MP4 视频课：下面是用「逐帧动画 + 神经网络配音」渲染的真视频样片，可全屏播放。</div>
   <video controls preload="metadata" src="mp4/ep01-preorder.mp4" style="width:100%;border-radius:16px;border:1px solid var(--line);background:#000"></video>
 
-  <h2 class="sec">⚠️ 本章避坑清单</h2>
+  <h2 class="sec" id="pit">⚠️ 本章避坑清单</h2>
   <div class="steps">
     <div class="step">深度/高度的定义看题目约定：有的教材根算第 0 层。408 题面会写清楚"根为第 1 层"，照题面算，别背死结论。</div>
     <div class="step">n₀ = n₂ + 1 只对二叉树成立；一般树没有这个结论（一般树是 n = 总度数 + 1）。</div>
@@ -117,8 +150,9 @@
     <div class="step">遍历的递归算法要能默写（大题常以遍历为骨架改造），非递归实现靠栈——又是第 2 章。</div>
   </div>
 
-  <h2 class="sec">📝 章内练习</h2>
-  <div class="quiz" data-answer="B">
+  <h2 class="sec" id="quiz">📝 章内练习（12 题 · 基础 → 提高 → 真题）</h2>
+  <h3 class="sub" style="color:var(--green)">🟢 第一档 · 基础（4 题）</h3>
+  <div class="quiz" data-answer="B" data-diff="basic">
     <div class="q-head"><div class="q-tag">练习 1 · 考点：n₀ = n₂ + 1</div>
     一棵二叉树有 20 个叶子结点、8 个度为 1 的结点，则度为 2 的结点个数是：</div>
     <div class="opts">
@@ -130,7 +164,7 @@
     <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
     <div class="q-exp"><b>解析：</b>选 B。n₀ = n₂ + 1 ⇒ n₂ = n₀ − 1 = 20 − 1 = 19。度为 1 的结点数完全不影响这个恒等式——8 是干扰项。总结点数 = 20 + 8 + 19 = 47（顺带自检）。</div>
   </div>
-  <div class="quiz" data-answer="C">
+  <div class="quiz" data-answer="C" data-diff="basic">
     <div class="q-head"><div class="q-tag">练习 2 · 考点：完全二叉树性质</div>
     一棵完全二叉树有 100 个结点，则叶子结点的个数是：</div>
     <div class="opts">
@@ -142,7 +176,7 @@
     <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
     <div class="q-exp"><b>解析：</b>选 C。完全二叉树按 1 编号，结点 i 有孩子当且仅当 2i ≤ n。最后有孩子的结点编号是 ⌊n/2⌋ = 50，故叶子是 51~100 号，共 50 个。口诀：<b>完全二叉树叶子数 = ⌈n/2⌉</b>。</div>
   </div>
-  <div class="quiz" data-answer="A">
+  <div class="quiz" data-answer="A" data-diff="mid">
     <div class="q-head"><div class="q-tag">练习 3 · 考点：遍历与重建</div>
     某二叉树的先序序列为 ABDCE，中序序列为 BDAEC，则它的后序序列是：</div>
     <div class="opts">
@@ -154,7 +188,7 @@
     <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
     <div class="q-exp"><b>解析：</b>选 A。先序第一个 A 是根；中序中 A 把树切成左(BD)、右(EC)。左子树：先序 BD、中序 BD ⇒ B 是根、D 是右孩子（中序 B 在 D 前）。右子树：先序 CE、中序 EC ⇒ C 是根、E 是左孩子。后序 = 左(D B) 右(E C) 根(A) = DBECA。动笔切块，30 秒搞定。</div>
   </div>
-  <div class="quiz" data-answer="B">
+  <div class="quiz" data-answer="B" data-diff="mid">
     <div class="q-head"><div class="q-tag">练习 4 · 考点：哈夫曼树</div>
     以权值 {2, 3, 4, 7} 构造哈夫曼树，其带权路径长度 WPL 是：</div>
     <div class="opts">
@@ -167,7 +201,107 @@
     <div class="q-exp"><b>解析：</b>选 B。构造：最小两个合并 2+3=5 → 集合{4,5,7}；再合并 4+5=9 → {7,9}；最后 7+9=16 为根。权 2、3 在第 3 层，4 在第 2 层，7 在第 1 层，WPL = 2×3 + 3×3 + 4×2 + 7×1 = 30。<b>速算技巧</b>：WPL = 每次合并产生的新结点值之和 = 5 + 9 + 16 = 30，考场上这样算最快。</div>
   </div>
 
-  <h2 class="sec">✅ 打卡清单</h2>
+  <h3 class="sub" style="color:var(--accent)">🟡 第二档 · 提高（4 题）</h3>
+  <div class="quiz" data-answer="D" data-diff="basic">
+    <div class="q-head"><div class="q-tag">练习 5 · 考点：二叉树定义辨析</div>
+    下列关于二叉树的说法，<b>正确</b>的是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 二叉树就是度为 2 的树</div>
+      <div class="opt" data-opt="B">B. 二叉树至少有一个结点</div>
+      <div class="opt" data-opt="C">C. 二叉树的左右子树可以交换，仍是同一棵二叉树</div>
+      <div class="opt" data-opt="D">D. 二叉树可以为空，且每个结点至多两棵子树、子树分左右次序</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 D。A 是年度最大陷阱：二叉树 ≠ 度为 2 的树——结点可以只有左孩子或只有右孩子（度为 1），甚至为空树；度为 2 的树则至少存在一个度为 2 的结点且不区分左右。C 错在二叉树是<b>有序树</b>，左右交换就是不同的树。</div>
+  </div>
+  <div class="quiz" data-answer="A" data-diff="mid">
+    <div class="q-head"><div class="q-tag">练习 6 · 考点：线索二叉树的指向</div>
+    某二叉树的中序序列为 D, B, E, A, C, F。将其线索化（中序线索二叉树）后，结点 A 的 rchild 指向：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. A 的右孩子（若存在）或中序后继</div>
+      <div class="opt" data-opt="B">B. 一定是 C</div>
+      <div class="opt" data-opt="C">C. 一定是线索，指向 D</div>
+      <div class="opt" data-opt="D">D. 一定指向 NULL</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 A。线索二叉树的规则：有右孩子就正常指孩子（tag=0），没有才指中序后继（tag=1）。A 有右孩子 C，所以 rchild 指 C——但这是"因为 A 恰好有右孩子"，选项 B 的"一定"错在把具体树的特征当规律。方法：先把中序序列写出来，再看该结点有没有真孩子，最后才谈线索。</div>
+  </div>
+  <div class="quiz" data-answer="D" data-diff="mid">
+    <div class="q-head"><div class="q-tag">练习 7 · 考点：二叉链表的空指针域</div>
+    用二叉链表存储含 n 个结点的二叉树，指针域中空指针的个数是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. n − 1</div>
+      <div class="opt" data-opt="B">B. n</div>
+      <div class="opt" data-opt="C">C. n + 1</div>
+      <div class="opt" data-opt="D">D. 2n</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 C。n 个结点共 2n 个指针域；非空指针 = 分支数 = n − 1（每个分支恰好消耗一根指向孩子的指针）；空指针 = 2n − (n−1) = <b>n + 1</b>。另一种数法：每个叶子贡献 2 个空指针、每个度 1 结点贡献 1 个——2n₀ + n₁，代入 n₀ = n₂ + 1 同样得 n + 1。这 n+1 个空指针正是线索二叉树要"回收再利用"的资源，前后的知识就这样串起来了。</div>
+  </div>
+  <div class="quiz" data-answer="B" data-diff="mid">
+    <div class="q-head"><div class="q-tag">练习 8 · 考点：AVL 最少结点递推</div>
+    高度为 7 的平衡二叉树至少含有多少个结点？（N(1)=1，N(2)=2，递推 N(h)=N(h−1)+N(h−2)+1）</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 20</div>
+      <div class="opt" data-opt="B">B. 33</div>
+      <div class="opt" data-opt="C">C. 43</div>
+      <div class="opt" data-opt="D">D. 54</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 B。递推链：N(1)=1 → N(2)=2 → N(3)=4 → N(4)=7 → N(5)=12 → N(6)=20 → <b>N(7)=20+12+1=33</b>。这串数（1,2,4,7,12,20,33,54…）就是"斐波那契加一"，2012 年真题考的是 N(6)=20。A 是 N(6) 的干扰值，D 的 54 是 N(8)、也是满二叉树 2⁷−1=127 的近邻干扰。考前把递推链默到 N(8)。</div>
+  </div>
+
+  <h3 class="sub" style="color:var(--brand)">🔴 第三档 · 真题（4 题 · 原题核对版）</h3>
+  <div class="quiz" data-answer="A" data-diff="real" data-year="2012">
+    <div class="q-head"><div class="q-tag">练习 9 · 考点：前序 + 后序定祖先</div>
+    若一棵二叉树的前序遍历序列为 a, e, b, d, c，后序遍历序列为 b, c, d, e, a，则下列说法中<b>一定成立</b>的是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. a 是 e 的祖先结点（前序 a 在 e 前、后序 a 在 e 后）</div>
+      <div class="opt" data-opt="B">B. b 是 e 的孩子结点</div>
+      <div class="opt" data-opt="C">C. c 是 d 的兄弟结点</div>
+      <div class="opt" data-opt="D">D. 该二叉树可以唯一确定</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 A。判据一句话：<b>前序中 x 先于 y 且后序中 x 后于 y ⟺ x 是 y 的祖先</b>（祖先在先序"根在前"、在后序"根在后"，恰好一前一后夹住后代）。a 对 e 满足该条件 ✓。D 直接违反铁律"先序+后序不能唯一重建"；B、C 从两序都推不出。这题考查的是重建规则的"副产品"，考前把这条判据背下来就是送分题。</div>
+  </div>
+  <div class="quiz" data-answer="B" data-diff="real" data-year="2015">
+    <div class="q-head"><div class="q-tag">练习 10 · 考点：遍历递归 = 出入栈</div>
+    先序遍历带 n 个结点的二叉树的递归算法中，保存结点信息的栈的<b>入栈次序</b>恰好是先序序列，<b>出栈次序</b>恰好是中序序列。对含 a、b、c、d 四个结点的二叉树（各结点值互不相同），这样的不同二叉树形态共有：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 24</div>
+      <div class="opt" data-opt="B">B. 14</div>
+      <div class="opt" data-opt="C">C. 16</div>
+      <div class="opt" data-opt="D">D. 42</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 B。先序入栈序 × 中序出栈序的配对恰好等价于"n 个元素依次进栈的全部合法出栈序列"——个数就是卡特兰数 C₍₂ₙₙ₎/(n+1)。n=4：C(8,4)/5 = 70/5 = <b>14</b>。D 的 42 是 n=5 的卡特兰数，A 的 24 是 4! 全排列。2015 年原题考的就是这个等价转换，识别出"卡特兰数"三个字，10 秒收工。</div>
+  </div>
+  <div class="quiz" data-answer="B" data-diff="real" data-year="2022">
+    <div class="q-head"><div class="q-tag">练习 11 · 考点：中序序列中的相邻关系</div>
+    在一棵非空平衡二叉树的中序遍历序列中，结点 p 之后紧接着访问 q。下列哪种情形<b>不可能</b>发生？</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. q 是 p 的右子树中最左下的结点</div>
+      <div class="opt" data-opt="B">B. q 是 p 的右兄弟结点</div>
+      <div class="opt" data-opt="C">C. p 是某祖先结点的左子树中最后被访问的结点，q 是该祖先</div>
+      <div class="opt" data-opt="D">D. q 是 p 的双亲结点</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 B。中序"左根右"，p 的下一个访问者只有两种来路：<b>p 的右子树最左结点</b>（A）或 <b>p 作为左孩子时的某个祖先</b>（C、D 都是它的特例——祖先链上的双亲）。而"右兄弟"在中序里隔着双亲：p 先访问完 → 轮到双亲 → 再轮到右兄弟，中间必然隔着双亲，永不相邻。2022 年这道题开辟了"遍历序列内部结构"的新考法，把"中序后继"的两条来路背熟即可通杀。</div>
+  </div>
+  <div class="quiz" data-answer="C" data-diff="real" data-year="2022">
+    <div class="q-head"><div class="q-tag">练习 12 · 考点：三叉树最小高度</div>
+    在一棵<b>三叉树</b>（每个结点至多 3 棵子树）中，若有 244 个结点，则该树的最小高度是：（根为第 1 层）</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 5</div>
+      <div class="opt" data-opt="B">B. 6</div>
+      <div class="opt" data-opt="C">C. 7</div>
+      <div class="opt" data-opt="D">D. 8</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 B。满三叉树每层容量 1, 3, 9, 27, 81, 243，前 5 层累计 121 个 &lt; 244，前 6 层累计 364 个 ≥ 244 → 最小高度 6。公式化：找最小 h 使 (3^h − 1)/2 ≥ 244。这是 2022 年"二叉树最小高度"的三叉推广版，方法完全一样：<b>逐层累加容量，数到刚好装下为止</b>。C 的 7 是"从第 6 层起又多算一层"的典型失误。</div>
+  </div>
+
+  <h2 class="sec" id="ck">✅ 打卡清单</h2>
   <div data-ck-scope>
     <p><span class="progress-pill">0 / 6 已打卡</span></p>
     <div class="checklist">
