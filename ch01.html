@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 1 章 线性表 · 408 数据结构可视化课堂</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<nav class="topbar"><div class="topbar-inner">
+  <a class="logo" href="index.html"><span class="dot"></span>408 数据结构可视化课堂</a>
+  <div class="nav-links">
+    <a href="index.html">总览</a><a href="ch01.html">线性表</a><a href="ch02.html">栈与队列</a><a href="ch03.html">树</a><a href="ch04.html">图</a><a href="ch05.html">查找</a><a href="ch06.html">排序</a><a href="ch07.html">串</a><a href="practice.html">练习场</a><a href="resources.html">资源导航</a>
+  </div>
+  <button class="theme-btn" title="切换明暗主题">🌙</button>
+</div></nav>
+
+<div class="wrap">
+  <div class="hero">
+    <h1>第 1 章 · 线性表</h1>
+    <p>数据结构的第一块地基。408 卷面上直接考线性表的题不少，更重要的是：后面栈、队列、树、图全都建立在它的思想之上。</p>
+    <p class="tagline">预计学习 2~3 小时 · 动画课堂 1 集 · 练习 4 题 · 打卡 6 项</p>
+  </div>
+
+  <div class="callout exam"><div class="co-title">🎯 学习目标（学完你应该能）</div>
+  ① 说出线性表的逻辑特性：除表头表尾外，每个元素有且仅有一个直接前驱和直接后继；<br>
+  ② 手画顺序表插入/删除时元素的移动过程，说出对应时间复杂度；<br>
+  ③ 默写单链表"后插"的两步指针操作，并解释为什么顺序不能反；<br>
+  ④ 给定使用场景，判断选顺序存储还是链式存储更合适。</div>
+
+  <h2 class="sec">1.1 先说人话：什么是线性表</h2>
+  <div class="callout life"><div class="co-title">🚂 生活类比</div>
+  线性表就是<b>一列火车</b>：车厢一节接一节，排成一条线。除了车头（第一个元素）和车尾（最后一个元素），每节车厢前面只有一节、后面也只挂一节——这就是"线性"关系的全部含义。</div>
+  <p>线性表是 <b>n（n≥0）个数据元素的有限序列</b>，记作 (a₁, a₂, …, aᵢ, aᵢ₊₁, …, aₙ)。注意两点：</p>
+  <div class="steps">
+    <div class="step"><b>逻辑结构，不是存储方式。</b>"排队"是逻辑关系；至于排队的元素存在连续内存里（顺序表）还是用指针串起来（链表），是<b>存储结构</b>要回答的问题。408 选择题最爱在这里挖坑。</div>
+    <div class="step"><b>有限且可为空。</b>元素个数 n 是有限的，n=0 时叫空表；每个元素类型相同、位序从 1 开始数。</div>
+  </div>
+
+  <h2 class="sec">1.2 顺序表：连排座位</h2>
+  <div class="callout life"><div class="co-title">🪑 生活类比</div>
+  顺序表像<b>电影院的一排连座</b>：座位号连续，知道你的票号（下标）就能一步走到你的座位——这就是"随机访问 O(1)"。但中间来一个新朋友要插队，从他后面所有人全都得往后挪一位。</div>
+  <p>顺序表用<b>一段地址连续的存储单元</b>依次存放元素，逻辑相邻 ⟺ 物理相邻。设首地址为 LOC(A)，每个元素占 d 字节，则第 i 个元素的地址：</p>
+  <pre class="code">LOC(aᵢ) = LOC(A) + (i − 1) × d      // 位序 i 从 1 开始，下标 i−1 从 0 开始</pre>
+  <div class="callout exam"><div class="co-title">📌 408 高频公式</div>
+  位序 i ↔ 下标 i−1 的换算是选择题陷阱重灾区。另外记住：插入第 i 个位置（1≤i≤n+1），需要移动 <b>n−i+1</b> 个元素；删除第 i 个元素，需要移动 <b>n−i</b> 个。等概率下平均分别移动 n/2 和 (n−1)/2 个。</div>
+
+  <div class="demo" id="demo-seq">
+    <div class="demo-title">🔬 实验室：顺序表的插入与删除</div>
+    <div class="demo-desc">选一个位序（1~6），点"插入"看元素整体后移；点"删除"看元素整体前移。高亮的格子是正在移动的元素。</div>
+    <div class="demo-stage"><svg id="seq-svg" viewBox="0 0 860 150" width="100%"></svg></div>
+    <div class="demo-ctrl">
+      <label>位序 i：<input id="seq-pos" type="number" min="1" max="6" value="3"></label>
+      <label>值：<input id="seq-val" type="number" value="99"></label>
+      <button id="seq-ins">插入</button>
+      <button id="seq-del" class="ghost">删除</button>
+      <button id="seq-reset" class="ghost">重置</button>
+    </div>
+    <div class="demo-note" id="seq-note">当前表长 L = 5，容量 MaxSize = 7。等你的操作。</div>
+  </div>
+
+  <h2 class="sec">1.3 单链表：寻宝游戏</h2>
+  <div class="callout life"><div class="co-title">🗺️ 生活类比</div>
+  单链表像<b>寻宝游戏</b>：你手里只有第一张线索卡（头指针），每张卡片上写着宝藏位置（数据域）和下一张卡片在哪儿（指针域）。想找第 5 张卡？必须从第 1 张一路顺藤摸瓜——这就是"不能随机访问"。</div>
+  <p>每个<b>结点</b> = 数据域 + 指针域。插入和删除只需要改指针，不用搬元素，但查找必须从头遍历。带头结点的单链表是 408 默认画法——头结点<b>不存数据</b>，它存在的意义是让"在表头插入"和"在中间插入"逻辑统一。</p>
+  <pre class="code">typedef struct LNode {
+    int data;               // 数据域
+    struct LNode *next;     // 指针域：指向后继结点
+} LNode, *LinkList;
+
+// 在 p 所指结点之后插入新结点 s —— 两步顺序不能反！
+s->next = p->next;          // ① 先让新结点"拉住"p 的后继
+p->next = s;                // ② 再让 p 拉住新结点</pre>
+  <div class="callout warn"><div class="co-title">⚠️ 为什么顺序不能反？</div>
+  若先执行 <code class="inline">p->next = s</code>，p 原来的后继就<b>丢了</b>——没有任何指针指向它，这块内存成了"孤儿"，后面整条链全断。口诀：<b>先钩新，后接旧</b>。</div>
+
+  <div class="demo" id="demo-link">
+    <div class="demo-title">🔬 实验室：单链表的插入与删除</div>
+    <div class="demo-desc">点"在第 3 个结点后插入"，逐步看两根指针的动作；点"删除第 3 个结点"看被跳过的结点如何出局。虚线箭头是"即将建立/断开"的指针。</div>
+    <div class="demo-stage"><svg id="lnk-svg" viewBox="0 0 860 190" width="100%"></svg></div>
+    <div class="demo-ctrl">
+      <button id="lnk-ins">在第 3 个结点后插入 27</button>
+      <button id="lnk-del" class="ghost">删除第 3 个结点</button>
+      <button id="lnk-reset" class="ghost">重置</button>
+    </div>
+    <div class="demo-note" id="lnk-note">head → 头结点 → 12 → 25 → 33 → 46 → ∞(NULL)</div>
+  </div>
+
+  <h2 class="sec">1.4 双链表与循环链表（进阶速览）</h2>
+  <p><b>双链表</b>：每个结点加一根 <code class="inline">prior</code> 前驱指针，代价是多占空间，收益是 O(1) 找前驱、删除给定结点不用再从头找。<b>循环单链表</b>：尾结点的 next 指回头结点，从任意结点出发都能遍历全表；判空条件变成 <code class="inline">head->next == head</code>。<b>循环双链表</b>再加头结点的 prior 指向尾结点，形成双向环。</p>
+  <div class="callout exam"><div class="co-title">📌 408 考点：判空条件大乱斗</div>
+  带头结点单链表：head→next == NULL；不带头结点单链表：head == NULL；循环单链表：head→next == head；循环双链表：head→next == head 且 head→prior == head。选择题几乎每年都换着花样考。</div>
+
+  <h2 class="sec">1.5 顺序 vs 链式：一张表决策</h2>
+  <table class="tbl">
+    <tr><th>维度</th><th>顺序表</th><th>单链表</th></tr>
+    <tr><td>存储空间</td><td>连续、要求整块，可静态分配或动态扩展</td><td>散落各处，按需申请</td></tr>
+    <tr><td>存取方式</td><td>随机访问 O(1)（按位序）</td><td>顺序访问 O(n)</td></tr>
+    <tr><td>插入/删除</td><td>O(n)，要整体挪元素</td><td>找到位置后 O(1) 改指针</td></tr>
+    <tr><td>空间密度</td><td>≥100%，无指针开销，可能闲置</td><td>&lt;100%，每结点多一个指针</td></tr>
+    <tr><td>适合场景</td><td>按序号查改多、表长可预估、尾部增删</td><td>频繁头/中部插删、表长变化大</td></tr>
+  </table>
+  <div class="callout ok"><div class="co-title">✅ 决策口诀</div>
+  "<b>查多插少用顺序，插多查少用链表</b>"。真题常给场景让你选存储结构，先问两个问题：按位序访问多不多？插删发生在哪里？</div>
+
+  <h2 class="sec" id="lesson">🎬 动画课堂 · 第 1 集《一节车厢的两种连法》</h2>
+  <p>点击播放，语音会同步讲解每一幕（女声晓晓讲基础，男声云健讲考点）。空格键可暂停，进度条可拖动跳幕。</p>
+  <div id="lesson"></div>
+
+  <h2 class="sec">⚠️ 本章避坑清单</h2>
+  <div class="steps">
+    <div class="step">位序从 1 数起，下标从 0 数起：a₃ 的下标是 2。算法题里先问自己"这是第几个还是数组第几格"。</div>
+    <div class="step">单链表插入两步顺序不能反（先钩新，后接旧）；删除时先 <code class="inline">q = p->next</code> 存住再改链。</div>
+    <div class="step">带头结点时，插入/删除<b>第一个元素</b>和其他位置逻辑统一——这正是头结点存在的意义，简答题爱考。</div>
+    <div class="step">顺序表判满 <code class="inline">L.length >= MaxSize</code>，插入前必须检查；链表天然不满但判空条件别背串。</div>
+    <div class="step">求表长：顺序表 O(1) 读 length；单链表要遍历 O(n)——这也是考点。</div>
+  </div>
+
+  <h2 class="sec">📝 章内练习</h2>
+  <div class="quiz" data-answer="C">
+    <div class="q-head"><div class="q-tag">练习 1 · 考点：移动元素个数</div>
+    长度为 n 的顺序表，在第 i 个位置（1 ≤ i ≤ n+1）插入一个新元素，需要向后移动的元素个数是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. n − i</div>
+      <div class="opt" data-opt="B">B. n − i + 1</div>
+      <div class="opt" data-opt="C">C. n − i + 1（从第 i 个到最后一个共 n−i+1 个）</div>
+      <div class="opt" data-opt="D">D. i</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 C（即 n−i+1 个）。插入在第 i 位，第 i 个到第 n 个元素（共 n−i+1 个）都要后移。记忆锚点：插得越靠前挪得越多，插到表尾（i=n+1）一个都不用挪。注意 B 和 C 本题数值相同是干扰排版，严谨写法就是 n−i+1。</div>
+  </div>
+  <div class="quiz" data-answer="B">
+    <div class="q-head"><div class="q-tag">练习 2 · 考点：判空条件</div>
+    带头结点的单链表 L 为空的判定条件是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. L == NULL</div>
+      <div class="opt" data-opt="B">B. L->next == NULL</div>
+      <div class="opt" data-opt="C">C. L->next == L</div>
+      <div class="opt" data-opt="D">D. L != NULL</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 B。带头结点时头指针永远非空（指向头结点），空表的特征是"头结点后面没人"。A 是不带头结点的判空，C 是循环单链表的判空。三个选项放一起正好是本页考点框的复习。</div>
+  </div>
+  <div class="quiz" data-answer="A">
+    <div class="q-head"><div class="q-tag">练习 3 · 考点：指针操作顺序</div>
+    在单链表中，p 指向某结点，s 指向待插入的新结点，要把 s 插到 p 之后，正确的操作序列是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. s->next = p->next; p->next = s;</div>
+      <div class="opt" data-opt="B">B. p->next = s; s->next = p->next;</div>
+      <div class="opt" data-opt="C">C. s->next = p; p->next = s;</div>
+      <div class="opt" data-opt="D">D. p->next = s->next; s->next = p;</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 A。口诀"先钩新，后接旧"。B 选项第二句执行时 p->next 已经是 s 自己了，s->next = s 成环且原后继丢失。这是算法大题手写代码的必对细节。</div>
+  </div>
+  <div class="quiz" data-answer="D">
+    <div class="q-head"><div class="q-tag">练习 4 · 考点：存储结构选型</div>
+    某线性表最常用的操作是「按序号存取元素」和「在表尾插入删除」，最省时间的存储结构是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 单链表</div>
+      <div class="opt" data-opt="B">B. 带头结点的双循环链表</div>
+      <div class="opt" data-opt="C">C. 循环单链表</div>
+      <div class="opt" data-opt="D">D. 顺序表</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 D。"按序号存取"直接锁定顺序表的随机访问 O(1)；表尾插删顺序表也都是 O(1)。口诀"查多插少用顺序"完整版是"按位序访问 + 尾部增删"场景。链表虽然尾部插删（带尾指针）也快，但按序号访问必须 O(n) 遍历，直接出局。</div>
+  </div>
+
+  <h2 class="sec">✅ 打卡清单</h2>
+  <div data-ck-scope>
+    <p><span class="progress-pill">0 / 6 已打卡</span></p>
+    <div class="checklist">
+      <label class="check-item" data-ck="ch1-1"><input type="checkbox"><span>能说出线性表的逻辑特性（前驱后继唯一）</span></label>
+      <label class="check-item" data-ck="ch1-2"><input type="checkbox"><span>能手画顺序表插入/删除的元素移动过程</span></label>
+      <label class="check-item" data-ck="ch1-3"><input type="checkbox"><span>能默写单链表后插的两步指针操作并解释顺序原因</span></label>
+      <label class="check-item" data-ck="ch1-4"><input type="checkbox"><span>能背出四种链表的判空条件</span></label>
+      <label class="check-item" data-ck="ch1-5"><input type="checkbox"><span>看完动画课堂《一节车厢的两种连法》</span></label>
+      <label class="check-item" data-ck="ch1-6"><input type="checkbox"><span>章内练习 4 题正确 ≥ 3 题</span></label>
+    </div>
+  </div>
+</div>
+
+<footer>
+  408 数据结构可视化课堂 · 第 1 章 线性表<br>
+  <div class="pagers">
+    <a href="index.html">← 返回总览</a><a href="ch02.html">下一章：栈、队列和数组 →</a>
+  </div>
+</footer>
+<script src="assets/app.js"></script>
+<script src="assets/lesson-player.js"></script>
+<script src="assets/lesson-ch01.js"></script>
+<script src="assets/demo-ch01.js"></script>
+</body>
+</html>

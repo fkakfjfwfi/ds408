@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 2 章 栈、队列和数组 · 408 数据结构可视化课堂</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<nav class="topbar"><div class="topbar-inner">
+  <a class="logo" href="index.html"><span class="dot"></span>408 数据结构可视化课堂</a>
+  <div class="nav-links">
+    <a href="index.html">总览</a><a href="ch01.html">线性表</a><a href="ch02.html">栈与队列</a><a href="ch03.html">树</a><a href="ch04.html">图</a><a href="ch05.html">查找</a><a href="ch06.html">排序</a><a href="ch07.html">串</a><a href="practice.html">练习场</a><a href="resources.html">资源导航</a>
+  </div>
+  <button class="theme-btn" title="切换明暗主题">🌙</button>
+</div></nav>
+
+<div class="wrap">
+  <div class="hero">
+    <h1>第 2 章 · 栈、队列和数组</h1>
+    <p>两种「被限制」的线性表：栈只准从一头进出，队列一头进一头出。限制反而造就了它们各自的杀手级应用。408 对本章的循环队列判满判空几乎年年必考。</p>
+    <p class="tagline">预计学习 2~3 小时 · 动画课堂 1 集 · 练习 4 题 · 打卡 6 项</p>
+  </div>
+
+  <div class="callout exam"><div class="co-title">🎯 学习目标（学完你应该能）</div>
+  ① 看到一个入栈/出栈混合序列，判断它是不是合法的出栈序列；<br>
+  ② 用栈手工演算括号匹配和中缀转后缀；<br>
+  ③ 画出循环队列入队/出队时 front、rear 的移动，默写三种判满判空方案；<br>
+  ④ 写出对称矩阵按行优先压缩存储的下标映射公式。</div>
+
+  <h2 class="sec">2.1 栈：羽毛球筒</h2>
+  <div class="callout life"><div class="co-title">🏸 生活类比</div>
+  栈就是一个<b>羽毛球筒</b>：球只能从筒口塞进去、从筒口拿出来。最先塞进去的球被压在最底下，最后才能拿出来——<b>后进先出 LIFO</b>（Last In First Out）。装球 = 入栈 push，取球 = 出栈 pop，筒口那端叫栈顶 top。</div>
+  <p>栈是<b>只允许在一端进行插入和删除</b>的线性表。允许操作的一端叫栈顶，另一端叫栈底。三个基本操作：push（入栈）、pop（出栈）、peek/getTop（读栈顶不出栈）。</p>
+  <div class="callout exam"><div class="co-title">📌 408 高频考点：卡特兰数</div>
+  n 个<b>不同元素</b>依次进栈，合法的出栈序列共有 <b>C₍₂ₙₙ₎ / (n+1)</b> 种（卡特兰数）。n=3 时是 5 种。真题常问"以下哪个序列不可能"——判断方法：任何元素出栈时，比它晚进栈的元素必须先出完（或模拟一个栈走一遍）。</div>
+
+  <div class="demo" id="demo-stack">
+    <div class="demo-title">🔬 实验室：栈的 push / pop</div>
+    <div class="demo-desc">点按钮操作栈，注意栈顶指针 top 的变化。容量 6，满了再 push 会怎样？空了再 pop 会怎样？——亲手触发一次"上溢/下溢"。</div>
+    <div class="demo-stage"><svg id="stk-svg" viewBox="0 0 860 240" width="100%"></svg></div>
+    <div class="demo-ctrl">
+      <button id="stk-push">Push 随机元素</button>
+      <button id="stk-pop" class="ghost">Pop 出栈</button>
+      <button id="stk-reset" class="ghost">重置</button>
+    </div>
+    <div class="demo-note" id="stk-note">栈顶指针 top 指向当前栈顶元素。</div>
+  </div>
+
+  <h2 class="sec">2.2 栈的应用：括号匹配与表达式求值</h2>
+  <p><b>括号匹配</b>：从左到右扫描，左括号入栈；遇到右括号就弹出一个栈顶的左括号配对。三种失败情形：右括号来了栈空（缺左）、扫描完栈非空（缺右）、弹出的类型不匹配（交叉）。</p>
+  <p><b>表达式求值</b>：中缀表达式（如 3+4×2）机器处理不方便，常转成后缀表达式（3 4 2 × +）用栈求值——操作数直接入栈，遇运算符就弹两个数计算再压回。408 选择题爱考"后缀表达式求值过程中栈的最大深度"。</p>
+  <div class="callout ok"><div class="co-title">✅ 中缀转后缀速记</div>
+  操作数直接输出；运算符入栈前，先把栈里<b>优先级 ≥ 自己</b>的运算符全部弹出输出；左括号直接入栈当保护罩，右括号来了弹到左括号为止。例：A+B×(C−D) → A B C D − × +。</div>
+  <p>第三个应用：<b>递归</b>。函数调用本质就是栈——每层调用压一个栈帧（参数、局部变量、返回地址），递归太深会栈溢出。第 3 章树的遍历就是递归的最好练习场。</p>
+
+  <h2 class="sec">2.3 队列：排队买奶茶</h2>
+  <div class="callout life"><div class="co-title">🧋 生活类比</div>
+  队列就是<b>奶茶店排队</b>：新来的排到队尾，店员从队头叫号。先来的先喝到——<b>先进先出 FIFO</b>。入队在队尾 rear，出队在队头 front。</div>
+  <p>用数组实现的队列有个坑：出队时 front 一直前移，数组前半段就空出来了，但 rear 已到数组尽头没法入队——明明还有空位却报"队满"，这叫<b>假溢出</b>。</p>
+
+  <h2 class="sec">2.4 循环队列：传送带与取模魔法</h2>
+  <div class="callout life"><div class="co-title">🍕 生活类比</div>
+  解决假溢出的办法：把数组首尾接起来，变成<b>回转寿司传送带</b>。指针走到尽头就绕回起点，数学上一行代码搞定：<code class="inline">rear = (rear + 1) % MaxSize</code>。</div>
+  <div class="callout exam"><div class="co-title">📌 408 必考：判满判空三大方案（默写级）</div>
+  <table class="tbl">
+    <tr><th>方案</th><th>判空</th><th>判满</th><th>元素个数</th></tr>
+    <tr><td>① 牺牲一格</td><td>front == rear</td><td>(rear+1) % MaxSize == front</td><td>(rear−front+MaxSize) % MaxSize</td></tr>
+    <tr><td>② 增设 size 变量</td><td>size == 0</td><td>size == MaxSize</td><td>size</td></tr>
+    <tr><td>③ 增设 tag 标志</td><td>tag==0 且 front==rear</td><td>tag==1 且 front==rear</td><td>—</td></tr>
+  </table>
+  记忆锚点：方案①入队后 tag 置 1、出队后置 0——<b>最近一次操作</b>决定了相等时是满还是空。tag 方案不牺牲存储单元，这是它相对方案①的优势，真题爱对比这两者。</div>
+
+  <div class="demo" id="demo-queue">
+    <div class="demo-title">🔬 实验室：循环队列（牺牲一格方案）</div>
+    <div class="demo-desc">容量 6，牺牲一格判满。入队看 rear 取模绕圈，出队看 front 追赶。试着把队列塞满，体会"满队时 rear 后面那格永远空着"。</div>
+    <div class="demo-stage"><svg id="que-svg" viewBox="0 0 860 250" width="100%"></svg></div>
+    <div class="demo-ctrl">
+      <button id="que-in">入队 Enqueue</button>
+      <button id="que-out" class="ghost">出队 Dequeue</button>
+      <button id="que-reset" class="ghost">重置</button>
+    </div>
+    <div class="demo-note" id="que-note">front = 0，rear = 0，空队。front 指向队头元素，rear 指向下一入队位置。</div>
+  </div>
+
+  <h2 class="sec">2.5 特殊矩阵的压缩存储（进阶）</h2>
+  <p>对称矩阵只存<b>下三角</b>（含对角线）：aᵢⱼ（i≥j）按行优先存进一维数组，前面共有 1+2+…+(i−1) 个元素，映射公式：</p>
+  <pre class="code">下三角（i ≥ j）：k = i(i−1)/2 + j − 1        // 数组下标从 0 起
+上三角（i ≤ j）取转置对称性即可：a[i][j] = a[j][i]
+三对角矩阵：k = 2i + j − 3（第一行和最后一行单算）</pre>
+  <div class="callout warn"><div class="co-title">⚠️ 公式记法不靠背</div>
+  别硬背！考场用"数前面有几行"推导：aᵢⱼ 之前有 i−1 个完整行，共 i(i−1)/2 个元素，再加上本行前面的 j−1 个。推导一遍比背十遍牢固。</div>
+
+  <h2 class="sec" id="lesson">🎬 动画课堂 · 第 2 集《盘子、队伍与传送带》</h2>
+  <p>羽毛球筒的进出 → 括号匹配 → 卡特兰数 → 排队买奶茶 → 循环队列的取模魔法。点击播放，语音同步讲解。</p>
+  <div id="lesson"></div>
+
+  <h2 class="sec">⚠️ 本章避坑清单</h2>
+  <div class="steps">
+    <div class="step">栈顶指针的约定先看清：top 指向<b>栈顶元素</b>还是<b>下一个空位</b>，两种约定下判空判满、push/pop 的顺序都不同，题目会明说，别想当然。</div>
+    <div class="step">出栈序列合法性判断：直接开一个栈模拟，别凭感觉。n=4 时就有 14 种合法序列，人脑枚举必错。</div>
+    <div class="step">循环队列元素个数公式 <code class="inline">(rear−front+MaxSize) % MaxSize</code> 的 +MaxSize 是防负数，减法结果为负时取模才正确。</div>
+    <div class="step">"队满时牺牲一格方案"能存 MaxSize−1 个元素，题目问"最多能存几个"时减一。</div>
+    <div class="step">队列的应用场景背三个：缓冲区（生产者消费者）、BFS、页面置换 FIFO——后面章节还会反复遇到。</div>
+  </div>
+
+  <h2 class="sec">📝 章内练习</h2>
+  <div class="quiz" data-answer="B">
+    <div class="q-head"><div class="q-tag">练习 1 · 考点：出栈序列合法性</div>
+    入栈顺序为 1,2,3,4，且进栈、出栈可交错进行，则<b>不可能</b>的出栈序列是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 1,2,3,4</div>
+      <div class="opt" data-opt="B">B. 4,1,2,3</div>
+      <div class="opt" data-opt="C">C. 3,2,4,1</div>
+      <div class="opt" data-opt="D">D. 2,1,4,3</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 B。模拟法：要让 4 先出，1、2、3 必须都已压在栈里（从底到顶 1,2,3）。4 出栈后栈顶是 3，下一步只能出 3，不可能出 1。A 全进全出；C 出3（1,2在栈）→出2→进4出4→出1 ✓；D 进1进2，出2出1，进3进4，出4出3 ✓。</div>
+  </div>
+  <div class="quiz" data-answer="C">
+    <div class="q-head"><div class="q-tag">练习 2 · 考点：卡特兰数</div>
+    4 个不同元素依次进栈，得到的出栈序列种数是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 16</div>
+      <div class="opt" data-opt="B">B. 14</div>
+      <div class="opt" data-opt="C">C. 14（卡特兰数 C₈₄/5 = 14）</div>
+      <div class="opt" data-opt="D">D. 24</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 C。卡特兰数公式 C₍₂ₙₙ₎/(n+1)：n=4 时 C(8,4)/5 = 70/5 = 14。D 的 24 是 4! 全排列数——它把不合法的序列也算进去了。记几个常用值：n=3→5，n=4→14，n=5→42。</div>
+  </div>
+  <div class="quiz" data-answer="A">
+    <div class="q-head"><div class="q-tag">练习 3 · 考点：循环队列判满</div>
+    循环队列容量 MaxSize=7（牺牲一格方案），front=5，rear=3，则队列中的元素个数是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 5</div>
+      <div class="opt" data-opt="B">B. −2</div>
+      <div class="opt" data-opt="C">C. 2</div>
+      <div class="opt" data-opt="D">D. 6</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 A。(rear−front+MaxSize) % MaxSize = (3−5+7) % 7 = 5。C 是忘加 MaxSize 直接相减的陷阱；rear 绕圈超过 front 时就得靠 +MaxSize 把负数拉回正区间。</div>
+  </div>
+  <div class="quiz" data-answer="D">
+    <div class="q-head"><div class="q-tag">练习 4 · 考点：中缀转后缀</div>
+    中缀表达式 (A+B)×C−D 的等价后缀表达式是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. A B + C × D −</div>
+      <div class="opt" data-opt="B">B. A B C × + D −</div>
+      <div class="opt" data-opt="C">C. − × + A B C D</div>
+      <div class="opt" data-opt="D">D. A B + C × D −（同 A）</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 A（D 为排版重复项）。括号内 A B + 先出，× 与左边的 C 结合输出 C ×，最后减号优先级最低最后输出。B 错在 × 抢在 + 前面输出，违反了括号优先级；C 是前缀表达式不是后缀。</div>
+  </div>
+
+  <h2 class="sec">✅ 打卡清单</h2>
+  <div data-ck-scope>
+    <p><span class="progress-pill">0 / 6 已打卡</span></p>
+    <div class="checklist">
+      <label class="check-item" data-ck="ch2-1"><input type="checkbox"><span>会用栈模拟判断出栈序列是否合法</span></label>
+      <label class="check-item" data-ck="ch2-2"><input type="checkbox"><span>记住了卡特兰数公式和 n=3/4 的值</span></label>
+      <label class="check-item" data-ck="ch2-3"><input type="checkbox"><span>能手工把中缀表达式转成后缀表达式</span></label>
+      <label class="check-item" data-ck="ch2-4"><input type="checkbox"><span>默写循环队列三种判满判空方案</span></label>
+      <label class="check-item" data-ck="ch2-5"><input type="checkbox"><span>看完动画课堂《盘子、队伍与传送带》</span></label>
+      <label class="check-item" data-ck="ch2-6"><input type="checkbox"><span>章内练习 4 题正确 ≥ 3 题</span></label>
+    </div>
+  </div>
+</div>
+
+<footer>
+  408 数据结构可视化课堂 · 第 2 章 栈、队列和数组<br>
+  <div class="pagers">
+    <a href="ch01.html">← 上一章：线性表</a><a href="ch03.html">下一章：树与二叉树 →</a>
+  </div>
+</footer>
+<script src="assets/app.js"></script>
+<script src="assets/lesson-player.js"></script>
+<script src="assets/lesson-ch02.js"></script>
+<script src="assets/demo-ch02.js"></script>
+</body>
+</html>

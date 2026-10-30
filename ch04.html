@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 4 章 图 · 408 数据结构可视化课堂</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<nav class="topbar"><div class="topbar-inner">
+  <a class="logo" href="index.html"><span class="dot"></span>408 数据结构可视化课堂</a>
+  <div class="nav-links">
+    <a href="index.html">总览</a><a href="ch01.html">线性表</a><a href="ch02.html">栈与队列</a><a href="ch03.html">树</a><a href="ch04.html">图</a><a href="ch05.html">查找</a><a href="ch06.html">排序</a><a href="ch07.html">串</a><a href="practice.html">练习场</a><a href="resources.html">资源导航</a>
+  </div>
+  <button class="theme-btn" title="切换明暗主题">🌙</button>
+</div></nav>
+
+<div class="wrap">
+  <div class="hero">
+    <h1>第 4 章 · 图</h1>
+    <p>线性表是一对一，树是一对多，图是<b>多对多</b>——最自由的结构，也是 408 大题最爱出算法题的地方（遍历、最短路、拓扑）。学这章的秘诀：把第 2 章的队列和第 3 章的递归直接搬过来用。</p>
+    <p class="tagline">预计学习 4~6 小时 · 动画课堂 1 集 · 图遍历实验室 1 个 · 练习 4 题 · 打卡 6 项</p>
+  </div>
+
+  <div class="callout exam"><div class="co-title">🎯 学习目标（学完你应该能）</div>
+  ① 给定图，手工写出邻接矩阵和邻接表，并分别给出唯一的/不唯一的 BFS、DFS 序列；<br>
+  ② 手工模拟 Prim 和 Kruskal 构造最小生成树的每一步；<br>
+  ③ 用 Dijkstra 的表格法算单源最短路径，知道它为什么怕负权边；<br>
+  ④ 对 AOV 网手工求拓扑序列，并能判断图中有无环。</div>
+
+  <h2 class="sec">4.1 先说人话：什么是图</h2>
+  <div class="callout life"><div class="co-title">🚇 生活类比</div>
+  图就是<b>地铁线路图</b>：站点是顶点，轨道是边。任何两个站之间都可能直接相连，没有"根"也没有"唯一前驱"——多对多，仅此而已。微信好友是无向图（互为好友），微博关注是有向图（单方面）。</div>
+  <p>图 G = (V, E)：顶点集 + 边集。<b>无向图</b>的边 (v,w) 与 (w,v) 是同一条；<b>有向图</b>的弧 &lt;v,w&gt; 有方向。顶点的度 = 挂在上面的边数（有向图分入度/出度）。</p>
+  <div class="callout exam"><div class="co-title">📌 408 必背数字</div>
+  n 个顶点的<b>无向完全图</b>有 n(n−1)/2 条边；<b>有向完全图</b>有 n(n−1) 条弧。边数达到完全图量级叫<b>稠密图</b>（常用邻接矩阵存），反之为<b>稀疏图</b>（常用邻接表存）。连通图的生成树含 n−1 条边。</div>
+
+  <h2 class="sec">4.2 存储：邻接矩阵 vs 邻接表</h2>
+  <table class="tbl">
+    <tr><th>维度</th><th>邻接矩阵（二维数组）</th><th>邻接表（数组+边表）</th></tr>
+    <tr><td>空间</td><td>O(n²)，与边数无关</td><td>O(n+e)，省稀疏图</td></tr>
+    <tr><td>查"两点是否相邻"</td><td>O(1) 直接查表</td><td>O(度)</td></tr>
+    <tr><td>找所有邻接点</td><td>扫一行 O(n)</td><td>顺着边表走 O(度)</td></tr>
+    <tr><td>遍历序列</td><td><b>唯一</b>（按编号从小到大）</td><td><b>不唯一</b>（看边表顺序）</td></tr>
+    <tr><td>适合</td><td>稠密图</td><td>稀疏图</td></tr>
+  </table>
+  <div class="callout ok"><div class="co-title">✅ 一句话记忆</div>
+  邻接矩阵用空间换"查询快 + 序列唯一"；邻接表用"序列不唯一"换空间。选择题考"遍历序列是否唯一"，答案钥匙就是存储方式。</div>
+
+  <h2 class="sec">4.3 遍历：BFS 与 DFS（旧知识大回收）</h2>
+  <p><b>BFS（广度优先）</b>：像<b>往水里扔石子，波纹一圈圈扩散</b>——访问起点，然后把它的邻接点全部入队，一层一层向外。辅助结构：<b>队列</b>（第 2 章）。<b>DFS（深度优先）</b>：像<b>走迷宫，一条道走到黑，撞墙再回头</b>——辅助结构：<b>栈/递归</b>（第 2、3 章）。</p>
+  <table class="tbl">
+    <tr><th>维度</th><th>BFS</th><th>DFS</th></tr>
+    <tr><td>辅助结构</td><td>队列</td><td>栈（或递归）</td></tr>
+    <tr><td>空间复杂度</td><td>O(n)（最坏队列全装）</td><td>O(n)（递归深度）</td></tr>
+    <tr><td>时间复杂度</td><td>邻接矩阵 O(n²)；邻接表 O(n+e)</td><td>同左</td></tr>
+    <tr><td>能求什么</td><td><b>无权图单源最短路径</b></td><td>连通性、拓扑排序（逆序）、求关键路径配合</td></tr>
+  </table>
+  <div class="callout exam"><div class="co-title">📌 高频结论</div>
+  对<b>连通图</b>，从同一起点出发：邻接矩阵下的 BFS/DFS 序列唯一；邻接表下不唯一。非连通图遍历一次只能访问一个连通分量——遍历次数 = 连通分量个数（这也是判连通的方法）。</div>
+
+  <div class="demo" id="demo-graph">
+    <div class="demo-title">🔬 实验室：同一个图，两种走法</div>
+    <div class="demo-desc">点 BFS 或 DFS，动画从 A 出发逐个点亮结点，右侧同步显示队列/栈的变化。先自己推一遍再对答案。</div>
+    <div class="demo-stage"><svg id="g-svg" viewBox="0 0 860 320" width="100%"></svg></div>
+    <div class="demo-ctrl">
+      <button data-go="bfs">BFS 广度优先（队列）</button>
+      <button data-go="dfs" class="ghost">DFS 深度优先（栈）</button>
+      <button id="g-reset" class="ghost">重置</button>
+      <span id="g-seq" style="font-weight:700;color:var(--brand)"></span>
+    </div>
+    <div class="demo-note" id="g-note">邻接表：A→B,C　B→A,D　C→A,E　D→B,F　E→C,F　F→D,E（邻接点按字母序）</div>
+  </div>
+
+  <h2 class="sec">4.4 最小生成树：Prim 与 Kruskal</h2>
+  <p>带权连通图里选 n−1 条边把所有点连起来且总权最小。<b>Prim（加点法）</b>：像<b>滚雪球</b>——从任意点开始，每次把"离雪球最近的点"吸进来，O(n²)，适合<b>稠密图</b>。<b>Kruskal（加边法）</b>：像<b>收购边</b>——所有边按权排序，从小到大拿，只要不成环就要，O(eloge)，适合<b>稀疏图</b>。</p>
+  <div class="callout warn"><div class="co-title">⚠️ 两个易错点</div>
+  ① 最小生成树<b>不唯一</b>，但 MST 的总权值唯一；② Prim 从哪个点开始结果可能不同但权值和相同，手工模拟时注意"最近的点"必须从<b>已选集合内外之间</b>的边里挑。</div>
+
+  <h2 class="sec">4.5 最短路径：Dijkstra 与 Floyd</h2>
+  <p><b>Dijkstra（单源）</b>：贪心——每次从"未确定的点"里挑 dist 最小的收编，再用它松弛邻居。时间 O(n²)。经典陷阱：<b>不能处理负权边</b>（贪心的"已确定"前提被破坏）。<b>Floyd（多源）</b>：三重循环动态规划，O(n³)，代码只有四行，允许负权边但不允许负权回路。</p>
+  <pre class="code">// Floyd 核心四行（背下来，大题直接用）
+for (k = 0; k < n; k++)
+  for (i = 0; i < n; i++)
+    for (j = 0; j < n; j++)
+      if (A[i][k] + A[k][j] < A[i][j]) A[i][j] = A[i][k] + A[k][j];</pre>
+
+  <h2 class="sec">4.6 拓扑排序：排课的学问</h2>
+  <div class="callout life"><div class="co-title">📅 生活类比</div>
+  选课有先修要求：高数先于线性代数，数据结构先于操作系统。把"谁先谁后"排成一条不违反任何先修关系的顺序，就是<b>拓扑排序</b>（AOV 网上做）。</div>
+  <div class="steps">
+    <div class="step">选一个<b>入度为 0</b> 的顶点输出；</div>
+    <div class="step">删掉它和它发出的所有边（邻接点入度 −1）；</div>
+    <div class="step">重复 ①②，直到全部输出（成功）或剩下入度全不为 0 的点（<b>有环！</b>）。</div>
+  </div>
+  <div class="callout exam"><div class="co-title">📌 考点三连</div>
+  ① 拓扑序列<b>不唯一</b>（同时有多个入度 0 的点时）；② 用 DFS 求的<b>逆后序</b>也是拓扑序；③ 拓扑排序失败 ⟺ 图有环——AOE 网求关键路径前必须先保证无环。</div>
+
+  <h2 class="sec" id="lesson">🎬 动画课堂 · 第 4 集《一张地图的两种走法》</h2>
+  <p>城市地图类比 → 邻接矩阵/邻接表 → BFS 波纹扩散 → DFS 走迷宫 → 最小生成树 → 拓扑排序。播放后可用 ← → 切幕。</p>
+  <div id="lesson"></div>
+
+  <div class="callout life"><div class="co-title">🎥 真·视频 第 2 集《图的广度优先搜索》</div>
+  逐帧渲染 + 神经网络配音的传统 MP4 视频，可全屏播放，看完再回动画课堂复习。</div>
+  <video controls preload="metadata" src="mp4/ep02-bfs.mp4" style="width:100%;border-radius:16px;border:1px solid var(--line);background:#000"></video>
+
+  <h2 class="sec">⚠️ 本章避坑清单</h2>
+  <div class="steps">
+    <div class="step">"遍历序列唯一吗"先看存储：邻接矩阵唯一，邻接表不唯一——题面给邻接表时注意边表顺序。</div>
+    <div class="step">BFS 配队列、DFS 配栈，别背反。BFS 能求无权最短路，DFS 不能。</div>
+    <div class="step">Prim 是"挑点"（O(n²) 稠密图），Kruskal 是"挑边"（O(eloge) 稀疏图）——选择题主战场。</div>
+    <div class="step">Dijkstra 遇负权直接错误，真题给负权边考你"哪些顶点距离算错"。</div>
+    <div class="step">拓扑排序输出到一半卡住 = 有环。判断有向图有无环的三种方法：拓扑排序、DFS 找回边、Kosaraju（超纲了解）。</div>
+  </div>
+
+  <h2 class="sec">📝 章内练习</h2>
+  <div class="quiz" data-answer="C">
+    <div class="q-head"><div class="q-tag">练习 1 · 考点：完全图边数</div>
+    具有 6 个顶点的无向完全图，边数是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 30</div>
+      <div class="opt" data-opt="B">B. 12</div>
+      <div class="opt" data-opt="C">C. 15</div>
+      <div class="opt" data-opt="D">D. 36</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 C。n(n−1)/2 = 6×5/2 = 15。A 的 30 是有向完全图的弧数 n(n−1)=30；D 的 36 忘了减 1（自己不跟自己连边）。</div>
+  </div>
+  <div class="quiz" data-answer="B">
+    <div class="q-head"><div class="q-tag">练习 2 · 考点：遍历与辅助结构</div>
+    对图进行广度优先遍历和深度优先遍历，分别借助的辅助结构是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 栈、队列</div>
+      <div class="opt" data-opt="B">B. 队列、栈</div>
+      <div class="opt" data-opt="C">C. 都是队列</div>
+      <div class="opt" data-opt="D">D. 都是栈</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 B。BFS 一层层扫 → 先到的点先扩展 → 队列；DFS 一条路走到黑 → 最后到达的点先回头 → 栈。记忆：B=宽度=排队横着走，D=深度=竖着钻。</div>
+  </div>
+  <div class="quiz" data-answer="D">
+    <div class="q-head"><div class="q-tag">练习 3 · 考点：Dijkstra 适用性</div>
+    关于 Dijkstra 算法，下列说法正确的是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 可求解任意带权图的单源最短路径</div>
+      <div class="opt" data-opt="B">B. 可求解图中任意两顶点间的最短路径，时间 O(n³)</div>
+      <div class="opt" data-opt="C">C. 边权为负时只需把比较方向反过来即可正确工作</div>
+      <div class="opt" data-opt="D">D. 基于贪心策略，边权存在负值时结果可能出错</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 D。Dijkstra 把"dist 最小的点"标记为已确定，靠的是"绕路只会更远"这一前提，负权边打破它。B 描述的是 Floyd；A 缺了"无负权边"的限制条件——这正是选择题最爱挖的坑。</div>
+  </div>
+  <div class="quiz" data-answer="A">
+    <div class="q-head"><div class="q-tag">练习 4 · 考点：拓扑排序</div>
+    对 AOV 网进行拓扑排序时，每一步应选取的顶点是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 入度为 0 的顶点（多个时任选其一，故序列可能不唯一）</div>
+      <div class="opt" data-opt="B">B. 出度为 0 的顶点</div>
+      <div class="opt" data-opt="C">C. 编号最小的顶点</div>
+      <div class="opt" data-opt="D">D. 权值最小的顶点</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 A。入度为 0 = 没有任何先修课程未修，当前就可以"毕业"。删点减邻接点入度后产生新的入度 0 顶点；若中途找不到入度 0 的点，说明剩下的点互相等待成环——拓扑排序失败 ⟺ 有向图有环。注意 AOV 网顶点无权值，D 是张冠李戴。</div>
+  </div>
+
+  <h2 class="sec">✅ 打卡清单</h2>
+  <div data-ck-scope>
+    <p><span class="progress-pill">0 / 6 已打卡</span></p>
+    <div class="checklist">
+      <label class="check-item" data-ck="ch4-1"><input type="checkbox"><span>能写出 n(n−1)/2 与 n(n−1) 并说出稠密/稀疏图的存储选型</span></label>
+      <label class="check-item" data-ck="ch4-2"><input type="checkbox"><span>能在邻接矩阵/邻接表上手工走 BFS 和 DFS</span></label>
+      <label class="check-item" data-ck="ch4-3"><input type="checkbox"><span>能手工模拟 Prim 和 Kruskal 全过程</span></label>
+      <label class="check-item" data-ck="ch4-4"><input type="checkbox"><span>能解释 Dijkstra 为什么怕负权边</span></label>
+      <label class="check-item" data-ck="ch4-5"><input type="checkbox"><span>看完动画课堂《一张地图的两种走法》</span></label>
+      <label class="check-item" data-ck="ch4-6"><input type="checkbox"><span>章内练习 4 题正确 ≥ 3 题</span></label>
+    </div>
+  </div>
+</div>
+
+<footer>
+  408 数据结构可视化课堂 · 第 4 章 图<br>
+  <div class="pagers">
+    <a href="ch03.html">← 上一章：树与二叉树</a><a href="ch05.html">下一章：查找 →</a>
+  </div>
+</footer>
+<script src="assets/app.js"></script>
+<script src="assets/lesson-player.js"></script>
+<script src="assets/lesson-ch04.js"></script>
+<script src="assets/demo-ch04.js"></script>
+</body>
+</html>

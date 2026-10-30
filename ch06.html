@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 6 章 排序 · 408 数据结构可视化课堂</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<nav class="topbar"><div class="topbar-inner">
+  <a class="logo" href="index.html"><span class="dot"></span>408 数据结构可视化课堂</a>
+  <div class="nav-links">
+    <a href="index.html">总览</a><a href="ch01.html">线性表</a><a href="ch02.html">栈与队列</a><a href="ch03.html">树</a><a href="ch04.html">图</a><a href="ch05.html">查找</a><a href="ch06.html">排序</a><a href="ch07.html">串</a><a href="practice.html">练习场</a><a href="resources.html">资源导航</a>
+  </div>
+  <button class="theme-btn" title="切换明暗主题">🌙</button>
+</div></nav>
+
+<div class="wrap">
+  <div class="hero">
+    <h1>第 6 章 · 排序</h1>
+    <p>408 选择题的<b>送分与坑王</b>：算法思想都不难，但"快排第一趟结果""堆排序建堆后序列""哪些算法稳定"这些手工模拟题，不亲手画一遍必错。本章给你一个能逐步动画的排序实验室，模拟题不再靠脑补。</p>
+    <p class="tagline">预计学习 3~5 小时 · 动画课堂 1 集 · 排序可视化实验室 1 个 · 练习 4 题 · 打卡 6 项</p>
+  </div>
+
+  <div class="callout exam"><div class="co-title">🎯 学习目标（学完你应该能）</div>
+  ① 手工模拟快排<b>每一趟</b>的 partition 过程（每趟至少归位一个枢轴）；<br>
+  ② 给定序列手工建大根堆并写出前两趟堆排序结果；<br>
+  ③ 默写八大排序的时间/空间复杂度和稳定性表；<br>
+  ④ 看到序列特征（基本有序 / 规模小 / 稳定性要求）能立刻选出最合适的算法。</div>
+
+  <h2 class="sec">6.1 先说人话：什么是稳定排序</h2>
+  <div class="callout life"><div class="co-title">🃏 生活类比</div>
+  给一副<b>已按花色分组</b>的扑克按点数排序：稳定的算法保住"同点数的牌还在原花色组内"的相对次序；不稳定的会把组搅乱。考试里它决定了"能否多关键字排序"——先按次序排、再按主序排，靠稳定性传递。</div>
+  <p>稳定性：序列中两个<b>相等</b>的关键字，排序后相对次序不变则稳定。记忆口诀：<b>"插冒归基稳，快选希堆不稳"</b>（直接插入、冒泡、归并、基数 稳定；快速、简单选择、希尔、堆排 不稳定）。</p>
+
+  <h2 class="sec">6.2 插入排序：像整理手牌</h2>
+  <p><b>直接插入</b>：左手是排好序的手牌，右手每次抓一张新牌，从右往左比着插进去。最好情况（已有序）只比较不移动 O(n)，最坏（逆序）O(n²)，<b>序列基本有序时它最快</b>。</p>
+  <p><b>希尔排序</b>：先按增量 d 分组做插入排序（远距离搬运），逐步缩小 d 到 1。解决了直接插入"只能挪一步"的痛点，但<b>不稳定</b>，复杂度依赖增量序列（约 O(n^1.3)）。</p>
+
+  <h2 class="sec">6.3 交换排序：冒泡与快排</h2>
+  <p><b>冒泡</b>：相邻两两比较，大的往下沉，每趟把当前最大值"冒"到末尾。某趟无交换可提前结束——<b>已有序时 O(n)</b>，稳定。</p>
+  <p><b>快速排序（重中之重）</b>：每趟选一个<b>枢轴 pivot</b>，用双指针把它甩到最终位置（左边都 ≤ 它、右边都 ≥ 它），再对两侧递归——分治。</p>
+  <pre class="code">int Partition(int a[], int low, int high) {
+    int pivot = a[low];                // 默认取第一个为枢轴
+    while (low < high) {
+        while (low < high && a[high] >= pivot) high--;
+        a[low] = a[high];              // 右边找到小的，甩到左边
+        while (low < high && a[low] <= pivot) low++;
+        a[high] = a[low];              // 左边找到大的，甩到右边
+    }
+    a[low] = pivot;                    // 枢轴归位
+    return low;                        // 返回枢轴最终位置
+}</pre>
+  <div class="callout exam"><div class="co-title">📌 快排考点四连</div>
+  ① <b>每趟至少归位一个元素</b>（枢轴）——判断"第 k 趟结果"的钥匙；② 平均 O(nlog₂n)，<b>序列基本有序时反而退化到 O(n²)</b>（划分极不均衡）；③ 空间 O(log₂n)（递归栈）；④ <b>不稳定</b>（长距离交换会跨越相等元素）。</div>
+
+  <h2 class="sec">6.4 选择排序：最直观的"挑最小"</h2>
+  <p><b>简单选择</b>：每趟从未排序区挑最小值，与未排序区第一个交换。比较次数固定 n(n−1)/2，与初始状态无关；不稳定（交换跨越相等元素）。</p>
+  <p><b>堆排序</b>：把数组看成一棵完全二叉树（第 3 章性质 5 回收：i 的孩子是 2i、2i+1）。<b>建大根堆 → 堆顶（最大值）与堆底交换 → 堆规模减一 → 向下筛选恢复堆</b>，循环 n−1 趟。</p>
+  <div class="callout ok"><div class="co-title">✅ 手工建堆心法</div>
+  从最后一个<b>非叶结点</b> ⌊n/2⌋ 开始，倒着逐个"向下筛选"：拿它和较大的孩子比，小了就换下去，换完继续往下查。建堆整体 O(n)；之后每趟筛选 O(log n)，总时间 O(nlog₂n)，空间 O(1)，<b>不稳定</b>。</div>
+
+  <h2 class="sec">6.5 归并排序与基数排序</h2>
+  <p><b>2 路归并</b>：两两合并有序段，k 个元素需要 ⌈log₂k⌉ 趟；每趟 O(n)，总 O(nlog₂n)，<b>稳定</b>，代价是需要 O(n) 辅助数组。"两个有序链表合并"是它的面试/大题常客。</p>
+  <p><b>基数排序</b>：不比较！按个位、十位、百位依次"分发—回收"（桶）。d 位数、基数 r、n 个元素：O(d(n+r))，<b>稳定</b>，适合位数少、规模大的整数/字符串。</p>
+
+  <h2 class="sec">6.6 大总结表（默写级，考前必背）</h2>
+  <table class="tbl">
+    <tr><th>算法</th><th>最好</th><th>最坏</th><th>平均</th><th>空间</th><th>稳定性</th><th>一句话特点</th></tr>
+    <tr><td>直接插入</td><td>O(n)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>✅ 稳</td><td>基本有序时最快</td></tr>
+    <tr><td>冒泡</td><td>O(n)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>✅ 稳</td><td>可提前终止</td></tr>
+    <tr><td>快速排序</td><td>O(nlogn)</td><td><b>O(n²) 有序时</b></td><td>O(nlogn)</td><td>O(logn)</td><td>❌ 不稳</td><td>平均最快的内部排序</td></tr>
+    <tr><td>简单选择</td><td>O(n²)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>❌ 不稳</td><td>比较次数与初态无关</td></tr>
+    <tr><td>堆排序</td><td>O(nlogn)</td><td>O(nlogn)</td><td>O(nlogn)</td><td><b>O(1)</b></td><td>❌ 不稳</td><td>最坏也快，空间最小</td></tr>
+    <tr><td>归并</td><td>O(nlogn)</td><td>O(nlogn)</td><td>O(nlogn)</td><td><b>O(n)</b></td><td>✅ 稳</td><td>要稳定+O(nlogn)只能选它</td></tr>
+    <tr><td>基数</td><td>O(d(n+r))</td><td>同左</td><td>同左</td><td>O(r)</td><td>✅ 稳</td><td>不比较关键字</td></tr>
+    <tr><td>希尔</td><td>—</td><td>—</td><td>≈O(n^1.3)</td><td>O(1)</td><td>❌ 不稳</td><td>插入排序的改良</td></tr>
+  </table>
+
+  <div class="demo" id="demo-sort">
+    <div class="demo-title">🔬 实验室：排序可视化（柱状图逐步动画）</div>
+    <div class="demo-desc">选一个算法点播放，看比较（高亮）与交换（变红）如何发生。建议先用"冒泡"找感觉，再用"快排"看枢轴如何归位。下方同步输出每步操作。</div>
+    <div class="demo-stage"><svg id="sort-svg" viewBox="0 0 860 260" width="100%"></svg></div>
+    <div class="demo-ctrl">
+      <button data-sort="bubble">冒泡排序</button>
+      <button data-sort="insert" class="ghost">直接插入</button>
+      <button data-sort="select" class="ghost">简单选择</button>
+      <button data-sort="quick" class="ghost">快速排序</button>
+      <button id="sort-reset" class="ghost">重置</button>
+      <span id="sort-stat" style="font-size:13px;color:var(--ink-3)"></span>
+    </div>
+    <div class="demo-note" id="sort-note">数组：38 55 24 71 13 46 62 30 —— 点一个算法开始。</div>
+  </div>
+
+  <h2 class="sec" id="lesson">🎬 动画课堂 · 第 6 集《一副扑克牌的七种整理法》</h2>
+  <p>整理扑克类比 → 插入排序 → 快排 partition → 冒泡 → 归并 → 成绩单总结。可用 ← → 切幕、R 重播。</p>
+  <div id="lesson"></div>
+
+  <div class="callout life"><div class="co-title">🎥 真·视频 第 4 集《快速排序 Partition》</div>
+  逐帧渲染 + 神经网络配音的传统 MP4 视频，可全屏播放。</div>
+  <video controls preload="metadata" src="mp4/ep04-quicksort.mp4" style="width:100%;border-radius:16px;border:1px solid var(--line);background:#000"></video>
+
+  <h2 class="sec">⚠️ 本章避坑清单</h2>
+  <div class="steps">
+    <div class="step">判断"第 k 趟结果"：快排每趟归位枢轴，冒泡/选择每趟归位一个最值，插入排序前 k 个是"局部有序"不是全局前 k 小——这是选择题最大的坑。</div>
+    <div class="step">快排在"基本有序"序列上最慢（O(n²)），"随机/逆序"才发挥好；想让它对有序序列快，可随机选枢轴。</div>
+    <div class="step">堆排序的"堆"是完全二叉树，用数组存时下标从 1 开始最顺手（2i/2i+1），别和 0 起点搞混。</div>
+    <div class="step">归并趟数 = ⌈log₂n⌉：100 个元素 7 趟，不是 6。</div>
+    <div class="step">要"稳定 + O(nlogn)"：内排只有归并；选择题问"最优"时先看稳定性要求再看复杂度。</div>
+  </div>
+
+  <h2 class="sec">📝 章内练习</h2>
+  <div class="quiz" data-answer="A">
+    <div class="q-head"><div class="q-tag">练习 1 · 考点：快排一趟结果</div>
+    对序列 {49, 38, 65, 97, 76, 13, 27} 以 49 为枢轴做一趟快速排序（Partition），结果是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. {27, 38, 13, 49, 76, 97, 65}</div>
+      <div class="opt" data-opt="B">B. {13, 27, 38, 49, 65, 76, 97}</div>
+      <div class="opt" data-opt="C">C. {27, 38, 13, 49, 65, 97, 76}</div>
+      <div class="opt" data-opt="D">D. {13, 38, 27, 49, 76, 97, 65}</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 A。双指针模拟：high 找到 27&lt;49 甩到 low 位 → {27,38,65,97,76,13,49}；low 找到 65&gt;49 甩到 high 位；high 找到 13&lt;49 甩到 low 位；low 找到 97&gt;49 甩到 high 位；两指针在原 49 位置相遇，49 归位。左边 {27,38,13} 都 ≤49，右边 {76,97,65} 都 ≥49，但两侧内部<b>未排好</b>——B 是排序完成的最终结果，别偷懒直接写终局。</div>
+  </div>
+  <div class="quiz" data-answer="C">
+    <div class="q-head"><div class="q-tag">练习 2 · 考点：稳定性</div>
+    下列排序算法中，稳定的是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 快速排序</div>
+      <div class="opt" data-opt="B">B. 堆排序</div>
+      <div class="opt" data-opt="C">C. 归并排序</div>
+      <div class="opt" data-opt="D">D. 简单选择排序</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 C。口诀"插冒归基稳，快选希堆不稳"。归并只在两段之间合并，相等元素先取左边段，天然稳定；快排/选择/堆排的长距离交换都会跨越相等元素破坏次序。</div>
+  </div>
+  <div class="quiz" data-answer="B">
+    <div class="q-head"><div class="q-tag">练习 3 · 考点：初态敏感性</div>
+    待排序序列<b>基本有序</b>（接近正序），要求时间复杂度接近 O(n)，最合适的算法是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 快速排序</div>
+      <div class="opt" data-opt="B">B. 直接插入排序</div>
+      <div class="opt" data-opt="C">C. 堆排序</div>
+      <div class="opt" data-opt="D">D. 简单选择排序</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 B。直接插入和冒泡在正序时每趟只比较一次不移动，O(n)；快排在正序时枢轴每次划分出"一边全空"，退化 O(n²)——"快排最怕有序序列"是高频结论。堆排/选择排序的比较次数与初态无关，永远 O(nlogn)/O(n²)。</div>
+  </div>
+  <div class="quiz" data-answer="D">
+    <div class="q-head"><div class="q-tag">练习 4 · 考点：堆的判别</div>
+    下列序列中，是大根堆的是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. {91, 85, 73, 96, 64, 52}</div>
+      <div class="opt" data-opt="B">B. {91, 85, 73, 64, 96, 52}</div>
+      <div class="opt" data-opt="C">C. {16, 72, 53, 85, 90, 91}</div>
+      <div class="opt" data-opt="D">D. {96, 85, 73, 64, 52, 16}</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 D。大根堆要求 a[i] ≥ a[2i] 且 a[i] ≥ a[2i+1]。D：96≥{85,73}，85≥{64,52}，73≥16 ✓。A 里 85 的孩子有 96（85&lt;96）✗；B 同理 85 的孩子 96 ✗；C 是小根堆特征。画成完全二叉树逐对检查最保险。</div>
+  </div>
+
+  <h2 class="sec">✅ 打卡清单</h2>
+  <div data-ck-scope>
+    <p><span class="progress-pill">0 / 6 已打卡</span></p>
+    <div class="checklist">
+      <label class="check-item" data-ck="ch6-1"><input type="checkbox"><span>能手工模拟快排 Partition 一趟全过程</span></label>
+      <label class="check-item" data-ck="ch6-2"><input type="checkbox"><span>能手工建大根堆并写堆排序前两趟</span></label>
+      <label class="check-item" data-ck="ch6-3"><input type="checkbox"><span>默写八大排序复杂度+稳定性总表</span></label>
+      <label class="check-item" data-ck="ch6-4"><input type="checkbox"><span>能根据序列特征选算法（有序→插入，要稳定→归并）</span></label>
+      <label class="check-item" data-ck="ch6-5"><input type="checkbox"><span>看完动画课堂《一副扑克牌的七种整理法》</span></label>
+      <label class="check-item" data-ck="ch6-6"><input type="checkbox"><span>章内练习 4 题正确 ≥ 3 题</span></label>
+    </div>
+  </div>
+</div>
+
+<footer>
+  408 数据结构可视化课堂 · 第 6 章 排序<br>
+  <div class="pagers">
+    <a href="ch05.html">← 上一章：查找</a><a href="ch07.html">下一章：串 →</a>
+  </div>
+</footer>
+<script src="assets/app.js"></script>
+<script src="assets/lesson-player.js"></script>
+<script src="assets/lesson-ch06.js"></script>
+<script src="assets/demo-ch06.js"></script>
+</body>
+</html>

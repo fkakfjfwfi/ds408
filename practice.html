@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>练习场 · 408 数据结构可视化课堂</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<nav class="topbar"><div class="topbar-inner">
+  <a class="logo" href="index.html"><span class="dot"></span>408 数据结构可视化课堂</a>
+  <div class="nav-links">
+    <a href="index.html">总览</a><a href="ch01.html">线性表</a><a href="ch02.html">栈与队列</a><a href="ch03.html">树</a><a href="ch04.html">图</a><a href="ch05.html">查找</a><a href="ch06.html">排序</a><a href="ch07.html">串</a><a href="practice.html">练习场</a><a href="resources.html">资源导航</a>
+  </div>
+  <button class="theme-btn" title="切换明暗主题">🌙</button>
+</div></nav>
+
+<div class="wrap">
+  <div class="hero">
+    <h1>📝 练习场</h1>
+    <p>全七章混合自测，题目与章内练习不重复。规则：<b>先自己想，再展开解析</b>——直接看解析等于白做。错题记下考点编号，回对应章节补。</p>
+  </div>
+
+  <h2 class="sec">第 1 组 · 线性表</h2>
+  <div class="quiz" data-answer="C">
+    <div class="q-head"><div class="q-tag">P1 · 考点：移动元素个数（ch01）</div>
+    顺序表有 10 个元素，在位序 5 处插入新元素，需要向后移动的元素个数是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 4</div>
+      <div class="opt" data-opt="B">B. 5</div>
+      <div class="opt" data-opt="C">C. 6</div>
+      <div class="opt" data-opt="D">D. 9</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 C。插入需移动 n−i+1 = 10−5+1 = 6 个（位序 5~10 的元素全部后移）。D 的 9 是"删首位"的情形；A、B 是把位序当下标的典型错法。</div>
+  </div>
+  <div class="quiz" data-answer="B">
+    <div class="q-head"><div class="q-tag">P2 · 考点：删除结点的后继（ch01）</div>
+    单链表中 p 指向某结点，要删除 p 的<b>后继</b>结点 q，正确操作是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. q = p->next; p = q->next; free(q);</div>
+      <div class="opt" data-opt="B">B. q = p->next; p->next = q->next; free(q);</div>
+      <div class="opt" data-opt="C">C. q = p->next; free(q); p->next = q->next;</div>
+      <div class="opt" data-opt="D">D. p->next = p->next->next;（无需 q）</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 B。三步曲：先存（q=p->next）→ 再跳（p->next=q->next）→ 后释放（free(q)）。C 先 free 再访问 q->next 是"释放后使用"，大题这么写直接扣分。D 看似可行，但大题要求释放被删结点时必须用 q 存地址——而且 p->next 为空时会崩。</div>
+  </div>
+
+  <h2 class="sec">第 2 组 · 栈与队列</h2>
+  <div class="quiz" data-answer="D">
+    <div class="q-head"><div class="q-tag">P3 · 考点：应用场景（ch02）</div>
+    下列场景中，<b>不适合</b>用队列作为核心数据结构的是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 图的广度优先搜索（BFS）</div>
+      <div class="opt" data-opt="B">B. 操作系统的任务调度（先来先服务）</div>
+      <div class="opt" data-opt="C">C. 打印任务缓冲区</div>
+      <div class="opt" data-opt="D">D. 程序的函数调用与递归</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 D。函数调用/递归用的是<b>栈</b>（后进先出——最后调用的函数最先返回）。A、B、C 都是典型的先进先出场景。对比记忆：栈管"最近的"，队列管"排队的"。</div>
+  </div>
+  <div class="quiz" data-answer="A">
+    <div class="q-head"><div class="q-tag">P4 · 考点：循环队列方案对比（ch02）</div>
+    相比"牺牲一格"方案，用 tag 标志判断循环队列空满的主要优势是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 不牺牲存储单元，满队时能存满 MaxSize 个元素</div>
+      <div class="opt" data-opt="B">B. 入队出队速度更快</div>
+      <div class="opt" data-opt="C">C. 不需要 front 和 rear 指针</div>
+      <div class="opt" data-opt="D">D. 不需要取模运算</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 A。牺牲一格方案满队时只能存 MaxSize−1 个；tag 方案 front==rear 时靠 tag 区分空满，空间利用率拉满。B、D 都不成立（tag 方案一样要取模），C 更是不对——tag 是<b>额外</b>加的标志，指针照旧。</div>
+  </div>
+
+  <h2 class="sec">第 3 组 · 树与二叉树</h2>
+  <div class="quiz" data-answer="C">
+    <div class="q-head"><div class="q-tag">P5 · 考点：完全二叉树高度（ch03）</div>
+    具有 200 个结点的完全二叉树，其高度（根为第 1 层）是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 7</div>
+      <div class="opt" data-opt="B">B. 8</div>
+      <div class="opt" data-opt="C">C. 8（2⁷ = 128 < 201 ≤ 256 = 2⁸）</div>
+      <div class="opt" data-opt="D">D. 9</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 C。高度 h 满足 2^(h−1) − 1 < n ≤ 2^h − 1，即 n+1 落在 (2^(h−1), 2^h]。n=200：2^7=128 < 201 ≤ 256=2^8，h=8。速算法：找最小的 h 使 2^h ≥ n+1。</div>
+  </div>
+  <div class="quiz" data-answer="A">
+    <div class="q-head"><div class="q-tag">P6 · 考点：遍历重建（ch03）</div>
+    某二叉树先序序列为 ABC，中序序列为 BAC。下列关于该树的描述正确的是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. A 是根，B 是 A 的左孩子，C 是 A 的右孩子</div>
+      <div class="opt" data-opt="B">B. A 是根，C 是 A 的左孩子，B 是 A 的右孩子</div>
+      <div class="opt" data-opt="C">C. 该树无法唯一确定</div>
+      <div class="opt" data-opt="D">D. B 是根，A、C 是它的孩子</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 A。先序第一个是根 A；中序 B 在 A 前（左子树）、C 在 A 后（右子树），左子树只有 B、右子树只有 C，形态唯一。后序序列即 B C A。凡是"先序+中序"的组合都能唯一重建——不能唯一的是"先序+后序"。</div>
+  </div>
+
+  <h2 class="sec">第 4 组 · 图</h2>
+  <div class="quiz" data-answer="B">
+    <div class="q-head"><div class="q-tag">P7 · 考点：遍历序列唯一性（ch04）</div>
+    对<b>有向图</b>进行 DFS/BFS 遍历，采用邻接矩阵存储时，从同一顶点出发得到的遍历序列：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 都唯一</div>
+      <div class="opt" data-opt="B">B. 都唯一（邻接矩阵按编号序扫描，天然确定访问次序）</div>
+      <div class="opt" data-opt="C">C. 都不唯一</div>
+      <div class="opt" data-opt="D">D. BFS 唯一，DFS 不唯一</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 B。邻接矩阵的行按顶点编号固定排列，扫描次序唯一 → 两种遍历序列都唯一。换成邻接表则取决于边表中邻接点的次序，就不唯一了——"唯一性看存储结构"是判断这类题的总钥匙。</div>
+  </div>
+  <div class="quiz" data-answer="A">
+    <div class="q-head"><div class="q-tag">P8 · 考点：MST 算法选型（ch04）</div>
+    对一个边数远小于 n² 的<b>稀疏网</b>求最小生成树，更适合的算法及理由是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. Kruskal，O(eloge) 只依赖边数</div>
+      <div class="opt" data-opt="B">B. Prim，O(n²) 只依赖顶点数</div>
+      <div class="opt" data-opt="C">C. Dijkstra，顺路求出最短路</div>
+      <div class="opt" data-opt="D">D. 两者复杂度相同，任选</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 A。Kruskal 按边权排序后逐边收购，O(eloge)，稀疏图 e≪n² 时明显快于 Prim 的 O(n²)。C 是张冠李戴——Dijkstra 求最短路不求 MST。口诀"稠密 Prim，稀疏 Kruskal"。</div>
+  </div>
+
+  <h2 class="sec">第 5 组 · 查找</h2>
+  <div class="quiz" data-answer="C">
+    <div class="q-head"><div class="q-tag">P9 · 考点：BST 与 AVL（ch05）</div>
+    将序列 {1, 2, 3, 4, 5} 依次插入空的二叉排序树，再将其改造为等关键字集合的平衡二叉树，AVL 的树根是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 1</div>
+      <div class="opt" data-opt="B">B. 2</div>
+      <div class="opt" data-opt="C">C. 3</div>
+      <div class="opt" data-opt="D">D. 5</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 C。BST 顺序插入会退化成右斜链。平衡化后取"中间值转上去"：中序序列 1,2,3,4,5 的中间值 3 作根，左右各挂两个结点，高度从 5 降到 3。这也是"有序序列插 BST 必退化"考点的正面应用。</div>
+  </div>
+  <div class="quiz" data-answer="B">
+    <div class="q-head"><div class="q-tag">P10 · 考点：折半查找方向（ch05）</div>
+    对有序表 {7, 14, 21, 35, 42, 56, 68} 折半查找 56（mid=⌊(low+high)/2⌋），依次与之比较的元素是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 35, 42, 56</div>
+      <div class="opt" data-opt="B">B. 35, 56</div>
+      <div class="opt" data-opt="C">C. 42, 56</div>
+      <div class="opt" data-opt="D">D. 35, 42, 68, 56</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 B。第一轮 low=0, high=6, mid=3 → 35&lt;56，low=4；第二轮 low=4, high=6, mid=5 → 56 命中。共 2 次比较。去第 5 章动画第 2 幕对照同款数组的完整演示。</div>
+  </div>
+
+  <h2 class="sec">第 6 组 · 排序</h2>
+  <div class="quiz" data-answer="A">
+    <div class="q-head"><div class="q-tag">P11 · 考点：趟数与归位（ch06）</div>
+    对序列 {25, 68, 19, 43, 91, 56} 进行一趟冒泡排序（从前往后相邻比较，大者后移），结果是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. {25, 19, 43, 68, 56, 91}</div>
+      <div class="opt" data-opt="B">B. {19, 25, 43, 56, 68, 91}</div>
+      <div class="opt" data-opt="C">C. {19, 25, 68, 43, 91, 56}</div>
+      <div class="opt" data-opt="D">D. {91, 68, 56, 43, 25, 19}</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 A。逐对模拟：25≤68 不换 → 68&gt;19 换 {25,19,68,...} → 68&lt;43? 否，68&gt;43 换 → 68&lt;91 不换 → 91&gt;56 换 → 91 沉底。B 是排序完成的终局，C、D 是凭感觉写的——趟数题必须逐对动手。</div>
+  </div>
+  <div class="quiz" data-answer="D">
+    <div class="q-head"><div class="q-tag">P12 · 考点：算法选型综合（ch06）</div>
+    要求：10 万条记录按关键字排序，<b>必须稳定</b>，且辅助空间尽量小。最合适的选择是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 快速排序</div>
+      <div class="opt" data-opt="B">B. 堆排序</div>
+      <div class="opt" data-opt="C">C. 冒泡排序</div>
+      <div class="opt" data-opt="D">D. 归并排序</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 D。"稳定 + O(nlogn)"的内部排序只有归并，辅助 O(n) 是必要代价。快排/堆排都不稳定直接出局；冒泡虽稳定但 O(n²) 对 10 万条数据不可接受。这类"约束叠加"题先筛稳定性、再比复杂度。</div>
+  </div>
+
+  <h2 class="sec">第 7 组 · 串</h2>
+  <div class="quiz" data-answer="B">
+    <div class="q-head"><div class="q-tag">P13 · 考点：next 数组（ch07）</div>
+    模式串 'aaab'（位序从 1 开始）的 next 数组是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 0 1 1 1</div>
+      <div class="opt" data-opt="B">B. 0 1 2 3</div>
+      <div class="opt" data-opt="C">C. 0 1 2 2</div>
+      <div class="opt" data-opt="D">D. 1 2 3 4</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 B。j=3 看 'aa'：前缀 'a'=后缀 'a' 长 1 → 2；j=4 看 'aaa'：最长 'aa' 长 2 → 3。全同字符的模式串 next 逐位递增——这正是 KMP 最得意的场景。去第 7 章实验室输入 aaab 验证。</div>
+  </div>
+  <div class="quiz" data-answer="C">
+    <div class="q-head"><div class="q-tag">P14 · 考点：匹配过程（ch07）</div>
+    KMP 匹配过程中发生失配时，指针的变化是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 主串指针 i 和模式串指针 j 都回退</div>
+      <div class="opt" data-opt="B">B. i 不变，j 回退到 1 重新开始</div>
+      <div class="opt" data-opt="C">C. i 不回退，j 滑动到 next[j]（next[j]=0 时 i 才前进）</div>
+      <div class="opt" data-opt="D">D. i 和 j 都不变，只换下一个模式串</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 C。KMP 的招牌：i 永不回退，j 滑到 next[j] 继续比；仅当 next[j]=0 时才"i 右移、j 归 1"。B 描述的是朴素 BF 的做法——这正是 KMP 要消灭的浪费。去实验室看动画里 i 箭头始终向右。</div>
+  </div>
+
+  <div class="callout ok"><div class="co-title">✅ 做完之后</div>
+  全对 → 回章节页把对应打卡项勾上；有错题 → 记下考点编号回章补，三天后再来重做一遍这 14 题（间隔重复比当天刷一百题有用）。想要更多题：王道书课后选择题 + 真题，见<a href="resources.html">资源导航</a>。</div>
+</div>
+
+<footer>
+  408 数据结构可视化课堂 · 练习场<br>
+  <div class="pagers">
+    <a href="ch07.html">← 回第 7 章</a><a href="resources.html">资源导航 →</a>
+  </div>
+</footer>
+<script src="assets/app.js"></script>
+</body>
+</html>

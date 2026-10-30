@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 7 章 串 · 408 数据结构可视化课堂</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<nav class="topbar"><div class="topbar-inner">
+  <a class="logo" href="index.html"><span class="dot"></span>408 数据结构可视化课堂</a>
+  <div class="nav-links">
+    <a href="index.html">总览</a><a href="ch01.html">线性表</a><a href="ch02.html">栈与队列</a><a href="ch03.html">树</a><a href="ch04.html">图</a><a href="ch05.html">查找</a><a href="ch06.html">排序</a><a href="ch07.html">串</a><a href="practice.html">练习场</a><a href="resources.html">资源导航</a>
+  </div>
+  <button class="theme-btn" title="切换明暗主题">🌙</button>
+</div></nav>
+
+<div class="wrap">
+  <div class="hero">
+    <h1>第 7 章 · 串</h1>
+    <p>408 里占比最小的一章，但 KMP 是常客：考纲里明晃晃写着"字符串模式匹配"。好消息是只需吃透两件事——<b>朴素匹配为什么慢</b>、<b>next 数组怎么手算</b>。本章实验室可以输入任意模式串自动算 next，作业题直接对答案。</p>
+    <p class="tagline">预计学习 1~2 小时 · 动画课堂 1 集 · KMP 实验室 1 个 · 练习 4 题 · 打卡 6 项</p>
+  </div>
+
+  <div class="callout exam"><div class="co-title">🎯 学习目标（学完你应该能）</div>
+  ① 手工模拟朴素模式匹配（BF），说出主串指针为什么要回溯、最坏比较多少次；<br>
+  ② 对任意模式串手工计算 next 数组（408 默认 next[1]=0、next[2]=1 的约定）；<br>
+  ③ 由 next 推出改进的 nextval，并解释它省掉了哪些无用比较；<br>
+  ④ 默写 KMP 的复杂度 O(n+m)，并解释主串指针为什么可以不回溯。</div>
+
+  <h2 class="sec">7.1 先说人话：什么是串</h2>
+  <div class="callout life"><div class="co-title">🔍 生活类比</div>
+  串就是<b>字符串</b>——内容被限制成"字符"的线性表。Ctrl+F 在文档里找关键词，就是在做"模式匹配"：文档是<b>主串</b>，关键词是<b>模式串</b>。</div>
+  <p>术语三件套：串中任意个连续字符组成<b>子串</b>（空串也是任何串的子串）；字符在串中的<b>位序从 1 开始</b>（408 与严蔚敏教材约定）；子串在主串中的位置 = 子串第一个字符的位序。存储有定长顺序存储、堆分配存储、块链存储三种，408 只考概念级别。</p>
+
+  <h2 class="sec">7.2 朴素模式匹配 BF：笨办法</h2>
+  <div class="steps">
+    <div class="step">主串指针 i、模式串指针 j 从头开始，逐字符对齐比较；</div>
+    <div class="step">匹配成功则一起后移；<b>失配则 i 回溯到"本轮起点的下一个"（i = i − j + 2），j 归 1 重来</b>；</div>
+    <div class="step">最坏情形：每个起点都比对到最后一个字符才失败，约 (n−m+1)×m 次，时间 <b>O(n×m)</b>。</div>
+  </div>
+  <div class="callout warn"><div class="co-title">⚠️ BF 的浪费在哪</div>
+  已经比对过的信息全被扔掉了！主串前 5 个字符明明都看过了，失配后却要退回去从第 2 个字符重新看。KMP 的全部智慧就是：<b>主串指针 i 永不回溯</b>，失配后只动模式串。</div>
+
+  <h2 class="sec">7.3 KMP：模式串自己会滑</h2>
+  <p>失配时，模式串已经匹配过的部分 <code class="inline">T[1..j−1]</code> 是已知的。如果它有<b>相等的前缀和后缀</b>（比如 'abaab' 的前缀 'ab' = 后缀 'ab'），那么主串里刚匹配过的后缀就等于模式串的前缀——<b>模式串可以直接滑到"前缀对齐后缀"的位置继续比</b>，i 一步都不用退。</p>
+  <p>每个位置 j 滑多远，取决于 <code class="inline">T[1..j−1]</code> 的<b>最长相等前后缀长度 + 1</b>——这就是 <code class="inline">next[j]</code>。</p>
+  <div class="callout exam"><div class="co-title">📌 next 数组手算四步（408 默认约定）</div>
+  ① next[1] = 0；② next[2] = 1（只有一个字符，无真前后缀）；③ 对 j≥3：看 <code class="inline">T[1..j−1]</code> 的<b>最长相等真前后缀</b>长度 k，next[j] = k + 1；④ 失配时 j 跳到 next[j]（next[j]=0 时 i、j 都 +1）。<b>口诀：看前串，数前后缀，加一填表。</b></div>
+  <pre class="code">// 模式串 'abaabc' 的 next 数组（1 起始约定）
+//  j:    1  2  3  4  5  6
+//  T[j]: a  b  a  a  b  c
+//  next: 0  1  1  2  2  3
+// 例：next[4]：看 'aba' → 前缀 'a' = 后缀 'a' → 长度1 → next[4]=1+1=2
+// 例：next[6]：看 'abaab' → 前缀 'ab' = 后缀 'ab' → 长度2 → next[6]=2+1=3</pre>
+
+  <h2 class="sec">7.4 nextval：把"明知必败"的比较也省掉</h2>
+  <p>next 还有一处浪费：失配后 j 跳到 next[j]，但如果 <code class="inline">T[next[j]]</code> 和 <code class="inline">T[j]</code> 是<b>同一个字符</b>，那这次比较必然又失败。nextval 的规则：</p>
+  <pre class="code">if (T[j] == T[next[j]])  nextval[j] = nextval[next[j]];  // 跳过的比较直接继承
+else                     nextval[j] = next[j];</pre>
+  <div class="callout ok"><div class="co-title">✅ 一句话区分</div>
+  next 答"跳到哪"，nextval 答"跳过明知会失败的，直接跳到真正可能有戏的位置"。两者都只动 j，主串 i 永不回溯——KMP 复杂度 O(n+m) 的来源。</div>
+
+  <div class="demo" id="demo-kmp">
+    <div class="demo-title">🔬 实验室：next 数组计算 + KMP 匹配动画</div>
+    <div class="demo-desc">输入模式串点"计算 next"，逐列看最长相等前后缀怎么数；点"播放匹配"看主串 i 永不回溯、模式串 j 滑动的全过程。</div>
+    <div class="demo-stage"><svg id="kmp-svg" viewBox="0 0 860 240" width="100%"></svg></div>
+    <div class="demo-ctrl">
+      <label>模式串：<input id="kmp-pat" type="text" value="abaabc" maxlength="12" style="width:120px"></label>
+      <button id="kmp-calc">计算 next / nextval</button>
+      <button id="kmp-play" class="ghost">播放匹配</button>
+      <button id="kmp-reset" class="ghost">重置</button>
+    </div>
+    <div class="demo-note" id="kmp-note">主串固定为 S = abaababaabaabc（长度 14）。先算 next，再播放匹配。</div>
+  </div>
+
+  <h2 class="sec" id="lesson">🎬 动画课堂 · 第 7 集《不回头的侦探》</h2>
+  <p>BF 的笨 → 前后缀的秘密 → 手算 next → KMP 匹配 → 考点总结。i 是侦探，看过一眼的线索绝不重看。</p>
+  <div id="lesson"></div>
+
+  <div class="callout life"><div class="co-title">🎥 真·视频 第 5 集《KMP：不回头的侦探》</div>
+  逐帧渲染 + 神经网络配音的传统 MP4 视频，可全屏播放。</div>
+  <video controls preload="metadata" src="mp4/ep05-kmp.mp4" style="width:100%;border-radius:16px;border:1px solid var(--line);background:#000"></video>
+
+  <h2 class="sec">⚠️ 本章避坑清单</h2>
+  <div class="steps">
+    <div class="step">next 数组的下标约定看教材：严蔚敏/408 用 1 起始且 next[1]=0；有些资料用 0 起始且 next[0]=−1。答题前先确认题目约定，两者差 1 别背串。</div>
+    <div class="step">算 next[j] 只看 <code class="inline">T[1..j−1]</code>，<b>不包括 T[j] 自己</b>——最容易犯的错。</div>
+    <div class="step">"最长相等前后缀"不许是整个串本身（真前后缀），否则永远等于自己，没有意义。</div>
+    <div class="step">KMP 主串指针不回溯 ≠ 主串不走回头路视觉上——动画里 i 始终单调右移，j 才会跳动。</div>
+    <div class="step">复杂度：BF 最坏 O(n×m)，KMP 严格 O(n+m)——"KMP 提高的是最坏性能，很多实际文本中 BF 也不慢"是概念题的正解说法。</div>
+  </div>
+
+  <h2 class="sec">📝 章内练习</h2>
+  <div class="quiz" data-answer="C">
+    <div class="q-head"><div class="q-tag">练习 1 · 考点：next 数组手算</div>
+    模式串 'abaabc'（位序从 1 开始）的 next 数组是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 0 1 1 1 2 2</div>
+      <div class="opt" data-opt="B">B. 0 1 2 2 3 1</div>
+      <div class="opt" data-opt="C">C. 0 1 1 2 2 3</div>
+      <div class="opt" data-opt="D">D. 1 1 2 2 3 3</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 C。逐列数：j=3 看 'ab' 无相等真前后缀 → 1；j=4 看 'aba'，前缀'a'=后缀'a' 长 1 → 2；j=5 看 'abaa'，最长 'a' → 2；j=6 看 'abaab'，'ab'='ab' 长 2 → 3。口诀"看前串，数前后缀，加一填表"。去实验室输入 abaabc 验证一遍。</div>
+  </div>
+  <div class="quiz" data-answer="B">
+    <div class="q-head"><div class="q-tag">练习 2 · 考点：KMP 复杂度本质</div>
+    KMP 算法的时间复杂度为 O(n+m)，其根本原因是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 模式串更短</div>
+      <div class="opt" data-opt="B">B. 主串指针 i 不回溯，j 的滑动总移动量摊销后为 O(m)</div>
+      <div class="opt" data-opt="C">C. 用了哈希表加速字符比较</div>
+      <div class="opt" data-opt="D">D. 递归代替了循环</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 B。i 单调右移最多 n 次；j 虽会跳动，但每次匹配成功 j+1 最多 m 次，失配下滑总量不会超过上滑总量（摊销），总共 O(m)。两次线性扫描 → O(n+m)。KMP 和哈希、递归都没关系。</div>
+  </div>
+  <div class="quiz" data-answer="A">
+    <div class="q-head"><div class="q-tag">练习 3 · 考点：BF 最坏情形</div>
+    主串长 n、模式串长 m（n≫m），朴素模式匹配算法在最坏情况下的时间复杂度是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. O(n×m)</div>
+      <div class="opt" data-opt="B">B. O(n+m)</div>
+      <div class="opt" data-opt="C">C. O(log(n+m))</div>
+      <div class="opt" data-opt="D">D. O(n²)</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 A。最坏：如主串 'aaaa…a' 找 'aaab'，每个起点都要比对到模式串最后一个字符才失败，约 (n−m+1)×m 次。B 是 KMP 的成绩，D 忽略了 m——n×m 在 n≈m 时才退化成 n²。</div>
+  </div>
+  <div class="quiz" data-answer="D">
+    <div class="q-head"><div class="q-tag">练习 4 · 考点：nextval 手算</div>
+    模式串 'abaabc' 的 nextval 数组是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 0 1 1 2 2 3</div>
+      <div class="opt" data-opt="B">B. 0 0 1 2 2 3</div>
+      <div class="opt" data-opt="C">C. 0 1 0 2 2 3</div>
+      <div class="opt" data-opt="D">D. 0 1 0 2 1 3</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 D。在 next（0 1 1 2 2 3）基础上逐位检查：j=3：T[3]='a' 与 T[next[3]]=T[1]='a' 相同 → nextval[3]=nextval[1]=0；j=5：T[5]='b' 与 T[next[5]]=T[2]='b' 相同 → nextval[5]=nextval[2]=1。其余位字符不同，直接继承 next。口诀："与跳往位置的字符相同？那这一跳也是白跳，跟着它一起跳。"</div>
+  </div>
+
+  <h2 class="sec">✅ 打卡清单</h2>
+  <div data-ck-scope>
+    <p><span class="progress-pill">0 / 6 已打卡</span></p>
+    <div class="checklist">
+      <label class="check-item" data-ck="ch7-1"><input type="checkbox"><span>能手算任意模式串的 next 数组</span></label>
+      <label class="check-item" data-ck="ch7-2"><input type="checkbox"><span>能解释 next → nextval 的改进规则</span></label>
+      <label class="check-item" data-ck="ch7-3"><input type="checkbox"><span>能说出 KMP 主串指针不回溯的原因</span></label>
+      <label class="check-item" data-ck="ch7-4"><input type="checkbox"><span>记住 408 的 next[1]=0 / next[2]=1 约定</span></label>
+      <label class="check-item" data-ck="ch7-5"><input type="checkbox"><span>看完动画课堂《不回头的侦探》</span></label>
+      <label class="check-item" data-ck="ch7-6"><input type="checkbox"><span>章内练习 4 题正确 ≥ 3 题</span></label>
+    </div>
+  </div>
+</div>
+
+<footer>
+  408 数据结构可视化课堂 · 第 7 章 串<br>
+  <div class="pagers">
+    <a href="ch06.html">← 上一章：排序</a><a href="practice.html">去练习场刷题 →</a>
+  </div>
+</footer>
+<script src="assets/app.js"></script>
+<script src="assets/lesson-player.js"></script>
+<script src="assets/lesson-ch07.js"></script>
+<script src="assets/demo-ch07.js"></script>
+</body>
+</html>

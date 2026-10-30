@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第 5 章 查找 · 408 数据结构可视化课堂</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<nav class="topbar"><div class="topbar-inner">
+  <a class="logo" href="index.html"><span class="dot"></span>408 数据结构可视化课堂</a>
+  <div class="nav-links">
+    <a href="index.html">总览</a><a href="ch01.html">线性表</a><a href="ch02.html">栈与队列</a><a href="ch03.html">树</a><a href="ch04.html">图</a><a href="ch05.html">查找</a><a href="ch06.html">排序</a><a href="ch07.html">串</a><a href="practice.html">练习场</a><a href="resources.html">资源导航</a>
+  </div>
+  <button class="theme-btn" title="切换明暗主题">🌙</button>
+</div></nav>
+
+<div class="wrap">
+  <div class="hero">
+    <h1>第 5 章 · 查找</h1>
+    <p>查找是数据结构"学以致用"的一章：折半查找是分治思想的第一次落地，BST 是树结构的第一个应用，散列表则是"以空间换时间"的极致。408 选择题年年考 ASL 计算，大题爱考散列表和 BST。</p>
+    <p class="tagline">预计学习 3~5 小时 · 动画课堂 1 集 · BST/哈希实验室 2 个 · 练习 4 题 · 打卡 6 项</p>
+  </div>
+
+  <div class="callout exam"><div class="co-title">🎯 学习目标（学完你应该能）</div>
+  ① 对有序表手工画出折半查找判定树，算出成功/失败 ASL；<br>
+  ② 给关键字序列手工构造 BST，并写出其中序序列验证"左<根<右"；<br>
+  ③ 判断 AVL 失衡类型（LL/RR/LR/RL）并画出旋转结果；<br>
+  ④ 给散列函数和冲突处理方法，手工构造散列表并计算成功/失败查找的平均查找长度。</div>
+
+  <h2 class="sec">5.1 先说人话：查找与 ASL</h2>
+  <div class="callout life"><div class="co-title">📖 生活类比</div>
+  查字典就是查找：从第一页往后翻是<b>顺序查找</b>；直接翻到中间比大小是<b>折半查找</b>；按拼音索引直达音节是<b>散列</b>。翻的次数越少，方法越好——"平均翻几次"就是 <b>ASL（平均查找长度）</b>。</div>
+  <p>ASL = Σ Pᵢ × Cᵢ（Pᵢ 是查到第 i 个元素的概率，通常等概率 1/n；Cᵢ 是找到它需要的比较次数）。<b>整个第五章所有算法的优劣，都用 ASL 说话</b>——408 的散列表大题就是让你算它。</p>
+
+  <h2 class="sec">5.2 折半查找：每次扔掉一半</h2>
+  <pre class="code">int low = 0, high = n - 1;
+while (low <= high) {
+    int mid = (low + high) / 2;      // 取中间
+    if (a[mid] == key) return mid;
+    else if (a[mid] > key) high = mid - 1;  // 扔掉右半
+    else low = mid + 1;                     // 扔掉左半
+}
+return -1;  // low > high 说明没找到</pre>
+  <p>折半查找的过程画成树就是<b>判定树</b>：根是 mid，左子树是左半区，右子树是右半区。n 个元素的判定树是平衡的，树高 ⌈log₂(n+1)⌉——这正是<b>最多比较次数</b>。成功查找 ASL ≈ log₂(n+1) − 1，时间 O(log n)。</p>
+  <div class="callout warn"><div class="co-title">⚠️ 折半查找的前提</div>
+  ① <b>有序</b>；② <b>顺序存储</b>（链表不能折半——无法 O(1) 取中间元素）。两个前提缺一个，选择题直接判"不可用"。另外它只适合"建一次查多次"的静态表，频繁插删的动态表用 BST。</div>
+
+  <h2 class="sec">5.3 二叉排序树 BST：左小右大</h2>
+  <div class="callout life"><div class="co-title">🌳 生活类比</div>
+  BST 像<b>植物大战僵尸的排兵布阵</b>：站在每个结点上，比它小的都排在左边，比它大的都排在右边。找数字时从根出发：大了往左拐、小了往右拐，一次比较砍掉一个子树——"树形版的折半查找"。</div>
+  <div class="steps">
+    <div class="step"><b>定义：</b>左子树所有结点 &lt; 根 &lt; 右子树所有结点（递归成立）。</div>
+    <div class="step"><b>中序铁律：</b>BST 的中序遍历序列<b>必然递增</b>——这是判断一棵二叉树是不是 BST 的最快方法，也是选择题高频考点。</div>
+    <div class="step"><b>插入：</b>按查找路径走到底，空位就是新结点的家（新结点永远是叶子）。</div>
+    <div class="step"><b>删除：</b>叶子直接删；只有一棵子树则子树顶上；有两棵子树则用<b>中序前驱（左子树最右）或中序后继（右子树最左）</b>顶替后再删那个顶替者。</div>
+  </div>
+  <div class="demo" id="demo-bst">
+    <div class="demo-title">🔬 实验室：二叉排序树</div>
+    <div class="demo-desc">输入数字点"插入"，看它沿着查找路径落位（新结点永远是叶子）；点"查找"看比较过程。试试插入 5、3、8、2、4、7、9，再插入 1——树歪了会怎样？这正是 AVL 要解决的问题。</div>
+    <div class="demo-stage"><svg id="bst-svg" viewBox="0 0 860 300" width="100%"></svg></div>
+    <div class="demo-ctrl">
+      <label>数值：<input id="bst-val" type="number" value="34"></label>
+      <button id="bst-ins">插入</button>
+      <button id="bst-find" class="ghost">查找</button>
+      <button id="bst-reset" class="ghost">重置(34,21,56,12,28)</button>
+    </div>
+    <div class="demo-note" id="bst-note">当前树：空。先点"重置"载入示例树。</div>
+  </div>
+
+  <h2 class="sec">5.4 平衡二叉树 AVL：不许歪脖子</h2>
+  <p>BST 有个致命弱点：按 1,2,3,4,5 顺序插入会退化成一条链，查找掉回 O(n)。AVL 给每个结点规定<b>平衡因子 = 左子树高 − 右子树高，绝对值 ≤ 1</b>，插入导致失衡时立刻旋转纠正。</p>
+  <table class="tbl">
+    <tr><th>失衡类型</th><th>插入位置</th><th>调整</th><th>记忆</th></tr>
+    <tr><td>LL</td><td>左孩子的左子树</td><td><b>右旋</b></td><td>左左→往右转</td></tr>
+    <tr><td>RR</td><td>右孩子的右子树</td><td><b>左旋</b></td><td>右右→往左转</td></tr>
+    <tr><td>LR</td><td>左孩子的右子树</td><td>先左旋后右旋</td><td>两次对折</td></tr>
+    <tr><td>RL</td><td>右孩子的左子树</td><td>先右旋后左旋</td><td>两次对折</td></tr>
+  </table>
+  <div class="callout ok"><div class="co-title">✅ 旋转的万能心法</div>
+  别背四种口诀，记住一句话：<b>"把中间值转上去"</b>。三个结点排中序，中序序列的中间那个一定是旋转后的新根——画三个圈排一排，秒出答案。n 层 AVL 最少结点数递推：N(h)=N(h−1)+N(h−2)+1。</div>
+
+  <h2 class="sec">5.5 B 树与 B+ 树（概念级）</h2>
+  <p>B 树是<b>多路平衡查找树</b>：一个结点存多个关键字、分出多棵子树，专为磁盘块存取设计（一层 I/O 少读几块）。m 阶 B 树：每个结点最多 m 棵子树；根至少 2 棵；非根非叶至少 ⌈m/2⌉ 棵；所有叶子（失败结点）在同一层。<b>B+ 树</b>把数据全放在叶子层且叶子串成链表——数据库索引的标配。408 只考概念和结点数范围计算。</p>
+
+  <h2 class="sec">5.6 散列表：O(1) 的艺术</h2>
+  <div class="callout life"><div class="co-title">📱 生活类比</div>
+  散列表就是<b>手机通讯录</b>：不从头翻，直接按姓名首字母跳到那一栏。散列函数 H(key) 把关键字直接映射成存储地址，理想情况一次到位 O(1)。但"张"姓太多挤在一格——这就是<b>冲突</b>。</div>
+  <p><b>冲突处理两大流派</b>：<b>开放定址法</b>（被占了就按规则找下一家：线性探测 +1、+1、+1…，平方探测 +1²、−1²、+2²…）和<b>拉链法</b>（同义词挂成链表）。<b>装填因子 α = 表中元素数 / 表长</b>，α 越大越挤、冲突越多——ASL 与 α 直接挂钩，与表长无关（经典结论）。</p>
+  <div class="callout exam"><div class="co-title">📌 408 大题标配：散列表 ASL 计算</div>
+  成功 ASL：每个元素<b>实际插入时的比较次数</b>之和 ÷ 元素个数；失败 ASL：从每个可能的散列位置开始<b>走到空位</b>的比较次数之和 ÷ 散列函数模数 p（不是表长！）。线性探测的失败查找要一直探到第一个空位——容易数错，画表逐格数最稳。</div>
+
+  <div class="demo" id="demo-hash">
+    <div class="demo-title">🔬 实验室：散列表（H(key) = key % 7，线性探测）</div>
+    <div class="demo-desc">点"插入"看冲突如何发生：23→2 格，14→0 格，9→2 格被占 → 顺移 3 格。逐步插入 23、14、9，再看 30、16 怎么引发连锁堆积。</div>
+    <div class="demo-stage"><svg id="hash-svg" viewBox="0 0 860 190" width="100%"></svg></div>
+    <div class="demo-ctrl">
+      <button data-hv="23">插入 23</button>
+      <button data-hv="14">插入 14</button>
+      <button data-hv="9">插入 9</button>
+      <button data-hv="30">插入 30</button>
+      <button data-hv="16">插入 16</button>
+      <button id="hash-reset" class="ghost">重置</button>
+    </div>
+    <div class="demo-note" id="hash-note">空表（表长 7，下标 0~6）。装填因子 α = 0/7 = 0。</div>
+  </div>
+
+  <h2 class="sec" id="lesson">🎬 动画课堂 · 第 5 集《翻字典的三种姿势》</h2>
+  <p>翻字典类比 → 折半查找判定 → BST 生长 → AVL 旋转一瞥 → 散列拉链法 → ASL 总结。进度条上的圆点可以跳幕。</p>
+  <div id="lesson"></div>
+
+  <div class="callout life"><div class="co-title">🎥 真·视频 第 3 集《二叉排序树 BST》</div>
+  逐帧渲染 + 神经网络配音的传统 MP4 视频，可全屏播放。</div>
+  <video controls preload="metadata" src="mp4/ep03-bst.mp4" style="width:100%;border-radius:16px;border:1px solid var(--line);background:#000"></video>
+
+  <h2 class="sec">⚠️ 本章避坑清单</h2>
+  <div class="steps">
+    <div class="step">折半查找判定树：mid 唯一确定（⌊(low+high)/2⌋），树形唯一，别自己发明取整规则。</div>
+    <div class="step">BST 中序序列必须递增——做题先中序走一遍验证，能秒杀很多"这棵树是不是 BST"的选择题。</div>
+    <div class="step">AVL 判断失衡类型看<b>离新结点最近的失衡结点</b>，不是根。"中间值转上去"心法比背四种口诀可靠。</div>
+    <div class="step">散列失败 ASL 的分母是<b>模数 p</b>，不是表长——2022 真题级别的陷阱。</div>
+    <div class="step">线性探测容易"堆积"（非同义词抢同一个坑），拉链法没有堆积问题但需要额外指针空间——概念题常对比两者。</div>
+  </div>
+
+  <h2 class="sec">📝 章内练习</h2>
+  <div class="quiz" data-answer="B">
+    <div class="q-head"><div class="q-tag">练习 1 · 考点：折半查找比较次数</div>
+    对含 16 个元素的有序表进行折半查找，最多需要比较的次数是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 4</div>
+      <div class="opt" data-opt="B">B. 5</div>
+      <div class="opt" data-opt="C">C. 6</div>
+      <div class="opt" data-opt="D">D. 16</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 B。最多比较次数 = 判定树高度 = ⌈log₂(n+1)⌉ = ⌈log₂17⌉ = 5。验证：2⁴=16 ≥ 17 不成立、2⁵=32 ≥ 17 成立，所以 5 层。</div>
+  </div>
+  <div class="quiz" data-answer="A">
+    <div class="q-head"><div class="q-tag">练习 2 · 考点：BST 性质</div>
+    对二叉排序树进行中序遍历，得到的序列必然是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 递增有序序列</div>
+      <div class="opt" data-opt="B">B. 递减有序序列</div>
+      <div class="opt" data-opt="C">C. 先序序列相同</div>
+      <div class="opt" data-opt="D">D. 与插入顺序相同</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 A。"左 &lt; 根 &lt; 右"递归成立 ⇒ 中序=左根右=从小到大。D 是经典错误：插入顺序只影响树形，不决定中序结果。这也是"验证一棵树是否为 BST"的标准手段。</div>
+  </div>
+  <div class="quiz" data-answer="C">
+    <div class="q-head"><div class="q-tag">练习 3 · 考点：线性探测</div>
+    散列函数 H(key)=key%7，表长 7，依次插入 14、21、28（线性探测再散列），查找 28 需要比较的次数是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 1</div>
+      <div class="opt" data-opt="B">B. 2</div>
+      <div class="opt" data-opt="C">C. 3</div>
+      <div class="opt" data-opt="D">D. 4</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 C。14%7=0 → 下标0；21%7=0 冲突 → 下标1；28%7=0 冲突 → 探下标1又冲突 → 下标2。查找 28 时也要从 H(28)=0 开始：比下标0（14，不等）、下标1（21，不等）、下标2（28，命中）——共 3 次。三个"同模数"挤成一串，正是线性探测的堆积现象。</div>
+  </div>
+  <div class="quiz" data-answer="D">
+    <div class="q-head"><div class="q-tag">练习 4 · 考点：AVL 旋转</div>
+    在 AVL 树中，某结点的左孩子的左子树上插入新结点导致失衡（LL 型），应进行的调整是：</div>
+    <div class="opts">
+      <div class="opt" data-opt="A">A. 左旋</div>
+      <div class="opt" data-opt="B">B. 先左旋后右旋</div>
+      <div class="opt" data-opt="C">C. 先右旋后左旋</div>
+      <div class="opt" data-opt="D">D. 右旋</div>
+    </div>
+    <div class="q-foot"><button class="btn-ans">提交答案</button><span class="q-res"></span></div>
+    <div class="q-exp"><b>解析：</b>选 D。LL 型（左边太重）→ 右旋；RR 型 → 左旋；LR/RL 型 → 两次对折。用"中间值转上去"验证：A 的左孩子 B 的左子树 L，三个候选中序为 L、B、A，中间值 B 是新根——正是 B 右旋上去。</div>
+  </div>
+
+  <h2 class="sec">✅ 打卡清单</h2>
+  <div data-ck-scope>
+    <p><span class="progress-pill">0 / 6 已打卡</span></p>
+    <div class="checklist">
+      <label class="check-item" data-ck="ch5-1"><input type="checkbox"><span>能画折半查找判定树并计算成功/失败 ASL</span></label>
+      <label class="check-item" data-ck="ch5-2"><input type="checkbox"><span>能手工构造 BST 并用中序序列验证</span></label>
+      <label class="check-item" data-ck="ch5-3"><input type="checkbox"><span>能判断 AVL 失衡类型并画出旋转结果</span></label>
+      <label class="check-item" data-ck="ch5-4"><input type="checkbox"><span>能算散列表成功/失败 ASL（记住分母规则）</span></label>
+      <label class="check-item" data-ck="ch5-5"><input type="checkbox"><span>看完动画课堂《翻字典的三种姿势》</span></label>
+      <label class="check-item" data-ck="ch5-6"><input type="checkbox"><span>章内练习 4 题正确 ≥ 3 题</span></label>
+    </div>
+  </div>
+</div>
+
+<footer>
+  408 数据结构可视化课堂 · 第 5 章 查找<br>
+  <div class="pagers">
+    <a href="ch04.html">← 上一章：图</a><a href="ch06.html">下一章：排序 →</a>
+  </div>
+</footer>
+<script src="assets/app.js"></script>
+<script src="assets/lesson-player.js"></script>
+<script src="assets/lesson-ch05.js"></script>
+<script src="assets/demo-ch05.js"></script>
+</body>
+</html>
